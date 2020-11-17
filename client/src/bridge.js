@@ -4,11 +4,37 @@
 
 //class
 class bridge {
+//check user
 //get items
-    static getItems(){
+static getToken(user){
+    return new Promise(async (resolve, reject) => {
+        try{
+            let command = 'getToken';
+            let res = await axios.get(url + command);
+            resolve(res.data);
+        } catch(err){
+            reject(err);
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//get items
+    static getUsers(){
         return new Promise(async (resolve, reject) => {
             try{
-                let command = 'getItems';
+                let command = 'getUsers';
                 let res = await axios.get(url + command);
                 let data = res.data;
                 resolve(data);

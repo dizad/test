@@ -2,20 +2,58 @@
 let express = require('express');
 let mongodb = require('mongodb');
 let router = express.Router();
+let database = 'cluster';
 let connectionString = 'mongodb://localhost:27017/database'; //local
 //let connectionString = 'mongodb+srv://dizad87:danotron1@cluster-lpjoe.azure.mongodb.net/test?retryWrites=true&w=majority'; //global
-let database = 'cluster';
+
+//check token
+router.post('/getToken', async (req, res) => {
+    let result = {
+        validUsername : false,
+        validPassword: false,
+        privilege: false
+    };
+    //req.body.password == 'admin';
+    //req.body.username == 'imawolf!';
+
+    let collection = await loadCollection('users');
+    let user = await collection.findOne({
+        _id: req.body.username});
+    if(user){
+        result.validUsername = true;
+        if(user.password == req.body.password){
+            result.validPassword = true;
+            if(user.privilege == 'admin'){
+                privilege = user.privilege;
+            }
+        }
+    }
+    res.send(rresulteq);
+});
+
+
+
+
+
+
+
+
+
+
+
 
 //get items
-router.get('/getItems', async (req, res) => {
-    let posts = await loadCollection('items');
+router.get('/getUsers', async (req, res) => {
+    let posts = await loadCollection('users');
     res.send(await posts.find({}).toArray());
 });
+
+
 
 //save item
 router.post('/saveItem', async (req, res) => {
 //insert user
-let posts = await loadCollection('items');
+let posts = await loadCollection('users');
     await posts.insertOne({
         _id: req.body._id,
         date: req.body.date,
@@ -27,7 +65,7 @@ let posts = await loadCollection('items');
 
 //delete item
 router.delete('/:id', async(req, res) => {
-    let posts = await loadCollection('items');
+    let posts = await loadCollection('users');
     posts.deleteOne({_id: req.params.id});
     res.status(200).send();
 });

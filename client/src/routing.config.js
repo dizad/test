@@ -1,21 +1,24 @@
 //imports
-    import toDo from './toDo.vue';
-    import tasks from './tasks.vue';
+    import login from './pages/login.vue';
+    import users from './pages/users.vue';
+    import quote from './pages/quote.vue';
 
 //define routes
-    export default [
-        {
-            path: '/toDo',
-            name: 'toDo',
-            component: toDo
+    export default [{
+            path: '/login',
+            name: 'login',
+            component: login
         },{
-           path: '/tasks/:id',
-           name: 'tasks',
-           component: tasks,
-           props: true
-       }, {
+            path: '/users',
+            name: 'users',
+            component: users
+       },{
+            path: '/quote',
+            name: 'quote',
+            component: quote
+        },{
             path: "*",
-            name: 'default',
-            redirect: "/toDo"
+            name: 'login',
+            redirect: "/login"
         }
     ];

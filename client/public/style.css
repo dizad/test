@@ -8,6 +8,19 @@
 		opacity: 0;
 	}
 
+	.splashBackground{
+		background: #63b7dd;
+		height: 100%;
+		background-image: linear-gradient(90deg, #0099ff, #8ff8ff);
+		/*      background: #EDEDED;
+      height: 100vh;
+      background-image:
+        linear-gradient(45deg, gray, white), 
+        linear-gradient(lightBlue, #6E6E6E);
+      background-size: 1em 1em, 100% 100%;
+      background-blend-mode: hard-light;*/
+	}
+
 /*modals*/
 	.modal-mask {
 		position: fixed;
