@@ -4,7 +4,7 @@ const path = require('path');
 //the outputdir is for sending the built files where you want it.
 module.exports = {
   outputDir: path.resolve(__dirname, '../server/public'),
-  lintOnSave: false, //turn off lint
+  lintOnSave: false, //turn off lint,
   devServer: {
     proxy: {
       '/api': {

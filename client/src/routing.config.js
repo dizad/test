@@ -9,16 +9,18 @@
             name: 'login',
             component: login
         },{
-            path: '/users',
+            path: '/users/:id',
             name: 'users',
-            component: users
-       },{
-            path: '/quote',
+            component: users,
+            props: true
+        },{
+            path: '/quote/:id',
             name: 'quote',
-            component: quote
+            component: quote,
+            props: true
         },{
             path: "*",
-            name: 'login',
+            name: 'default',
             redirect: "/login"
         }
     ];

@@ -1,11 +1,12 @@
 <template>
 <v-app>
-	<div class='splashBackground'>
-<v-card elevation="2" style='width: 400px; padding: 20px; text-align: center; margin: 150px auto auto auto;'>
-<v-form ref='form' lazy-validation v-on:keyup.enter='login'>
+<div class='splashBackground'>
+<v-card elevation="2" style='width: 400px; padding: 20px; text-align: center; margin: 100px auto auto auto;'>
+<v-form ref='form' lazy-validation>
+	<v-card-text v-on:keyup.enter='login()'>
 	<!--logo-->
 		<img id="imageLogin" src="./logo.jpg" style='width: 200px; margin: 25px;'/>
-	<!--title textbox-->
+	<!--username textbox-->
 		<v-text-field
 			ref='focusMe'
 			dense
@@ -14,6 +15,7 @@
 			placeholder='Type username...'
 			outlined
 			v-model='username'
+			autocomplete="off"
 		></v-text-field>
 	<!--password textbox-->
 		<v-text-field
@@ -23,6 +25,8 @@
 			placeholder='Type password...'
 			outlined
 			v-model='password'
+			type = 'password'
+			autocomplete="off"
 		></v-text-field>
 	<!--update button-->
 		<v-btn
@@ -33,29 +37,34 @@
 			<i class='fa fa-fw fa-sign-in'></i>
 			Login
 		</v-btn>
-		<span style='font-weight: bold; font-style: italic; color: #8f8f8f;'>contact kelgamal@kaiengineers.com for login issues</span>
+		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
+		contact kelgamal@kaiengineers.com for login issues<br>
+		izasoft version: 1.01 last update: 11/17/20</span>
+</v-card-text>
 </v-form>
 </v-card>
-	</div>
+</div>
 </v-app>
 </template>
 <script>
 //import
-	import bridge from '../bridge';
+	import bridge from '../bridge.js';
+	import session from "../utils/session.js";
 //master
     export default {
+    //name
+        name: 'users',
+    //components
+        components: {
+			session
+        },
 	//on load
 		async created(){
-			this.users = await bridge.getUsers();
+			document.cookie = '';
 		},
       methods: {
 	//login
 		async login(){
-
-this.$router.push({ path: '/users', params: {}});
-
-/*
-
 		//validate empties
 			if(!this.$refs.form.validate()){
 				return;
@@ -66,7 +75,6 @@ this.$router.push({ path: '/users', params: {}});
 				password: this.password
 			};
 			let token = await bridge.getToken(user);
-			console.log(token);
 		//invalid entries
 			if(!token.validUsername){
 				toastr.error(`Username does not exist!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
@@ -76,16 +84,15 @@ this.$router.push({ path: '/users', params: {}});
 				return;
 			}
 		//valid entries
-			else if(privilege == 'admin'){
-				alert('users');
-				//this.$router.push({ path: '/users', params: {}});
-			}else if(privilege == 'user'){
-				alert('user');
-				//this.$router.push({ path: '/quote', params: {}});
+			else if(token.privilege == 'admin'){
+				document.cookie = 'admin' + '+' + session.getExpiration();
+				this.$router.push({ path: `/users/${this.username}`});
+			}else if(token.privilege == 'user'){
+				document.cookie = 'user' + '+' + session.getExpiration();
+				this.$router.push({ path: `/quote/${this.username}`});
 			}else{
 				toastr.error(`This account has an error!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			}
-			*/
 		}
       },
 	//global vars
