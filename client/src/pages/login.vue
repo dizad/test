@@ -39,7 +39,7 @@
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
 		contact kelgamal@kaiengineers.com for login issues<br>
-		izasoft version: 1.01 last update: 11/17/20</span>
+		izasoft version: 1.01 last update: 11/20/20</span>
 </v-card-text>
 </v-form>
 </v-card>
@@ -86,7 +86,7 @@
 		//valid entries
 			else if(token.privilege == 'admin'){
 				document.cookie = 'admin' + '+' + session.getExpiration();
-				this.$router.push({ path: `/users/${this.username}`});
+				this.$router.push({ path: `/users`});
 			}else if(token.privilege == 'user'){
 				document.cookie = 'user' + '+' + session.getExpiration();
 				this.$router.push({ path: `/quote/${this.username}`});

@@ -223,7 +223,6 @@
 				this.$router.push({ path: '/login'});
             }
         //continue
-            let userId = this.$route.params.id; //id from url
             this.users = await bridge.getUsers() || [];
             this.users.sort((a, b) => a._id.localeCompare(b._id));
             this.users.sort((x,y)=>{return x.privilege == 'admin' ? -1 : y.privilege == 'admin' ? 1 : 0;});
@@ -304,7 +303,7 @@
         //reset cookie
             document.cookie = 'null';
         //re-direct to login page
-            this.$router.push({ path: '/login', params: {}});
+            this.$router.push({ path: '/login' });
         //notify
             toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         },

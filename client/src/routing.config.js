@@ -9,10 +9,9 @@
             name: 'login',
             component: login
         },{
-            path: '/users/:id',
+            path: '/users',
             name: 'users',
-            component: users,
-            props: true
+            component: users
         },{
             path: '/quote/:id',
             name: 'quote',

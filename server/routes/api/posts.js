@@ -1,10 +1,10 @@
 //imports
     let express = require('express');
     let mongodb = require('mongodb');
+    let nodemailer = require('nodemailer');
     let router = express.Router();
 
-
-//database
+    //database
     let database = 'cluster';
     //let connectionString = 'mongodb://localhost:27017/database'; //local
     let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/cluster?retryWrites=true&w=majority'; //global
@@ -59,6 +59,33 @@
         let posts = await loadCollection('users');
         posts.deleteOne({_id: req.params.id});
         res.status(200).send();
+    });
+
+//send email
+    router.post('/sendEmail', async (req, res) => {
+    //build transporter
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'service.oswald@gmail.com',
+            pass: 'serviceoswald1234!'
+          }
+        });
+    //build email
+        var mailOptions = {
+          from: 'service.oswald@gmail.com',
+          to: 'kaquoting@gmail.com',
+          subject: req.body.subject,
+          html: req.body.html
+        };
+    //send email
+        transporter.sendMail(mailOptions, function(error){
+          if (error) {
+            console.log(error);
+          }
+        });
+    //return status
+        res.status(201).send();
     });
 
 //database

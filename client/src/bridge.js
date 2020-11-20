@@ -45,6 +45,17 @@ class bridge {
     static deleteUser(id){
         return axios.delete(`${url}${id}`);
     }
+
+//send email
+    static sendEmail(email){
+        try{
+            let command = 'sendEmail';
+            return axios.post(url + command, email
+            );
+        } catch(err){
+            reject(err);
+        }
+    }
 }
 
 //export

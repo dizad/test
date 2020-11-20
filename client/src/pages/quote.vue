@@ -178,7 +178,9 @@
             let params = document.cookie.split('+');
 			if(params && params.length && params[0] != 'user'){
 				this.$router.push({ path: '/login'});
-            }
+			}
+		//get user
+			this.userId = this.$route.params.id; //id from url
 		},
       	methods: {
 		//update the quote dollar
@@ -197,20 +199,24 @@
 			//reset cookie
 				document.cookie = 'null';
 			//re-direct to login page
-				this.$router.push({ path: '/login', params: {}});
+				this.$router.push({ path: '/login'});
 			//notify
 				toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			},
 		//download pdf and send email
-			downloadPdf(){
+			async downloadPdf(){
 			//notify
 				toastr.info(`Under construction!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			//validate empties
-				if(!this.$refs.form.validate()){
-					return;
-				}
+//				if(!this.$refs.form.validate()){
+//					return;
+//				}
 			//send email
-				//abc
+				let email = {
+					subject: `${this.userId} quoted for $${this.quote}`,
+					html: '[tbd]'
+				};
+				await bridge.sendEmail(email);
 			//download pdf
 				//abc
 			}
@@ -218,6 +224,7 @@
 	//global vars
           data: global => ({
 			quote: '0.00',
+			userId: '',
 			inputs: [],
 			validate: {
 				required: a => !!a || 'This entry is empty!',
