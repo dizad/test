@@ -7,7 +7,7 @@
 //database
     let database = 'cluster';
     //let connectionString = 'mongodb://localhost:27017/database'; //local
-    let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/<dbname>?retryWrites=true&w=majority'; //global
+    let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/cluster?retryWrites=true&w=majority'; //global
 
 //get token
     router.post('/getToken', async (req, res) => {
