@@ -556,7 +556,7 @@ methods: {
 	//reset empties to zeroes
 		let keys = Object.keys(this.components);
 		keys.forEach(field => {
-			if(this.components[field] == '' || this.components[field] == null || isNaN(this.components[field])){
+			if(this.components[field] == '' || this.components[field] == null || isNaN(this.components[field]) || this.components[field] < 0){
 				this.components[field] = 0;
 			};	
 		});
@@ -701,61 +701,300 @@ methods: {
 				format: 'letter',
 				compress:true
 			};
-			let doc = new jsPDF(options);
-			let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
-			let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-			let margin = 20;
-			let text = ``;
+			let pdf = new jsPDF(options);
+			let image = new Image();
+			let pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
+			let pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth();
+			let margin = 40;
+			let wrapWidth = pageWidth - (margin * 2);
 			let friendlyFirstName = this.contact.firstName.charAt(0).toUpperCase() + this.contact.firstName.slice(1);
 			let friendlyLastName = this.contact.lastName.charAt(0).toUpperCase() + this.contact.lastName.slice(1);
-		//page#01
+			let text = ``;
+			let wrap = ``;
+//page#01-----------------------------------------------------------------------------------------------------------------------------------------------------------------------<
+			//init
+				let verticalBuild = margin;
 			//add logo
-				let img = new Image();
-				img.src = 'logo.jpg';
-				let imgSize = 125;
-				let xPos = (pageWidth / 2) - (imgSize / 2);
-				doc.addImage(img, 'jpg', xPos, 160, imgSize, imgSize); // x, y, width, height				
+				image.src = 'logo.jpg';
+				let imageSize = 125;
+				let xPos = (pageWidth / 2) - (imageSize / 2);
+				pdf.addImage(image, 'jpg', xPos, 160, imageSize, imageSize); // x, y, width, height				
 			//add quoteId
-				this.setFont(doc, 'cover');
+				this.setFont(pdf, 'cover');
 				text = `${quoteId}`;
-				doc.text(text, pageWidth / 2, 350, {align: 'center'});
+				pdf.text(text, pageWidth / 2, 320, {align: 'center'});
 			//add date
-				this.setFont(doc, 'cover');
+				this.setFont(pdf, 'cover');
 				text = moment().format('MM/DD/YY');
-				doc.text(text, pageWidth / 2, 390, {align: 'center'});
-		//page#02
-			//add intro header
-				doc.addPage();
-				let verticalBuild = 0;
-				this.setFont(doc, 'header');
-				text = `Summary:`;
-				doc.text(text, margin, margin + verticalBuild, {align: 'left'});	
+				pdf.text(text, pageWidth / 2, 400, {align: 'center'});
+//page#02-----------------------------------------------------------------------------------------------------------------------------------------------------------------------<
+			//init
+				pdf.addPage();
+				verticalBuild = margin;
+			//customer address
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
+text = `${friendlyFirstName} ${friendlyLastName}
+${this.contact.company}
+${this.contact.streetAddress}
+${this.contact.city}, ${this.contact.state} ${this.contact.zip}`;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				this.setFont(pdf, 'default');
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 			//add message
-				this.setFont(doc, 'default');
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************
 text = `Dear ${friendlyFirstName}:
+
 K&A Engineering is pleased to provide the following Power System Study quotation for ${this.contact.company} located in ${this.contact.city}, ${this.contact.state}.
 
-K&A Engineering is a professional engineering firm licensed in the State of Texas. The short circuit and coordination study is being performed by K&A engineering and shall be submitted to the principal design firm for reviewal and approval.`;
-verticalBuild += 200;
-doc.text(text, margin, margin + verticalBuild, {align: 'left'});	
-			
-		//page#03
-		//page#04
+K&A Engineering is a professional engineering firm licensed in the State of Texas. The short circuit and coordination study is being performed by K&A engineering and shall be submitted to the principal design firm for reviewal and approval.
+
+Thank you for this opportunity to be of service. Should you have any questions please do not hesitate to give me a call.
+
+
+
+Respectfully Submitted,`;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				this.setFont(pdf, 'default');
+				wrap = pdf.splitTextToSize(text, wrapWidth);
+				verticalBuild += 70;
+				pdf.text(wrap, margin, verticalBuild, {align: 'left'});	
+			//add signature
+				image = new Image();
+				image.src = 'signature.jpg';
+				verticalBuild += 150;
+				pdf.addImage(image, 'jpg', margin, verticalBuild, 100, 30); // x, y, width, height		
+			//company address
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
+text = `Khaled Elgamal
+Senior Electrical Engineer
+kelgamal@kaiengineers.com
+214.422.1086 (Mobile)
+K&A Engineering, LLC
+9330 LBJ Freeway
+Dallas, TX 75243`;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				verticalBuild += 40;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//break line
+				pdf.setLineDash([3, 3], 0);
+				verticalBuild += 90;
+				pdf.line(margin, verticalBuild, pageWidth - margin, verticalBuild); //x1, y1, x2, y2
+			//price
+				this.setFont(pdf, 'default');
+				text = `Price = `;
+				verticalBuild += 15;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+
+				this.setFont(pdf, 'header');
+				text = `${this.getFriendlyQuote(this.quote)}`;
+				pdf.text(text, margin + 50, verticalBuild, {align: 'left'});	
+			//deadline
+				this.setFont(pdf, 'default');
+				text = `Deadline = ${this.formatDate(this.deadline).replace(/-/g, '/')}`;
+				verticalBuild += 15;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//training
+				if(this.isTraining){
+					this.setFont(pdf, 'default');
+					text = `Require Training`;
+					verticalBuild += 15;
+					pdf.text(text, margin, verticalBuild, {align: 'left'});	
+				}
+			//instructions
+				if(this.specialInstructions){
+					this.setFont(pdf, 'default');
+					text = `Special Instructions: Do this and that`;
+					verticalBuild += 15;
+					pdf.text(text, margin, verticalBuild, {align: 'left'});	
+				}
+			//add specks
+				this.setFont(pdf, 'default');
+				pdf.setLineDash(0); //straight line
+			//init
+				let rows = [];
+				let selections = ``;
+			//build components
+				keys = Object.keys(this.components);
+				keys.forEach((key, index) => {
+					if(this.components[key] > 0){
+						selections += `${this.friendlyConverter[key]}(X${this.components[key]}), `;
+					}
+				});
+				if(selections[selections.length-1] == ' ' && selections[selections.length-2] == ','){
+					selections = selections.slice(0, -2);
+				}
+				rows.push({
+					Items: "Component(s) =",
+					Selections: selections || '[none selected]'
+				});
+			//build options
+				selections = ``;
+				keys = Object.keys(this.options);
+				keys.forEach((key, index) => {
+					if(this.options[key]){
+						selections += `${this.friendlyConverter[key]}, `;
+					}
+				});
+				if(selections[selections.length-1] == ' ' && selections[selections.length-2] == ','){
+					selections = selections.slice(0, -2);
+				}
+				rows.push({
+					Items: "Option(s) =",
+					Selections: selections || '[none selected]'
+				});
+			//build headers
+				let firstColWidth = 100;
+				let headers = [{
+					'name': 'Items',
+					'prompt': 'Items',
+					'width': firstColWidth,
+					'align': 'left',
+					'padding': 0
+					}, {
+					'name': 'Selections',
+					'prompt': 'Selections',
+					'width': pageWidth - margin - 10,
+					'align':'left',
+					'padding': 0
+					}];
+			//bind table
+				verticalBuild += 10;
+				pdf.table(margin, verticalBuild, rows, headers);
+
+//page#03-----------------------------------------------------------------------------------------------------------------------------------------------------------------------<
+			//init
+				pdf.addPage();
+				verticalBuild = 0;
+			//terms header
+				this.setFont(pdf, 'header');
+				text = `Deliverables:`;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//terms content
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
+text = `Applicable taxes not included terms net 30 days.
+There are many components to properly incorporate arc flash safety into your electrical safety
+program. As a multi-step process, it is important to execute the project in such a manner as to be
+efficient upon completion, as well as achieving the overall goal of implementing an effective and
+useful study. This study includes the following:
+1. Gathering of Site Data
+2. Perform a Short Circuit Study
+3. Perform a Coordination Study
+4. Perform an Arc Flash Study
+K&A Engineering is pleased to provide the following items in reference to the listed price above: 
+
+1. On-Site Data Collection/System modeling:
+ Gathering of available one-line diagrams and other pertinent electrical prints and
+information
+ Data provided by the contractor
+ Input of collected data into the SKM Power Tools for Windows software to create a
+database and the system one-line diagram 
+2. Short-Circuit Study:
+The study will identify any protective devices that are not adequately rated to interrupt the fault
+current that is available at a particular location in the power system
+3. Device Coordination Study:
+K&A Engineering, will perform and supply a coordination study that will determine the settings
+for the protective devices studied and also provide acceptable protection for all equipment and
+conductors during periods of overload or fault conditions. The study will review equipment
+operation for a fault on each bus, describe any unacceptable coordination conditions.
+4. Arc Flash Study:
+K&A Engineering, will provide an arc flash study detailing the Flash Hazard Boundaries, Limited
+Approach Boundaries, Restricted Approach Boundaries, and Incident Energies (in cal/cm2)
+encountered at specific distances, Specified Hazard Class and subsequent PPE required, and
+impending shock risk. Our study will commence from the utility service entrance point and will
+include the items as shown on the supplied electrical one-line diagram.
+Project deliverables:
+ Input data Information
+ Software Input data report
+ Short-Circuit current analysis Information
+ Short-Circuit current output report
+ One-line drawing with Short-Circuit current values
+ Protective Device Coordination study
+ Time-Current Characteristics (TCC) curves
+ Software generated protective devices recommended settings
+ Arc-Flash Hazard Analysis
+ Report with detailed arc-flash information
+ One-line with arc flash values
+ Arc-Flash Labels 
+`;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				this.setFont(pdf, 'default');
+				verticalBuild += 40;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+//page#04-----------------------------------------------------------------------------------------------------------------------------------------------------------------------<
+			//init
+				pdf.addPage();
+				verticalBuild = 0;
+			//report header
+				this.setFont(pdf, 'header');
+				text = `Report:`;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//report content
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
+text = `The results of the protective device short circuit, coordination and arc flash hazard analysis studies
+shall be summarized in a final report, one (1) electronic copy.
+The report shall include the following sections:
+1. Executive Summary including Introduction, Scope of work and results/ recommendations
+2. Short-Circuit methodology analysis results and recommendations
+3. Electrical equipment evaluation output report.
+4. Protective device coordination methodology analysis results and recommendations
+5. Time-current coordination curves and recommendations. (TCC drawings in 11x17 page 
+format)
+6. Arc Flash hazard methodology analysis results and recommendations, including the details of
+the incident energy and flash protection boundary calculations, along with Arc Flash boundary
+distances, working distances, Incident energy levels and personal protection equipment levels
+7. One-line system diagram shall be computer generated and will clearly identify individual
+equipment buses, bus numbers used in the short-circuit analysis, cable and bus connections
+between the equipment, calculated maximum short-circuit current at each bus location, device
+numbers used in the time-current coordination analysis and other information pertinent to the
+computer analysis `;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				this.setFont(pdf, 'default');
+				verticalBuild += 40;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//general conditions header
+				this.setFont(pdf, 'header');
+				text = `General Conditions:`;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//general conditions content
+//RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
+text = `Work performed by K&A Engineering will be in accordance with the following:
+1. This quotation is effective for 30 days from quotation date, unless otherwise authorized by
+K&A Engineering.
+2. Cancellations, which may include weather-related issues, will be assessed with a
+mobilization and or project management/completion charge based on expenses incurred.
+3. The price is based on normal working hours (M-F 7am-4pm).
+4. The equipment / Manufacturer shall be specified prior to the study.
+5. Unless requested, the study will be based on the recommended settings of the Short
+Circuit, Coordination and Arc Flash study.
+6. All data required included but not limited to cable lengths, cable size, protective devices
+type and settings, utility fault current information shall be provided to K&A Engineering,
+prior to the beginning of the project.
+7. Customer drawings and other records may be used in lieu of physical inspection where
+appropriate.
+8. The customer is responsible for providing all facility one-line drawings/ diagrams, control
+schematics, and equipment drawings to K&A Engineering. K&A Engineering will require
+as much site information on the distribution system (one line diagrams, known changes to
+the system, etc.) prior to the beginning of the project. 
+`;
+//RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
+				this.setFont(pdf, 'default');
+				verticalBuild += 200;
+				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 		//download
-			doc.save(`${quoteId}.pdf`);
+			pdf.save(`${quoteId}.pdf`);
 	}, 
 //pdf helpers
-	setFont(doc, type){
+	setFont(pdf, type){
 		if(type == 'cover'){
-			doc.setTextColor(86,91,97);
-			doc.setFontSize(14);
-		//	doc.setFontType("bold");
+			pdf.setTextColor(86,91,97);
+			pdf.setFontSize(14);
+		//	pdf.setFontType("bold");
 		}else if(type == 'header'){
-			doc.setTextColor(0, 123, 255);
-			doc.setFontSize(12);
+			pdf.setTextColor(0, 123, 255);
+			pdf.setFontSize(12);
 		}else if(type == 'default'){
-			doc.setTextColor(86,91,97);
-			doc.setFontSize(12);
+			pdf.setTextColor(86,91,97);
+			pdf.setFontSize(12);
 		}
 	},
 //get default date
