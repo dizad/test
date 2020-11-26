@@ -9,7 +9,8 @@
 		<!--title-->
 			<v-card-title
 				class='headline primary' primary-title style='color: white;'>
-				<small><i class='fa fa-user-times fa-fw'></i>&nbsp;Delete User</small>
+				<v-icon dark left>person_remove</v-icon>
+                Delete User
 			</v-card-title>
 		<!--add user-->
             <v-form ref='form' lazy-validation>
@@ -22,7 +23,7 @@
                     style='width: 49%;'
                     dense dark color='primary' 
                     @click='doDeleteUser()'>
-                    <i class='fa fa-times-circle fa-fw'></i>
+                    <v-icon dark left>check_circle</v-icon>
                     Delete
                 </v-btn>
             <!--cancel button-->
@@ -31,7 +32,7 @@
                     dense dark color='error' 
                     @click='closeDeleteModal()'                     
                     >
-                    <i class='fa fa-times-circle fa-fw'></i>
+                    <v-icon dark left>block</v-icon>
                     Cancel
                 </v-btn>
             </v-card-actions>
@@ -48,16 +49,17 @@
 		<!--title-->
 			<v-card-title
 				class='headline primary' primary-title style='color: white;'>
-				<small><i class='fa fa-user-plus fa-fw'></i>&nbsp;&nbsp;{{isNew ? 'Add' : 'Update'}}&nbsp;User</small>
+				<v-icon dark left>person_add</v-icon>{{isNew ? 'Add' : 'Update'}}&nbsp;User
 			</v-card-title>
 		<!--add user-->
             <v-form ref='form' lazy-validation>
-			<v-card-text v-on:keyup.enter='addUser' style='padding-bottom: 0px;'>
+			<v-card-text v-on:keyup.enter='addUser' style='padding-bottom: 0px; margin-bottom: -10px;'>
             <!--username textbox-->
                 <v-text-field
                     v-if='isNew'
-                    ref='focusMe'
+                    ref='focusUsername'
                     dense
+                    append-icon='mdi-account-circle'
                     label='Username'
                     :rules='validateUsername'
                     placeholder='Type username...'
@@ -67,7 +69,9 @@
                 ></v-text-field>
             <!--description textbox-->
                 <v-text-field 
+                    ref='focusPassword'
                     dense
+                    append-icon='mdi-lock'
                     label='Password'
                     :rules='[validatePassword.required]'
                     placeholder='Type password...'
@@ -82,8 +86,8 @@
                     style='width: 49%;'
                     dense dark color='primary' 
                     @click='addUser()'>
-                    <i class='fa fa-plus-circle fa-fw'></i>
-                    {{isNew ? 'Add' : 'Update'}}
+                    <v-icon dark left>check_circle</v-icon>
+                    &nbsp;{{isNew ? 'Add' : 'Update'}}
                 </v-btn>
             <!--cancel button-->
                 <v-btn 
@@ -91,7 +95,7 @@
                     dense dark color='error' 
                     @click='closeUserModal'                     
                     >
-                    <i class='fa fa-times-circle fa-fw'></i>
+                    <v-icon dark left>block</v-icon>
                     Cancel
                 </v-btn>
             </v-card-actions>
@@ -107,21 +111,21 @@
         class='headline primary'
         primary-title style='color: white;'>
     <!--title-->
-        <small><i class='fa fa-fw fa-user-circle'></i>Users</small>
+        <v-icon dark left>account_circle</v-icon>Users
     <!--add button-->
         <v-btn 
-            style='position: absolute; right: 140px; width: 100px;'
+            style='position: absolute; right: 150px; width: 110px;'
             dense dark color='info'
             @click='createUser()'>
-            <i class='fa fa-plus-circle fa-fw'></i>
+            <v-icon dark left>add_circle</v-icon>
             Add
         </v-btn>
     <!--logout button-->
         <v-btn 
-            style='position: absolute; right: 20px; width: 100px;'
+            style='position: absolute; right: 30px; width: 110px;'
             dense dark color='info' 
             @click='logout()'>
-            <i class='fa fa-fw fa-sign-out'></i>
+            <v-icon dark left>logout</v-icon>
             Logout
         </v-btn>
     <!--list--->
@@ -170,9 +174,9 @@
                         dense 
                         dark 
                         color='primary' 
-                        style='width: 100px; margin: 5px;'
+                        style='width: 110px; margin: 5px;'
                         @click='updateUser(user)'>
-                        <i class='fa fa-edit fa-fw'></i>
+                        <v-icon dark left>build_circle</v-icon>
                         Update
                     </v-btn>
                 <!--delete button-->
@@ -180,18 +184,18 @@
                         dense 
                         dark 
                         color='error' 
-                        style='width: 100px;'
+                        style='width: 110px;'
                         @click='deleteUser(index)' 
                         >
-                        <i class='fa fa-fw fa-times-circle'></i>
+                        <v-icon dark left>cancel</v-icon>
                         Delete
                     </v-btn>
                 <!--blind admin-->
                     <v-btn v-if='user.privilege == "admin"'
                         dense 
-                        style='width: 100px;'
+                        style='width: 110px;'
                         disabled>
-                        <i class='fa fa-fw fa-user-circle'></i>
+                        <v-icon dark left>face</v-icon>
                         Admin
                     </v-btn>
                 </td>
@@ -295,7 +299,7 @@
             this.showUserModal = true;
         //focus the textbox
 			setTimeout(() => {
-				this.$refs.focusMe.$refs.input.focus();
+				this.$refs.focusPassword.$refs.input.focus();
 			}, 0);
         }, 
     //log out of page
@@ -316,7 +320,7 @@
             this.showUserModal = true;
         //focus the textbox
 			setTimeout(() => {
-				this.$refs.focusMe.$refs.input.focus();
+				this.$refs.focusUsername.$refs.input.focus();
 			}, 0);
         }, 
     //hide modals
@@ -330,7 +334,7 @@
         formatDate (date) {
             if (!date) return null;
             let [year, month, day] = date.split('-')
-            return `${month}/${day}/${year}`
+            return `${month}-${day}-${year}`
         }
       }, computed: {
         //validate the user title
@@ -339,11 +343,11 @@
                 let errors = [];
             //check empty
                 if( !this.username || this.username == '' ){
-                    errors.push('This username is empty!');
+                    errors.push('Username required!');
                 }
             //check unique
                 if(this.users.some(a => a._id == this.username )){
-                    errors.push('This username already exists!');
+                    errors.push('Username already exists!');
                 }
             //return
                 return errors;
@@ -360,7 +364,7 @@
             isNew: true,
             userToDelete: {},
             validatePassword: {
-                required: a => !!a || 'This password is empty!'
+                required: a => !!a || 'Password required!'
             }
         }),
     }

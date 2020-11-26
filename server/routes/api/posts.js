@@ -3,11 +3,10 @@
     let mongodb = require('mongodb');
     let nodemailer = require('nodemailer');
     let router = express.Router();
-
     //database
     let database = 'cluster';
-    //let connectionString = 'mongodb://localhost:27017/database'; //local
-    let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/cluster?retryWrites=true&w=majority'; //global
+    let connectionString = 'mongodb://localhost:27017/database'; //local
+    //let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/cluster?retryWrites=true&w=majority'; //global
 
 //get token
     router.post('/getToken', async (req, res) => {
@@ -28,6 +27,7 @@
         }
         res.send(result);
     });
+
 //get users
     router.get('/getUsers', async (req, res) => {
         let collection = await loadCollection('users');
@@ -43,13 +43,13 @@
         upsert: true,
         };
         //build document
-        let replacement = {
+        let replace = {
             _id: req.body._id,
             password: req.body.password,
             added: req.body.added,
             privilege: req.body.privilege
         };
-        let result = await collection.replaceOne(query, replacement, options);
+        await collection.replaceOne(query, replace, options);
         //return status
             res.status(201).send();
     });
@@ -67,13 +67,13 @@
         let transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
-            user: 'service.oswald@gmail.com',
-            pass: 'serviceoswald1234!'
+            user: 'kaquoting@gmail.com',
+            pass: 'imawolf!'
           }
         });
     //build email
         var mailOptions = {
-          from: 'service.oswald@gmail.com',
+          from: 'kaquoting@gmail.com',
           to: 'kaquoting@gmail.com',
           subject: req.body.subject,
           html: req.body.html
@@ -84,6 +84,62 @@
             console.log(error);
           }
         });
+    //return status
+        res.status(201).send();
+    });
+
+//get quote id
+    router.post('/getQuoteCount', async (req, res) => {
+    //get collection
+        let collection = await loadCollection('configs');
+    //get config
+        let result = {};
+        let config = await collection.findOne({_id: 'master'});
+        if(config && config.quoteCount){
+        //increment
+            config.quoteCount++;
+        //update
+            let filter = { _id: 'master'};
+            let update = {
+                $set: { quoteCount: config.quoteCount }
+            };
+            await collection.updateOne(filter, update);
+        //bind
+            result.quoteId = config.quoteCount;           
+        }
+    //return data
+        res.send(result);
+    });
+
+//get data
+router.post('/getData', async (req, res) => {
+    //get collection
+        let collection = await loadCollection('users');
+    //get user
+        let userId = req.body.userId;
+        let user = await collection.findOne({_id: userId});
+    //bind result
+        let result = {};
+        if(user && user.data){
+            result = user.data; 
+        }
+    //return data
+        res.send(result);
+    });
+
+//save item
+    router.post('/saveData', async (req, res) => {
+    //get collection
+        let collection = await loadCollection('users');
+    //get user
+        let userId = req.body.userId;
+        let data = req.body.data;
+        let filter = { _id: userId };
+    //build document
+        let update = {
+            $set: { data: data }
+        };
+        await collection.updateOne(filter, update);
     //return status
         res.status(201).send();
     });

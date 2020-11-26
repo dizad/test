@@ -1,235 +1,748 @@
 <template>
 <v-app>
-<div class='splashBackground' >
-	<v-card style='margin:30px;'> 
- 	<!--banner-->
-        <v-card-title
-            class='headline primary'
-            primary-title 
-			style='color: white;'>
-        <!--title-->
-            <small><i class='fa fa-fw fa-usd'></i>Quote</small>
-        <!--logout button-->
-            <v-btn 
-                style='position: absolute; right: 20px; width: 100px;'
-                dense dark color='info' 
-                @click='logout()'>
-                <i class='fa fa-fw fa-sign-out'></i>
-                Logout
-            </v-btn>
-        </v-card-title>
+<div class='splashBackground'>
+<!--confirmation modal-->
+<transition name='fade'>
+	<div class='modal-mask' transition='modal' v-if='showInfoModal' @closeInfoModal = 'closeInfoModal'>
+		<div class='center-block' style='width: 450px; margin-top: 50px;'>     
+		<v-card>
+		<!--title-->
+			<v-card-title
+				class='headline primary' primary-title style='color: white;'>
+				<v-icon dark left>error_outline</v-icon>
+                Pricing
+			</v-card-title>
+		<!--content-->
+			<v-card-text style='padding: 20px;'>
+				<v-icon left>arrow_forward</v-icon>
+					<label>Minimum Base Price=</label>&nbsp;
+					<v-chip color='success'>+${{costs.minimum}}</v-chip><br>
+				<v-icon left>arrow_forward</v-icon>
+					<label style='padding-top: 10px;'>Unit Price / Component (Without Any Option)=</label>&nbsp;
+					<v-chip color='success'>+${{costs.unitStandard}}</v-chip><br>
+				<v-icon left>arrow_forward</v-icon>
+					<label style='padding-top: 10px;'>Unit Price / Component (With Any Option)=</label>&nbsp;
+					<v-chip color='success'>+${{costs.unitOptions}}</v-chip><br>
+				<v-icon left>arrow_forward</v-icon>
+					<label style='padding-top: 10px;'>With Training=</label>&nbsp;
+					<v-chip color='success'>+${{costs.training}}</v-chip><br>
+				<v-icon left>arrow_forward</v-icon>
+					<label style='padding-top: 10px;'>With Expedite(Less than 2 weeks)=</label>&nbsp;
+					<v-chip color='success'>+${{costs.expedite}}</v-chip><br>
+            </v-card-text>              
+            <v-card-actions>
+            <!--cancel button-->
+                <v-btn 
+                    style='width: 100%;'
+                    dense dark color='primary' 
+                    @click='closeInfoModal()'                     
+                    >
+                    <v-icon dark left>check_circle</v-icon>
+                    Ok
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+        </div>
+    </div>
+</transition>
+<!--master page-->	
+<v-card style='margin:30px 30px auto 30px; height: calc(100vh - 200px);'> 
+<!--banner-->
+<v-card-title
+	class='headline primary'
+	primary-title 
+	style='color: white;'>
+<!--title-->
+	<v-icon dark left>monetization_on</v-icon>
+	Quote
+<!--clear button-->
+	<v-btn 
+		style='position: absolute; right: 410px; width: 110px;'
+		dense dark color='info' 
+		@click='clearAll()'>
+		<v-icon dark left>power_settings_new</v-icon>
+		Clear
+	</v-btn>
+<!--save button-->
+	<v-btn 
+		style='position: absolute; right: 280px; width: 110px;'
+		dense dark color='info' 
+		@click='saveData()'>
+		<v-icon dark left>save</v-icon>
+		Save
+	</v-btn>
+<!--info button-->
+	<v-btn 
+		style='position: absolute; right: 150px; width: 110px;'
+		dense dark color='info' 
+		@click='openInfoModal()'>
+		<v-icon dark left>error_outline</v-icon>
+		Pricing
+	</v-btn>
+<!--logout button-->
+	<v-btn 
+		style='position: absolute; right: 20px; width: 110px;'
+		dense dark color='info' 
+		@click='logout()'>
+		<v-icon dark left>logout</v-icon>
+		Logout
+	</v-btn>
+</v-card-title>
+<!--content-->
+<v-form ref='form' lazy-validation v-on:keyup.enter='updateQuote()' style='background-color: #94d1ff; height: 100%;'>
+	<v-row no-gutters>
+<!--1st card-->
+	<v-col class="pt-4 pr-2 pb-4 pl-4">
+	<v-card style='height: calc(100vh - 230px);'>
+	<!--title-->
+		<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff; text-color'>
+			<i class='fa fa-fw fa-cube'></i>&nbsp;Components
+		</v-card-title>
+	<!--divider-->
+		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
 	<!--content-->
-		<v-form ref='form' lazy-validation v-on:keyup.enter='updateQuote()'>
-		<v-row style='padding: 20px 10px 0px 10px;'>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 20px;'
-				label='Input01'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[0]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 10px;'
-				label='Input02'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[1]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 20px 0px 10px;'
-				label='Input03'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[2]'
-			></v-text-field>
-		</v-row>
-		<v-row style='padding: 0px 10px 0px 10px;'>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 20px;'
-				label='Input04'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[3]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 10px;'
-				label='Input05'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[4]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 20px 0px 10px;'
-				label='Input06'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[5]'
-			></v-text-field>
-		</v-row>
-		<v-row style='padding: 0px 10px 0px 10px;'>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 20px;'
-				label='Input07'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[6]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 10px 0px 10px;'
-				label='Input08'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[7]'
-			></v-text-field>
-		<!--input-->
-			<v-text-field
-				style='width: 100px; margin: 0px 20px 0px 10px;'
-				label='Input09'
-				dense
-				:rules='[validate.required, validate.number]'
-				placeholder='Type number...'
-				outlined
-				autocomplete="off"
-				v-model='inputs[8]'
-			></v-text-field>
-		</v-row>
-	</v-form>			
-	<!--footer-->
-		<v-footer class="primary" style='border-top-left-radius: 0px; border-top-right-radius: 0px;'>
-		<v-row  justify="center" style='padding: 10px 10px 10px 10px;'>
-		<!--quote value-->
-			<v-btn
-				style='width: 200px; margin: 0px 10px 0px 10px; background-color: white;'
-				dense
-				outlined
-				dark
+		<!--panel boards-->
+		<v-text-field
+			style='margin: 20px 20px 0px 20px;'
+			label='Panel Boards'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.panelBoards'
+		></v-text-field>
+		<!--transformers-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Transformers'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.transformers'
+		></v-text-field>
+		<!--switches-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Disconnect Switches'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.disconnectSwitches'
+		></v-text-field>
+		<!--generators-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Generators'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.generators'
+		></v-text-field>			
+		<!--automatic transfer switches-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Automatic Transfer Switches(ATS)'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.automaticTransferSwitches'
+		></v-text-field>		
+		<!--motor control centers-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Motor Control Centers(MCC)'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.motorControlCenters'
+		></v-text-field>		
+		<!--universal power supplies-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Universal Power Supplies(UPS)'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.universalPowerSupplies'
+		></v-text-field>
+		</v-card>
+	</v-col>
+<!--2nd card-->
+	<v-col class="pt-4 pr-2 pb-4 pl-2">
+	<v-card style='height: calc(100vh - 230px);'>
+	<!--title-->
+		<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff;'>
+			<i class='fa fa-fw fa-cubes'></i>&nbsp;Options
+		</v-card-title>
+	<!--divider-->
+		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
+	<!--content-->
+		<!--short circuit coordination-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isShortCircuitStudy'
+				label="Short Circuit Study"
 				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--selective Coordination-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isDeviceStudy'
+				label="Device Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--harmonics-->	
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isHarmonicStudy'
+				label="Harmonic Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--motor starting study-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isMotorStartStudy'
+				label="Motor Start Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--short circuit coordination-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isLoadFlowStudy'
+				label = 'Load Flow Study'
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--arc flash-->	
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isArcFlashStudy'
+				label="Arc Flash Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--arc flash labels-->	
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isArcFlashLabels'
+				label="Arc Flash Labels"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		</v-card>
+	</v-col>
+<!--3rd row-->
+<v-col class="pt-4 pr-2 pb-4 pl-2">
+	<v-card style='height: calc(100vh - 230px);'>
+	<!--title-->
+		<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff;'>
+			<i class='fa fa-fw fa-paper-plane'></i>&nbsp;Delivery
+		</v-card-title>
+	<!--divider-->
+		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
+	<!--content-->
+		<!--training-->	
+		<v-checkbox
+			style='margin: 20px'
+			v-model = 'isTraining'
+			label="Require Training"
+			color="primary"
+			hide-details
+		></v-checkbox>
+	<!--deadline date picker-->
+	<v-layout style='margin: 20px;'>
+		<v-menu
+			ref='menu'
+			v-model='menu'
+			:close-on-content-click='false'
+			:nudge-right='0'
+			transition='scale-transition'
+			offset-y
+			max-width='290px'
+			min-width='290px'
+		>
+			<template v-slot:activator='{ on }'>
+			<v-text-field
+				append-icon='event'
+				outlined
 				readonly
-			>${{quote}}</v-btn>
-		<!--update quote button-->
-			<v-btn 
-				style='width: 200px; margin: 0px 10px 0px 10px;'
-				dense  color='info' 
-				@click='updateQuote()'>
-				<i class='fa fa-fw fa-refresh'></i>
-				Update Quote
-			</v-btn>
-		<!--udpate quote button-->
-			<v-btn 
-				style='width: 200px; margin: 0px 20px 0px 10px;'
-				dense dark color='success' 
-				@click='downloadPdf()'>
-				<i class='fa fa-fw fa-download'></i>
-				Download PDF
-			</v-btn>
-			</v-row>
-		</v-footer>
+				v-model='dateFormatted'
+				label='Deadline'
+				hint='MM-DD-YYYY format'
+				persistent-hint
+				@blur='deadline = parseDate(dateFormatted)'
+				v-on='on'
+			></v-text-field>
+			</template>
+			<v-date-picker v-model='deadline' no-title @input='menu = false'></v-date-picker>
+		</v-menu>
+	</v-layout>
+	<!--special instructions-->
+	<v-textarea
+	auto-grow
+	style='margin: 20px;'
+	name="input-7-1"
+	label="Special Instructions"
+	placeholder='Type special instructions...'
+	v-model='specialInstructions'
+	outlined
+	></v-textarea>
 	</v-card>
+</v-col>
+<!--4th card-->
+<v-col style='' class="pt-4 pr-4 pb-4 pl-2">
+<!--<v-card style='width: calc(65vh); height: calc(100vh - 230px)'>--><!--DON'T DELETE-->
+<v-card style='height: calc(100vh - 230px)'>
+<!--title-->
+	<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff;'>
+		<i class='fa fa-fw fa-user-circle'></i>&nbsp;Contact
+	</v-card-title>
+<!--divider-->
+	<v-divider style='margin:0px; border-color: #aae2ff;' ></v-divider>
+<!--content-->
+	<v-row>
+	<!--first name--> 
+		<v-col>
+			<v-text-field 
+				style='margin: 10px 0px 0px 20px;'
+				label='First Name'
+				dense
+				:rules='[validate.required]'
+				placeholder='Type first name...'
+				outlined
+				autocomplete="off"
+				v-model='contact.firstName'
+			></v-text-field>
+		</v-col>
+	<!--last name-->
+		<v-col>
+			<v-text-field
+				style='margin: 10px 20px 0px 0px;'
+				label='Last Name'
+				dense
+				:rules='[validate.required]'
+				placeholder='Type last name...'
+				outlined
+				autocomplete="off"
+				v-model='contact.lastName'
+			></v-text-field>
+		</v-col>
+	</v-row>
+	<!--company-->
+		<v-text-field
+			style='margin: -10px 20px 0px 20px;'
+			label='Company'
+			dense
+			:rules='[validate.required]'
+			placeholder='Type company name...'
+			outlined
+			autocomplete="off"
+			v-model='contact.company'
+		></v-text-field>
+	<!--street address-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Street Address'
+			dense
+			:rules='[validate.required]'
+			placeholder='Type street address...'
+			outlined
+			autocomplete="off"
+			v-model='contact.streetAddress'
+		></v-text-field>
+	<!--city-->
+		<v-row>	
+		<v-col>
+			<v-text-field
+				style='margin: -10px 0px 0px 20px;'
+				label='City'
+				dense
+				:rules='[validate.required]'
+				placeholder='Type city...'
+				outlined
+				autocomplete="off"
+				v-model='contact.city'
+			></v-text-field>
+		</v-col>			
+	<!--state-->
+		<v-col>
+			<v-text-field
+				style='margin: -10px 0px 0px 0px;'
+				label='State'
+				dense
+				:rules='[validate.required]'
+				placeholder='Type state...'
+				outlined
+				autocomplete="off"
+				v-model='contact.state'
+			></v-text-field>
+		</v-col>	
+	<!--zip-->
+		<v-col>
+			<v-text-field
+				style='margin: -10px 20px 0px 0px;'
+				label='Zip'
+				dense
+				:rules='[validate.required, validate.number]'
+				placeholder='Type zip...'
+				outlined
+				autocomplete="off"
+				v-model='contact.zip'
+			></v-text-field>
+		</v-col>
+		</v-row>		
+	<!--phone-->
+		<v-text-field
+			style='margin: -10px 20px 0px 20px;'
+			label='Phone'
+			dense
+			:rules='[validate.required, validate.phone]'
+			placeholder='Type the 9 digits of (123)456-7890...'
+			outlined
+			autocomplete="off"
+			v-model= "contact.phone"
+			@keyup="controlPhone"
+		></v-text-field>
+	<!--email-->
+		<v-text-field
+			style='margin: 0px 20px 0px 20px;'
+			label='Email'
+			dense
+			:rules='[validate.required, validate.email]'
+			placeholder='Type email in format x@x.com...'
+			outlined
+			autocomplete="off"
+			v-model='contact.email'
+		></v-text-field>
+	</v-card>
+</v-col>
+</v-row>
+</v-form>			
+<!--footer-->
+<v-footer class="primary" style='border-top-left-radius: 0px; border-top-right-radius: 0px; '>
+<v-row  justify="center" style='padding: 10px 10px 10px 10px;'>
+<!--quote value-->
+	<v-btn
+		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white;'
+		dense
+		outlined
+		dark
+		color="primary"
+		readonly
+	>{{getFriendlyQuote(quote)}}</v-btn>
+<!--update quote button-->
+	<v-btn 
+		style='width: 200px; margin: 0px 10px 0px 10px;'
+		dense  color='info' 
+		@click='updateQuote()'>
+		<v-icon dark left>refresh</v-icon>
+		Update Quote
+	</v-btn>
+<!--udpate quote button-->
+	<v-btn 
+		style='width: 200px; margin: 0px 20px 0px 10px;'
+		dense dark color='success' 
+		@click='downloadPdf()'>
+		<v-icon dark left>arrow_circle_down</v-icon>
+		Download PDF
+	</v-btn>
+	</v-row>
+</v-footer>
+</v-card>
 </div>
 </v-app>
 </template>
 <script>
 //import
-	import bridge from '../bridge.js';
-	import session from "../utils/session.js";
+import bridge from '../bridge.js';
+import session from "../utils/session.js";
+import jsPDF  from "jspdf";
 //master
-    export default {
-    //name
-        name: 'users',
-    //components
-        components: {
-            session
-        },
-	//on load
-		async created(){
-        //authenticate
-            let params = document.cookie.split('+');
-			if(params && params.length && params[0] != 'user'){
-				this.$router.push({ path: '/login'});
+export default {
+//name
+name: 'users',
+//components
+components: {
+	session
+},
+//on load
+async created(){
+//authenticate
+	let fields = document.cookie.split('+');
+	if(fields && fields.length && fields[0] != 'user'){
+		this.$router.push({ path: '/login'});
+	}
+//get user
+	this.userId = this.$route.params.id; //id from url
+//get user data
+	let params = {userId: this.userId};
+	let data = await bridge.getData(params);
+//bind
+	if(data && Object.keys(data).length > 0){
+		this.components = data.components;
+		this.options = data.options;
+		this.contact = data.contact;
+		this.quote = data.quote;
+		this.specialInstructions = data.specialInstructions;
+		this.isTraining = data.isTraining;
+	}
+},
+methods: {
+//update the quote dollar
+	updateQuote(){
+	//zero empties
+		this.zeroEmpties();
+	//calculate
+		//options
+			let unitCost = this.costs.unitStandard;
+			if(this.options.isShortCircuitStudy || this.options.isDeviceStudy || this.options.isHarmonicStudy ||
+			this.options.isMotorStartStudy || this.options.isLoadFlowStudy || this.options.isArcFlashStudy || this.options.isArcFlashLabels){
+				unitCost = 130.00;
 			}
-		//get user
-			this.userId = this.$route.params.id; //id from url
+		//get counts
+			let counts = 
+			this.components.panelBoards + this.components.transformers + this.components.disconnectSwitches + this.components.generators + 
+			this.components.automaticTransferSwitches + this.components.motorControlCenters + this.components.universalPowerSupplies;		
+		//components
+			let totalCost = counts * unitCost;
+			if(totalCost <= this.costs.minimum){
+				this.quote = this.costs.minimum;
+			}else{
+				this.quote = totalCost;
+			}
+		//training
+			if(this.isTraining){
+				this.quote += this.costs.training;
+			}
+		//deadline
+			if(moment(this.deadline).isBefore(moment().add(14,'days'))){
+				this.quote += this.costs.expedite;
+			}
+	//bind and round off
+		this.quote = this.quote.toFixed(2);
+	//notify
+		toastr.info('Quote updated!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+	//return
+		return true;
+	},
+//validate page
+	validatePage(){
+		if(!this.$refs.form.validate()){
+			//notify
+			toastr.error('Fields are missing!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			return false;
+		}
+		return true;
+	},
+//zero empties
+	zeroEmpties(){
+	//reset empties to zeroes
+		let keys = Object.keys(this.components);
+		keys.forEach(field => {
+			if(this.components[field] == '' || this.components[field] == null || isNaN(this.components[field])){
+				this.components[field] = 0;
+			};	
+		});
+	},
+//logout of page
+	logout(){
+	//clear cookie
+		document.cookie = 'null';
+	//re-direct to login page
+		this.$router.push({ path: '/login'});
+	//notify
+		toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+	},
+//clear all fields
+	clearAll(){
+		this.clearKeys(this.components);
+		this.clearKeys(this.options);
+		this.clearKeys(this.contact);
+		this.deadline = this.getDefaultDate();
+		this.specialInstructions = null;
+	},
+//clear all keys
+	clearKeys(object){
+		let keys = Object.keys(object);
+		keys.forEach(field => {
+			object[field] = null;	
+		});
+	},
+//save account
+	async saveData(){
+	//validate
+		this.zeroEmpties();
+		if(!this.validatePage()){
+			return false;
+		}
+	//get params
+		let params = {
+			userId: this.userId,
+			data: {
+				components: this.components,
+				options: this.options,
+				contact: this.contact,
+				isTraining: this.isTraining,
+				specialInstructions: this.specialInstructions,
+				quote: this.quote
+			}
+		}
+	//save data
+		await bridge.saveData(params);
+	//notify
+		toastr.success('Contact saved!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+	},
+//close info modal
+	closeInfoModal(){
+		this.showInfoModal = false;
+	},
+//open info modal
+	openInfoModal(){
+		this.showInfoModal = true;
+	},
+	controlPhone() {
+    	let x = this.contact.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+  		this.contact.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+	},
+//download pdf and send email
+	async downloadPdf(){
+	//update quote
+		if(!this.validatePage()){
+			return false;
+		};
+		this.updateQuote();
+	//get quote number
+		let result = await bridge.getQuoteCount();
+		let quoteId = result.quoteId.toString();
+		while(quoteId.length < 5){
+			quoteId = `0` + quoteId;
+		}
+		quoteId = `KA#${quoteId}`;
+	//send email
+		//abc
+	//save pdf
+		//init
+			var doc = new jsPDF();
+			let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+			let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+		//add image
+			var img = new Image()
+			img.src = 'logo.jpg'
+			doc.addImage(img, 'jpg', 80, 80, 50, 50); // x, y, width, height
+		//add text
+			doc.setTextColor(100);
+			doc.setFontSize(12);
+			let text = `[under construction]`;
+			doc.text(text, pageWidth / 2, pageHeight  - 100, 'center');
+		//download
+			doc.save(`${quoteId}.pdf`);
+	},   
+//get default date
+	getDefaultDate(){
+		let today = new Date();
+		let delay = 21; // 3 weeks
+		today.setDate(today.getDate() + delay);
+		return today.toISOString().substr(0, 10);
+	},    
+//format date to people friendly
+	formatDate (date) {
+		if (!date) return null;
+		let [year, month, day] = date.split('-')
+		return `${month}-${day}-${year}`
+	},
+//format date to picker friendly
+	parseDate (date) {
+		if (!date) return null
+		let [month, day, year] = date.split('-')
+		return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+	},
+//getFriendlyQuote
+	getFriendlyQuote(){
+		let friendly = this.quote.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		return `$${friendly}`;
+	}
+}, 
+//used for picker to update dynamically
+	watch: {
+		deadline () {
+			this.dateFormatted = this.formatDate(this.deadline)
+		}
+	},
+//global vars
+	data: global => ({
+		components: {
+			panelBoards: 0,
+			transformers: 0,
+			disconnectSwitches: 0,
+			generators: 0,
+			automaticTransferSwitches: 0,
+			motorControlCenters: 0,
+			universalPowerSupplies: 0
 		},
-      	methods: {
-		//update the quote dollar
-			updateQuote(){
-			//validate empties
-				if(!this.$refs.form.validate()){
-					return;
-				}
-			//calculate
-				this.quote = 0;
-				this.inputs.forEach(a => this.quote += parseFloat(a));
-				this.quote = this.quote.toFixed(2);
+		options:{
+			isShortCircuitStudy: false,
+			isDeviceStudy: false,
+			isHarmonicStudy: false,
+			isMotorStartStudy: false,
+			isLoadFlowStudy: false,
+			isArcFlashStudy: false,
+			isArcFlashLabels: false
+		},
+		contact: {
+			firstName: null,
+			lastName: null,
+			company: null,
+			streetAddress: null,
+			city: null,
+			state: null,
+			zip: null,
+			phone: null,
+			email: null
+		},
+		costs: {
+			minimum: 1200.00,
+			unitStandard: 110.00,
+			unitOptions: 130.00,
+			training: 2000.00,
+			expedite: 250.00
+		},
+		isTraining: false,
+		specialInstructions: '',
+		deadline: global.getDefaultDate(),
+		dateFormatted: global.formatDate(global.getDefaultDate()),
+		showInfoModal: false,
+		menu: false,
+		quote: '0.00',
+		userId: '',
+		validate: {
+			required: a => !!a || 'Entry required!',
+			number: a => !isNaN(a) || 'Digits required!',
+			email: a => {        
+				let regex = new RegExp(/.+@.+\..+/);
+				return regex.test(a) || 'Email must be in x@x.x format!';
+			}, 
+			phone: a => {        
+				let regex = new RegExp(/\d{3}.+?\d{3}.+?\d{4}/);
+				return regex.test(a) || 'Phone must contain 9 digits!';
 			},
-		//logout of page
-			logout(){
-			//reset cookie
-				document.cookie = 'null';
-			//re-direct to login page
-				this.$router.push({ path: '/login'});
-			//notify
-				toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
-			},
-		//download pdf and send email
-			async downloadPdf(){
-			//notify
-				toastr.info(`Under construction!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
-			//validate empties
-//				if(!this.$refs.form.validate()){
-//					return;
-//				}
-			//send email
-				let email = {
-					subject: `${this.userId} quoted for $${this.quote}`,
-					html: '[tbd]'
-				};
-				await bridge.sendEmail(email);
-			//download pdf
-				//abc
-			}
-	  	},
-	//global vars
-          data: global => ({
-			quote: '0.00',
-			userId: '',
-			inputs: [],
-			validate: {
-				required: a => !!a || 'This entry is empty!',
-				number: a => !isNaN(a) || 'This entry requires a number!'
-			}
-        })
-    }
+		}
+	})
+}
 </script>

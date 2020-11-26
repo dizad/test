@@ -56,6 +56,43 @@ class bridge {
             reject(err);
         }
     }
+
+//save user data
+    static saveData(params){
+        try{
+            let command = 'saveData';
+            return axios.post(url + command, params
+            );
+        } catch(err){
+            reject(err);
+        }
+    }
+
+//get user data
+    static getData(params){
+        return new Promise(async (resolve, reject) => {
+            try{
+                let command = 'getData';
+                let res = await axios.post(url + command, params);
+                resolve(res.data);
+            } catch(err){
+                reject(err);
+            }
+        });
+    }
+
+//get quoteId
+    static getQuoteCount(){
+        return new Promise(async (resolve, reject) => {
+            try{
+                let command = 'getQuoteCount';
+                let res = await axios.post(url + command);
+                resolve(res.data);
+            } catch(err){
+                reject(err);
+            }
+        });
+    }
 }
 
 //export

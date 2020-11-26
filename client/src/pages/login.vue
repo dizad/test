@@ -9,6 +9,7 @@
 	<!--username textbox-->
 		<v-text-field
 			ref='focusMe'
+			append-icon='mdi-account-circle'
 			dense
 			label='Username'
 			:rules='[validate.required]'
@@ -20,6 +21,7 @@
 	<!--password textbox-->
 		<v-text-field
 			dense
+			append-icon='mdi-lock'
 			label='Password'
 			:rules='[validate.required]'
 			placeholder='Type password...'
@@ -34,12 +36,12 @@
 			dark color='primary' 
 			style='width: 100%; margin: 0px 0px 10px 0px;'
 			@click='login()'>
-			<i class='fa fa-fw fa-sign-in'></i>
+			<v-icon dark left>login</v-icon>
 			Login
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
 		contact kelgamal@kaiengineers.com for login issues<br>
-		izasoft version: 1.01 last update: 11/20/20</span>
+		izasoft version: 1.02 last update: 11/27/20</span>
 </v-card-text>
 </v-form>
 </v-card>
@@ -100,7 +102,7 @@
 			username: '',
 			password: '',
 			validate: {
-                required: a => !!a || 'This entry is empty!'
+                required: a => !!a || 'Entry required!'
             }
         }),
     }
