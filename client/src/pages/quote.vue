@@ -4,8 +4,8 @@
 <!--confirmation modal-->
 <transition name='fade'>
 	<div class='modal-mask' transition='modal' v-if='showInfoModal' @closeInfoModal = 'closeInfoModal'>
-		<div class='center-block' style='width: 450px; margin-top: 50px;'>     
-		<v-card>
+		<div class='center-block' style='width: 450px; margin-top: 150px;'>     
+		<v-card v-on:keyup.enter='closeInfoModal()'>
 		<!--title-->
 			<v-card-title
 				class='headline primary' primary-title style='color: white;'>
@@ -16,19 +16,19 @@
 			<v-card-text style='padding: 20px;'>
 				<v-icon left>arrow_forward</v-icon>
 					<label>Minimum Base Price=</label>&nbsp;
-					<v-chip color='success'>+${{costs.minimum}}</v-chip><br>
+					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.minimum}}</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price / Component (Without Any Option)=</label>&nbsp;
-					<v-chip color='success'>+${{costs.unitStandard}}</v-chip><br>
+					<label style='padding-top: 10px;'>Unit Price (Without Any Option)=</label>&nbsp;
+					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitStandard}} / Component</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price / Component (With Any Option)=</label>&nbsp;
-					<v-chip color='success'>+${{costs.unitOptions}}</v-chip><br>
+					<label style='padding-top: 10px;'>Unit Price (With Any Option)=</label>&nbsp;
+					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitOptions}} / Component</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
 					<label style='padding-top: 10px;'>With Training=</label>&nbsp;
-					<v-chip color='success'>+${{costs.training}}</v-chip><br>
+					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.training}}</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
 					<label style='padding-top: 10px;'>With Expedite(Less than 2 weeks)=</label>&nbsp;
-					<v-chip color='success'>+${{costs.expedite}}</v-chip><br>
+					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.expedite}}</v-chip><br>
             </v-card-text>              
             <v-card-actions>
             <!--cancel button-->
@@ -58,10 +58,10 @@
 <!--clear button-->
 	<v-btn 
 		style='position: absolute; right: 410px; width: 110px;'
-		dense dark color='info' 
-		@click='clearAll()'>
+		dense dark color='error' 
+		@click='reset()'>
 		<v-icon dark left>power_settings_new</v-icon>
-		Clear
+		Reset
 	</v-btn>
 <!--save button-->
 	<v-btn 
@@ -89,14 +89,14 @@
 	</v-btn>
 </v-card-title>
 <!--content-->
-<v-form ref='form' lazy-validation v-on:keyup.enter='updateQuote()' style='background-color: #94d1ff; height: 100%;'>
+<v-form ref='form' lazy-validation style='background-color: #94d1ff; height: 100%;'>
 	<v-row no-gutters>
 <!--1st card-->
 	<v-col class="pt-4 pr-2 pb-4 pl-4">
-	<v-card style='height: calc(100vh - 230px);'>
+	<v-card style='height: calc(100vh - 230px);' v-on:keyup.enter='updateQuote()'>
 	<!--title-->
 		<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff; text-color'>
-			<i class='fa fa-fw fa-cube'></i>&nbsp;Components
+			<i class='fa fa-fw fa-cube'></i>&nbsp;Component(s)
 		</v-card-title>
 	<!--divider-->
 		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
@@ -185,7 +185,7 @@
 	<v-card style='height: calc(100vh - 230px);'>
 	<!--title-->
 		<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff;'>
-			<i class='fa fa-fw fa-cubes'></i>&nbsp;Options
+			<i class='fa fa-fw fa-cubes'></i>&nbsp;Option(s)
 		</v-card-title>
 	<!--divider-->
 		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
@@ -452,7 +452,7 @@
 		style='width: 200px; margin: 0px 10px 0px 10px;'
 		dense  color='info' 
 		@click='updateQuote()'>
-		<v-icon dark left>refresh</v-icon>
+		<v-icon dark left>loop</v-icon>
 		Update Quote
 	</v-btn>
 <!--udpate quote button-->
@@ -568,21 +568,21 @@ methods: {
 	//re-direct to login page
 		this.$router.push({ path: '/login'});
 	//notify
-		toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+		toastr.info('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 	},
 //clear all fields
-	clearAll(){
-		this.clearKeys(this.components);
-		this.clearKeys(this.options);
-		this.clearKeys(this.contact);
+	reset(){
+		this.resetKeys(this.components, 0);
+		this.resetKeys(this.options, false);
+		this.resetKeys(this.contact, '');
 		this.deadline = this.getDefaultDate();
 		this.specialInstructions = null;
 	},
 //clear all keys
-	clearKeys(object){
+	resetKeys(object, value){
 		let keys = Object.keys(object);
 		keys.forEach(field => {
-			object[field] = null;	
+			object[field] = value;	
 		});
 	},
 //save account
@@ -618,8 +618,10 @@ methods: {
 		this.showInfoModal = true;
 	},
 	controlPhone() {
-    	let x = this.contact.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-  		this.contact.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+		if(this.contact.phone){
+			let x = this.contact.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+			this.contact.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+		}
 	},
 //download pdf and send email
 	async downloadPdf(){
@@ -634,26 +636,128 @@ methods: {
 		while(quoteId.length < 5){
 			quoteId = `0` + quoteId;
 		}
-		quoteId = `KA#${quoteId}`;
+		quoteId = `ka#${quoteId}`;
 	//send email
-		//abc
+		//build body
+		let html = ``;
+		let titleColor = `#007bff`;
+		let subColor = `black`;
+		//get components
+			html += `<strong style='color: ${titleColor}'><u>Components:</u></strong>`;
+			html += `<ul>`;
+			let keys = Object.keys(this.components);
+			keys.forEach(key => {
+				if(this.components[key] > 0){
+					html += `<li><span style='color: ${subColor}'>${this.friendlyConverter[key]} Count = ${this.components[key]}</span></li>`;
+				}
+			});
+			html += `</ul>`;
+		//get options
+			html += `<br><strong style='color: ${titleColor}'><u>Options:</u></strong>`;
+			html += `<ul>`;
+			keys = Object.keys(this.options);
+			keys.forEach(key => {
+				if(this.options[key]){
+					html += `<li><span style='color: ${subColor}'>${this.friendlyConverter[key]}</span></li>`;
+				}
+			});
+			html += `</ul>`;
+		//get delivery
+			html += `<br><strong style='color: ${titleColor}'><u>Delivery:</u></strong>`;
+			html += `<ul>`;
+			//deadline
+				html += `<li><span style='color: ${subColor}'>Deliver By ${this.formatDate(this.deadline)}</span></li>`;
+			//training
+				if(this.isTraining){
+				html += `<li><span style='color: ${subColor}'>Training Required</span></li>`;
+				}
+			//instructions
+				if(this.specialInstructions){
+				html += `<li><span style='color: ${subColor}'>Special Instructions = ${this.specialInstructions}</span></li>`;
+				}
+			html += `</ul>`;
+		//get contact
+			html += `<br><strong style='color: ${titleColor}'><u>Contact:</u></strong>`;
+			html += `<ul>`;
+			keys = Object.keys(this.contact);
+			keys.forEach(key => {
+				if(this.contact[key]){
+				html += `<li><span style='color: ${subColor}'>${this.friendlyConverter[key]} = ${this.contact[key]}</span></li>`;
+				}
+			});
+			html += `</ul>`;
+		//build email object
+			let email = {
+				subject: `${quoteId}: ${this.userId} quoted $${this.quote}`,
+				html: html
+			};
+		//send email
+			await bridge.sendEmail(email);
 	//save pdf
-		//init
-			var doc = new jsPDF();
+		//inits
+			let options = {
+				orientation: 'p',
+				unit: 'px',
+				format: 'letter',
+				compress:true
+			};
+			let doc = new jsPDF(options);
 			let pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
 			let pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-		//add image
-			var img = new Image()
-			img.src = 'logo.jpg'
-			doc.addImage(img, 'jpg', 80, 80, 50, 50); // x, y, width, height
-		//add text
-			doc.setTextColor(100);
-			doc.setFontSize(12);
-			let text = `[under construction]`;
-			doc.text(text, pageWidth / 2, pageHeight  - 100, 'center');
+			let margin = 20;
+			let text = ``;
+			let friendlyFirstName = this.contact.firstName.charAt(0).toUpperCase() + this.contact.firstName.slice(1);
+			let friendlyLastName = this.contact.lastName.charAt(0).toUpperCase() + this.contact.lastName.slice(1);
+		//page#01
+			//add logo
+				let img = new Image();
+				img.src = 'logo.jpg';
+				let imgSize = 125;
+				let xPos = (pageWidth / 2) - (imgSize / 2);
+				doc.addImage(img, 'jpg', xPos, 160, imgSize, imgSize); // x, y, width, height				
+			//add quoteId
+				this.setFont(doc, 'cover');
+				text = `${quoteId}`;
+				doc.text(text, pageWidth / 2, 350, {align: 'center'});
+			//add date
+				this.setFont(doc, 'cover');
+				text = moment().format('MM/DD/YY');
+				doc.text(text, pageWidth / 2, 390, {align: 'center'});
+		//page#02
+			//add intro header
+				doc.addPage();
+				let verticalBuild = 0;
+				this.setFont(doc, 'header');
+				text = `Summary:`;
+				doc.text(text, margin, margin + verticalBuild, {align: 'left'});	
+			//add message
+				this.setFont(doc, 'default');
+text = `Dear ${friendlyFirstName}:
+K&A Engineering is pleased to provide the following Power System Study quotation for ${this.contact.company} located in ${this.contact.city}, ${this.contact.state}.
+
+K&A Engineering is a professional engineering firm licensed in the State of Texas. The short circuit and coordination study is being performed by K&A engineering and shall be submitted to the principal design firm for reviewal and approval.`;
+verticalBuild += 200;
+doc.text(text, margin, margin + verticalBuild, {align: 'left'});	
+			
+		//page#03
+		//page#04
 		//download
 			doc.save(`${quoteId}.pdf`);
-	},   
+	}, 
+//pdf helpers
+	setFont(doc, type){
+		if(type == 'cover'){
+			doc.setTextColor(86,91,97);
+			doc.setFontSize(14);
+		//	doc.setFontType("bold");
+		}else if(type == 'header'){
+			doc.setTextColor(0, 123, 255);
+			doc.setFontSize(12);
+		}else if(type == 'default'){
+			doc.setTextColor(86,91,97);
+			doc.setFontSize(12);
+		}
+	},
 //get default date
 	getDefaultDate(){
 		let today = new Date();
@@ -687,6 +791,31 @@ methods: {
 	},
 //global vars
 	data: global => ({
+		friendlyConverter:{
+			panelBoards: 'Panel Board',
+			transformers: 'Transformer',
+			disconnectSwitches: 'Disconnect Switch',
+			generators: 'Generator',
+			automaticTransferSwitches: 'Automatic Transfer Switch(ats)',
+			motorControlCenters: 'Motor Control Center(mcc)',
+			universalPowerSupplies: 'Universal Power Supply(ups)',
+			isShortCircuitStudy: 'Short Circuit Study',
+			isDeviceStudy: 'Device Study',
+			isHarmonicStudy: 'Harmonic Study',
+			isMotorStartStudy: 'Motor Start Study',
+			isLoadFlowStudy: 'Load Flow Study',
+			isArcFlashStudy: 'Arc Flash Study',
+			isArcFlashLabels: 'Arc Flash Label',
+			firstName: 'First Name',
+			lastName: 'Last Name',
+			company: 'Company',
+			streetAddress: 'Street Address',
+			city: 'City',
+			state: 'State',
+			zip: 'Zip',
+			phone: 'Phone',
+			email: 'E-mail'
+		},
 		components: {
 			panelBoards: 0,
 			transformers: 0,

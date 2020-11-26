@@ -1,14 +1,14 @@
 <template>
 <v-app>
 <div class='splashBackground'>
-<v-card elevation="2" style='width: 400px; padding: 20px; text-align: center; margin: 100px auto auto auto;'>
+<v-card elevation="2" style='width: 400px; padding: 20px; text-align: center; margin: 150px auto auto auto;'>
 <v-form ref='form' lazy-validation>
 	<v-card-text v-on:keyup.enter='login()'>
 	<!--logo-->
 		<img id="imageLogin" src="./logo.jpg" style='width: 200px; margin: 25px;'/>
 	<!--username textbox-->
 		<v-text-field
-			ref='focusMe'
+			ref='focusUsername'
 			append-icon='mdi-account-circle'
 			dense
 			label='Username'
@@ -62,7 +62,10 @@
         },
 	//on load
 		async created(){
-			document.cookie = '';
+		//focus the textbox
+			setTimeout(() => {
+				this.$refs.focusUsername.$refs.input.focus();
+			}, 0);
 		},
       methods: {
 	//login

@@ -4,7 +4,7 @@
 <!--confirmation modal-->
     <transition name='fade'>
 	<div class='modal-mask' transition='modal' v-if='showDeleteModal' @closeDeleteModal = 'closeDeleteModal'>
-		<div class='center-block' style='width: 400px; margin-top: 50px;'>     
+		<div class='center-block' style='width: 400px; margin-top: 150px;'>     
 		<v-card>
 		<!--title-->
 			<v-card-title
@@ -13,8 +13,8 @@
                 Delete User
 			</v-card-title>
 		<!--add user-->
-            <v-form ref='form' lazy-validation>
-			<v-card-text style='padding-bottom: 0px;'>
+            <v-form ref='form' lazy-validation> 
+			<v-card-text style='padding-bottom: 0px;' >
                 <span style='text-align: center; margin: auto;'>Are you sure you want to delete user <strong>{{userToDelete._id}}</strong>?</span>
             </v-card-text>              
             <v-card-actions>
@@ -44,7 +44,7 @@
 <!--add/update user modal-->
     <transition name='fade'>
 	<div class='modal-mask' transition='modal' v-if='showUserModal' @closeUserModal = 'closeUserModal'>
-		<div class='center-block' style='width: 400px; margin-top: 50px;'>     
+		<div class='center-block' style='width: 400px; margin-top: 150px;'>     
 		<v-card>
 		<!--title-->
 			<v-card-title
@@ -53,7 +53,7 @@
 			</v-card-title>
 		<!--add user-->
             <v-form ref='form' lazy-validation>
-			<v-card-text v-on:keyup.enter='addUser' style='padding-bottom: 0px; margin-bottom: -10px;'>
+			<v-card-text v-on:keyup.enter='addUser()' style='padding-bottom: 0px; margin-bottom: -10px;'>
             <!--username textbox-->
                 <v-text-field
                     v-if='isNew'
@@ -105,7 +105,7 @@
     </div>
     </transition>
 <!--page-->
-    <v-card style='margin: 30px;'>
+    <v-card style='margin: 30px;'> 
     <!--banner-->
     <v-card-title
         class='headline primary'
@@ -144,7 +144,7 @@
                     <th class='text-left' style='width: 35%;'>
                     Password
                     </th>
-                    <th class='text-center' style='width: 5%;'>
+                    <th class='text-center' style='width: 10%;'>
                     Added
                     </th>
                     <th class='text-center'>
@@ -167,7 +167,7 @@
                 </td>
                 <td class='text-left' style='width: 35%;'>{{ user._id }}</td>
                 <td class='text-left' style='width: 35%;'>{{ user.password }}</td>
-                <td class='text-center' style='width: 5%;'>{{ user.added }}</td>
+                <td class='text-center' style='width: 10%;'>{{ user.added }}</td>
                 <td class='text-center'>
                 <!--update button-->
                     <v-btn  
@@ -309,7 +309,7 @@
         //re-direct to login page
             this.$router.push({ path: '/login' });
         //notify
-            toastr.success('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+            toastr.info('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         },
     //display the modal
         createUser(){
