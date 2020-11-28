@@ -647,24 +647,34 @@ methods: {
 			html += `<strong style='color: ${titleColor}'><u>Component(s)</u></strong>`;
 			html += `<ul>`;
 			let keys = Object.keys(this.components);
+			let count = 0;
 			keys.forEach(key => {
 				if(this.components[key] > 0){
+					count++;
 					html += `<li><span style='color: ${subColor}'>${this.friendlyConverter[key]} Count = ${this.components[key]}</span></li>`;
 				}
 			});
+			if(count <= 0){
+				html += `<li><span style='color: ${subColor}'>[None Selected]</span></li>`;
+			}
 			html += `</ul>`;
 		//get options
-			html += `<br><strong style='color: ${titleColor}'><u>Option(s)</u></strong>`;
+			html += `<strong style='color: ${titleColor}'><u>Option(s)</u></strong>`;
 			html += `<ul>`;
 			keys = Object.keys(this.options);
+			count = 0;
 			keys.forEach(key => {
 				if(this.options[key]){
+					count++;
 					html += `<li><span style='color: ${subColor}'>${this.friendlyConverter[key]}</span></li>`;
 				}
 			});
+			if(count <= 0){
+				html += `<li><span style='color: ${subColor}'>[None Selected]</span></li>`;
+			}
 			html += `</ul>`;
 		//get delivery
-			html += `<br><strong style='color: ${titleColor}'><u>Delivery</u></strong>`;
+			html += `<strong style='color: ${titleColor}'><u>Delivery</u></strong>`;
 			html += `<ul>`;
 			//deadline
 				html += `<li><span style='color: ${subColor}'>Deliver By ${this.formatDate(this.deadline).replace(/-/g, '/')}</span></li>`;
@@ -678,7 +688,7 @@ methods: {
 				}
 			html += `</ul>`;
 		//get contact
-			html += `<br><strong style='color: ${titleColor}'><u>Contact</u></strong>`;
+			html += `<strong style='color: ${titleColor}'><u>Contact</u></strong>`;
 			html += `<ul>`;
 			keys = Object.keys(this.contact);
 			keys.forEach(key => {
@@ -823,7 +833,7 @@ Dallas, TX 75243`;
 				}
 				rows.push({
 					Items: "Component(s) =",
-					Selections: selections || '[none selected]'
+					Selections: selections || '[None Selected]'
 				});
 			//build options
 				selections = ``;
@@ -838,7 +848,7 @@ Dallas, TX 75243`;
 				}
 				rows.push({
 					Items: "Option(s) =",
-					Selections: selections || '[none selected]'
+					Selections: selections || '[None Selected]'
 				});
 			//build headers
 				let firstColWidth = 100;
