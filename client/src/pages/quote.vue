@@ -577,6 +577,7 @@ methods: {
 		this.resetKeys(this.contact, '');
 		this.deadline = this.getDefaultDate();
 		this.specialInstructions = null;
+		this.isTraining = false;
 	},
 //clear all keys
 	resetKeys(object, value){
@@ -879,7 +880,6 @@ Dallas, TX 75243`;
 				this.setFont(pdf, 'header');
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 			//terms content
-
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
 text = `Applicable taxes not included terms net 30 days.
 

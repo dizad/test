@@ -5,7 +5,7 @@
   import paths from './routing.config';
   import app from './app.vue';
 
-//use
+//uses
   vue.use(router);
   vue.use(vuetify);
   vue.config.productionTip = false
