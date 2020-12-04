@@ -678,14 +678,14 @@ methods: {
 			html += `<strong style='color: ${titleColor}'><u>Delivery</u></strong>`;
 			html += `<ul>`;
 			//deadline
-				html += `<li><span style='color: ${subColor}'>Deliver By ${this.formatDate(this.deadline).replace(/-/g, '/')}</span></li>`;
+				html += `<li><span style='color: ${subColor}'>Deadline = ${this.formatDate(this.deadline).replace(/-/g, '/')}</span></li>`;
 			//training
 				if(this.isTraining){
-				html += `<li><span style='color: ${subColor}'>Training Required</span></li>`;
+					html += `<li><span style='color: ${subColor}'>Training Requested</span></li>`;
 				}
 			//instructions
 				if(this.specialInstructions){
-				html += `<li><span style='color: ${subColor}'>Special Instructions = ${this.specialInstructions}</span></li>`;
+					html += `<li><span style='color: ${subColor}'>Special Instructions = ${this.specialInstructions}</span></li>`;
 				}
 			html += `</ul>`;
 		//get contact
