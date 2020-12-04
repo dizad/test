@@ -4,7 +4,7 @@
 <!--confirmation modal-->
 <transition name='fade'>
 	<div class='modal-mask' transition='modal' v-if='showInfoModal' @closeInfoModal = 'closeInfoModal'>
-		<div class='center-block' style='width: 450px; margin-top: 150px;'>     
+		<div class='center-block' style='width: 460px; margin-top: 150px;'>     
 		<v-card v-on:keyup.enter='closeInfoModal()'>
 		<!--title-->
 			<v-card-title
@@ -15,19 +15,19 @@
 		<!--content-->
 			<v-card-text style='padding: 20px;'>
 				<v-icon left>arrow_forward</v-icon>
-					<label>Minimum Base Price=</label>&nbsp;
+					<label>Minimum Base Price =</label>&nbsp;
 					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.minimum}}</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price (Without Any Option)=</label>&nbsp;
+					<label style='padding-top: 10px;'>Unit Price (Without Any Option) =</label>&nbsp;
 					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitStandard}} / Component</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price (With Any Option)=</label>&nbsp;
+					<label style='padding-top: 10px;'>Unit Price (With Any Option) =</label>&nbsp;
 					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitOptions}} / Component</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>With Training=</label>&nbsp;
+					<label style='padding-top: 10px;'>With Training =</label>&nbsp;
 					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.training}}</v-chip><br>
 				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>With Expedite(Less than 2 weeks)=</label>&nbsp;
+					<label style='padding-top: 10px;'>With Expedite(Less than 2 weeks) =</label>&nbsp;
 					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.expedite}}</v-chip><br>
             </v-card-text>              
             <v-card-actions>
@@ -700,7 +700,7 @@ methods: {
 			html += `</ul>`;
 		//build email object
 			let email = {
-				subject: `${quoteId}= ${this.userId} quoted $${this.quote}`,
+				subject: `${quoteId} = ${this.userId} quoted $${this.quote}`,
 				html: html
 			};
 		//send email
@@ -813,7 +813,7 @@ Dallas, TX 75243`;
 				}
 			//instructions
 				if(this.specialInstructions){
-					text = `Special Instructions: Do this and that`;
+					text = `Special Instructions = ${this.specialInstructions}`;
 					verticalBuild += newLine;
 					pdf.text(text, margin, verticalBuild, {align: 'left'});	
 				}
@@ -833,7 +833,7 @@ Dallas, TX 75243`;
 					selections = selections.slice(0, -2);
 				}
 				rows.push({
-					Items: "Component(s) =",
+					Items: "Component(s)",
 					Selections: selections || '[None Selected]'
 				});
 			//build options
@@ -848,20 +848,20 @@ Dallas, TX 75243`;
 					selections = selections.slice(0, -2);
 				}
 				rows.push({
-					Items: "Option(s) =",
+					Items: "Option(s)",
 					Selections: selections || '[None Selected]'
 				});
 			//build headers
 				let firstColWidth = 100;
 				let headers = [{
 					'name': 'Items',
-					'prompt': 'Item(s):',
+					'prompt': 'Item(s)',
 					'width': firstColWidth,
 					'align': 'left',
 					'padding': 0
 					}, {
 					'name': 'Selections',
-					'prompt': 'Selection(s):',
+					'prompt': 'Selection(s)',
 					'width': this.pageWidth - margin - 10,
 					'align':'left',
 					'padding': 0
