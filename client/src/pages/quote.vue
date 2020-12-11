@@ -1,50 +1,6 @@
 <template>
 <v-app>
 <div class='splashBackground'>
-<!--confirmation modal-->
-<transition name='fade'>
-	<div class='modal-mask' transition='modal' v-if='showInfoModal' @closeInfoModal = 'closeInfoModal'>
-		<div class='center-block' style='width: 460px; margin-top: 150px;'>     
-		<v-card v-on:keyup.enter='closeInfoModal()'>
-		<!--title-->
-			<v-card-title
-				class='headline primary' primary-title style='color: white;'>
-				<v-icon dark left>error_outline</v-icon>
-                Pricing
-			</v-card-title>
-		<!--content-->
-			<v-card-text style='padding: 20px;'>
-				<v-icon left>arrow_forward</v-icon>
-					<label>Minimum Base Price =</label>&nbsp;
-					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.minimum}}</v-chip><br>
-				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price (Without Any Option) =</label>&nbsp;
-					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitStandard}} / Component</v-chip><br>
-				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>Unit Price (With Any Option) =</label>&nbsp;
-					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.unitOptions}} / Component</v-chip><br>
-				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>With Training =</label>&nbsp;
-					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.training}}</v-chip><br>
-				<v-icon left>arrow_forward</v-icon>
-					<label style='padding-top: 10px;'>With Expedite(Less than 2 weeks) =</label>&nbsp;
-					<v-chip color='success'><i class='fa fa-fw fa-plus'></i>${{costs.expedite}}</v-chip><br>
-            </v-card-text>              
-            <v-card-actions>
-            <!--cancel button-->
-                <v-btn 
-                    style='width: 100%;'
-                    dense dark color='primary' 
-                    @click='closeInfoModal()'                     
-                    >
-                    <v-icon dark left>check_circle</v-icon>
-                    Ok
-                </v-btn>
-            </v-card-actions>
-        </v-card>
-        </div>
-    </div>
-</transition>
 <!--master page-->	
 <v-card style='margin:30px 30px auto 30px; height: calc(100vh - 200px);'> 
 <!--banner-->
@@ -55,9 +11,9 @@
 <!--title-->
 	<v-icon dark left>monetization_on</v-icon>
 	Quote
-<!--clear button-->
+<!--reset button-->
 	<v-btn 
-		style='position: absolute; right: 410px; width: 110px;'
+		style='position: absolute; right: 280px; width: 110px;'
 		dense dark color='error' 
 		@click='reset()'>
 		<v-icon dark left>power_settings_new</v-icon>
@@ -65,19 +21,11 @@
 	</v-btn>
 <!--save button-->
 	<v-btn 
-		style='position: absolute; right: 280px; width: 110px;'
+		style='position: absolute; right: 150px; width: 110px;'
 		dense dark color='info' 
 		@click='saveData()'>
 		<v-icon dark left>save</v-icon>
 		Save
-	</v-btn>
-<!--info button-->
-	<v-btn 
-		style='position: absolute; right: 150px; width: 110px;'
-		dense dark color='info' 
-		@click='openInfoModal()'>
-		<v-icon dark left>error_outline</v-icon>
-		Pricing
 	</v-btn>
 <!--logout button-->
 	<v-btn 
@@ -101,9 +49,20 @@
 	<!--divider-->
 		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
 	<!--content-->
+		<!--switch boards-->
+		<v-text-field
+			style='margin: 20px 20px -10px 20px;'
+			label='Switch Boards'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.switchBoards'
+		></v-text-field>
 		<!--panel boards-->
 		<v-text-field
-			style='margin: 20px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Panel Boards'
 			dense
 			placeholder='Type count...'
@@ -114,7 +73,7 @@
 		></v-text-field>
 		<!--transformers-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Transformers'
 			dense
 			placeholder='Type count...'
@@ -123,9 +82,9 @@
 			type="number"
 			v-model.number='components.transformers'
 		></v-text-field>
-		<!--switches-->
+		<!--disconnect switches-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Disconnect Switches'
 			dense
 			placeholder='Type count...'
@@ -134,9 +93,31 @@
 			type="number"
 			v-model.number='components.disconnectSwitches'
 		></v-text-field>
+		<!--enclosed circuit breakers-->
+		<v-text-field
+			style='margin: 0px 20px -10px 20px;'
+			label='Enclosed Circuit Breakers'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.enclosedCircuitBreakers'
+		></v-text-field>
+		<!--motors over 30hp-->
+		<v-text-field
+			style='margin: 0px 20px -10px 20px;'
+			label='Motors(>30hp)'
+			dense
+			placeholder='Type count...'
+			outlined
+			autocomplete="off"
+			type="number"
+			v-model.number='components.motorsOver30Hp'
+		></v-text-field>
 		<!--generators-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Generators'
 			dense
 			placeholder='Type count...'
@@ -147,7 +128,7 @@
 		></v-text-field>			
 		<!--automatic transfer switches-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Automatic Transfer Switches(ATS)'
 			dense
 			placeholder='Type count...'
@@ -158,7 +139,7 @@
 		></v-text-field>		
 		<!--motor control centers-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Motor Control Centers(MCC)'
 			dense
 			placeholder='Type count...'
@@ -169,7 +150,7 @@
 		></v-text-field>		
 		<!--universal power supplies-->
 		<v-text-field
-			style='margin: 0px 20px 0px 20px;'
+			style='margin: 0px 20px -10px 20px;'
 			label='Universal Power Supplies(UPS)'
 			dense
 			placeholder='Type count...'
@@ -190,7 +171,15 @@
 	<!--divider-->
 		<v-divider style='margin:0px; border-color: #aae2ff;'></v-divider>
 	<!--content-->
-		<!--short circuit coordination-->
+		<!--arc flash study-->	
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isArcFlashStudy'
+				label="Arc Flash Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--short circuit study-->
 			<v-checkbox
 				style='margin: 20px'
 				v-model = 'options.isShortCircuitStudy'
@@ -198,43 +187,11 @@
 				color="primary"
 				hide-details
 			></v-checkbox>
-		<!--selective Coordination-->
+		<!--coordination study-->
 			<v-checkbox
 				style='margin: 20px'
-				v-model = 'options.isDeviceStudy'
-				label="Device Study"
-				color="primary"
-				hide-details
-			></v-checkbox>
-		<!--harmonics-->	
-			<v-checkbox
-				style='margin: 20px'
-				v-model = 'options.isHarmonicStudy'
-				label="Harmonic Study"
-				color="primary"
-				hide-details
-			></v-checkbox>
-		<!--motor starting study-->
-			<v-checkbox
-				style='margin: 20px'
-				v-model = 'options.isMotorStartStudy'
-				label="Motor Start Study"
-				color="primary"
-				hide-details
-			></v-checkbox>
-		<!--short circuit coordination-->
-			<v-checkbox
-				style='margin: 20px'
-				v-model = 'options.isLoadFlowStudy'
-				label = 'Load Flow Study'
-				color="primary"
-				hide-details
-			></v-checkbox>
-		<!--arc flash-->	
-			<v-checkbox
-				style='margin: 20px'
-				v-model = 'options.isArcFlashStudy'
-				label="Arc Flash Study"
+				v-model = 'options.isCoordinationStudy'
+				label="Coordination Study"
 				color="primary"
 				hide-details
 			></v-checkbox>
@@ -243,6 +200,30 @@
 				style='margin: 20px'
 				v-model = 'options.isArcFlashLabels'
 				label="Arc Flash Labels"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--harmonic study-->	
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isHarmonicStudy'
+				label="Harmonic Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--motor start study-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isMotorStartStudy'
+				label="Motor Start Study"
+				color="primary"
+				hide-details
+			></v-checkbox>
+		<!--load study-->
+			<v-checkbox
+				style='margin: 20px'
+				v-model = 'options.isLoadFlowStudy'
+				label = 'Load Flow Study'
 				color="primary"
 				hide-details
 			></v-checkbox>
@@ -262,7 +243,7 @@
 		<v-checkbox
 			style='margin: 20px'
 			v-model = 'isTraining'
-			label="Require Training"
+			label="Arc Flash Training Required"
 			color="primary"
 			hide-details
 		></v-checkbox>
@@ -302,6 +283,7 @@
 	label="Special Instructions"
 	placeholder='Type special instructions...'
 	v-model='specialInstructions'
+	@keyup="controlTextarea"
 	outlined
 	></v-textarea>
 	</v-card>
@@ -312,11 +294,23 @@
 <v-card style='height: calc(100vh - 230px)'>
 <!--title-->
 	<v-card-title class="subheading font-weight-bold primary--text" style='background-color: #d2f4ff;'>
-		<i class='fa fa-fw fa-user-circle'></i>&nbsp;Contact
+		<i class='fa fa-fw fa-user-circle'></i>&nbsp;Project
 	</v-card-title>
 <!--divider-->
 	<v-divider style='margin:0px; border-color: #aae2ff;' ></v-divider>
 <!--content-->
+	<!--contact name-->
+		<v-text-field
+			style='margin: 20px 20px 0px 20px;'
+			label='Project Name'
+			dense
+			:rules='[validate.required]'
+			placeholder='Type contact name...'
+			outlined
+			autocomplete="off"
+			v-model='contact.project'
+		></v-text-field>
+		<v-divider style='margin:0px; border: 1px solid #ededed;'></v-divider>
 	<v-row>
 	<!--first name--> 
 		<v-col>
@@ -446,7 +440,7 @@
 		dark
 		color="primary"
 		readonly
-	>{{getFriendlyQuote(quote)}}</v-btn>
+	>{{getFriendlyQuote(this.quote)}}</v-btn>
 <!--update quote button-->
 	<v-btn 
 		style='width: 200px; margin: 0px 10px 0px 10px;'
@@ -510,26 +504,38 @@ methods: {
 	//zero empties
 		this.zeroEmpties();
 	//calculate
-		//options
-			let unitCost = this.costs.unitStandard;
-			if(this.options.isShortCircuitStudy || this.options.isDeviceStudy || this.options.isHarmonicStudy ||
-			this.options.isMotorStartStudy || this.options.isLoadFlowStudy || this.options.isArcFlashStudy || this.options.isArcFlashLabels){
-				unitCost = 130.00;
-			}
 		//get counts
 			let counts = 
 			this.components.panelBoards + this.components.transformers + this.components.disconnectSwitches + this.components.generators + 
-			this.components.automaticTransferSwitches + this.components.motorControlCenters + this.components.universalPowerSupplies;		
-		//components
+			this.components.automaticTransferSwitches + this.components.motorControlCenters + this.components.universalPowerSupplies;
+		//components 
+			//generator and ATS components raise price per component
+			let unitCost = this.costs.components.standard;
+			if(this.components.generators > 0 || this.components.automaticTransferSwitches > 0){
+				unitCost = this.costs.components.premium;
+			}
+		//bank!
 			let totalCost = counts * unitCost;
+		//options
+			let optionsCost = 0;
+			//harmonic increases lump by 30%
+			if(this.options.isHarmonicStudy){
+				optionsCost += totalCost * this.costs.options.harmonic;
+			}
+			//motor start increases lump by 25%
+			if(this.options.isMotorStartStudy){
+				optionsCost += totalCost * this.costs.options.motor;
+			}
+			//load flow increases by 20%
+			if(this.options.isLoadFlowStudy){
+				optionsCost += totalCost * this.costs.options.loadFlow;
+			}
+			totalCost += optionsCost;
+		//cap at minimum price
 			if(totalCost <= this.costs.minimum){
 				this.quote = this.costs.minimum;
 			}else{
 				this.quote = totalCost;
-			}
-		//training
-			if(this.isTraining){
-				this.quote += this.costs.training;
 			}
 		//deadline
 			if(moment(this.deadline).isBefore(moment().add(14,'days'))){
@@ -546,7 +552,7 @@ methods: {
 	validatePage(){
 		if(!this.$refs.form.validate()){
 			//notify
-			toastr.error('Fields are missing!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			toastr.error('Field(s) are invalid!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			return false;
 		}
 		return true;
@@ -570,7 +576,7 @@ methods: {
 	//notify
 		toastr.info('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 	},
-//clear all fields
+//reset all fields
 	reset(){
 		this.resetKeys(this.components, 0);
 		this.resetKeys(this.options, false);
@@ -579,7 +585,7 @@ methods: {
 		this.specialInstructions = null;
 		this.isTraining = false;
 	},
-//clear all keys
+//reset all keys
 	resetKeys(object, value){
 		let keys = Object.keys(object);
 		keys.forEach(field => {
@@ -610,18 +616,23 @@ methods: {
 	//notify
 		toastr.success('Contact saved!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 	},
-//close info modal
-	closeInfoModal(){
-		this.showInfoModal = false;
-	},
-//open info modal
-	openInfoModal(){
-		this.showInfoModal = true;
-	},
+	//control phone#
 	controlPhone() {
 		if(this.contact.phone){
 			let x = this.contact.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
 			this.contact.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+		}
+	},
+	//control textarea
+	controlTextarea(){
+		//get rid of carriage returns and multiple spaces
+		this.specialInstructions = this.specialInstructions.replace(/[\n\r]+/g, ''); //replace carriage returns with dots
+		this.specialInstructions = this.specialInstructions.replace(/\s{3,10}/g, ' '); //remove double white spaces
+		//limit char count
+		if(this.specialInstructions.length >= this.charLimit){
+			this.specialInstructions = this.limitedSpecialInstructions;
+		}else{
+			this.limitedSpecialInstructions = this.specialInstructions;
 		}
 	},
 //download pdf and send email
@@ -681,7 +692,7 @@ methods: {
 				html += `<li><span style='color: ${subColor}'>Deadline = ${this.formatDate(this.deadline).replace(/-/g, '/')}</span></li>`;
 			//training
 				if(this.isTraining){
-					html += `<li><span style='color: ${subColor}'>Training Requested</span></li>`;
+					html += `<li><span style='color: ${subColor}'>Arc Flash Training Requested</span></li>`;
 				}
 			//instructions
 				if(this.specialInstructions){
@@ -760,24 +771,23 @@ ${this.contact.city}, ${this.contact.state} ${this.contact.zip}`;
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************
 text = `Dear ${friendlyFirstName},
 
-K&A Engineering is pleased to provide the following Power System Study quotation for ${this.contact.company} located in ${this.contact.city}, ${this.contact.state}.
+K&A Engineering is pleased to provide the following Power System Study quotation for the ${this.contact.project} project at ${this.contact.company} located in ${this.contact.city}, ${this.contact.state}.
 
 K&A Engineering is a professional engineering firm licensed in the State of Texas. The short circuit and coordination study performed by K&A engineering and shall be submitted to the principal design firm for reviewal and approval.
 
 Thank you for this opportunity to be of service. Should you have any questions, please do not hesitate to call.
 
 
-
 Respectfully Submitted,`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 				this.setFont(pdf, 'default');
 				wrap = pdf.splitTextToSize(text, wrapWidth);
-				verticalBuild += 70;
+				verticalBuild += newLine * 4; // space between address and message
 				pdf.text(wrap, margin, verticalBuild, {align: 'left'});	
 			//add signature
 				image = new Image();
 				image.src = 'signature.jpg';
-				verticalBuild += 150;
+				verticalBuild += 140;
 				pdf.addImage(image, 'jpg', margin, verticalBuild, 100, 30); // x, y, width, height		
 			//company address
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
@@ -793,32 +803,32 @@ Dallas, TX 75243`;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 			//break line
 				pdf.setLineDash([4, 4], 0);
-				verticalBuild += 90;
+				verticalBuild += newLine * 5;
 				pdf.line(margin, verticalBuild, this.pageWidth - margin, verticalBuild); //x1, y1, x2, y2
 			//price
 				this.setFont(pdf, 'header');
-				text = `Price = ${this.getFriendlyQuote(this.quote)}`;
-				verticalBuild += 30;
+				text = `Engineering = ${this.getFriendlyQuote(this.quote)}`;
+				verticalBuild += newLine + 3;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
+			//training
+				if(this.isTraining){
+					text = `Arc Flash Training = ${this.getFriendlyQuote(this.costs.training)}`;
+					pdf.text(text, this.pageWidth - margin, verticalBuild, {align: 'right'});	
+				}			
 			//deadline
 				this.setFont(pdf, 'default');
 				text = `Deadline = ${this.formatDate(this.deadline).replace(/-/g, '/')}`;
 				verticalBuild += newLine;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
-			//training
-				if(this.isTraining){
-					text = `Training Requested`;
-					verticalBuild += newLine;
-					pdf.text(text, margin, verticalBuild, {align: 'left'});	
-				}
 			//instructions
 				if(this.specialInstructions){
 					text = `Special Instructions = ${this.specialInstructions}`;
+					wrap = pdf.splitTextToSize(text, wrapWidth);
 					verticalBuild += newLine;
-					pdf.text(text, margin, verticalBuild, {align: 'left'});	
+					pdf.text(wrap, margin, verticalBuild, {align: 'left'});	
 				}
 			//add specks
-				pdf.setLineDash(0); //straight line
+				pdf.setLineDash(0); //change back to solid line
 			//init
 				let rows = [];
 				let selections = ``;
@@ -867,7 +877,7 @@ Dallas, TX 75243`;
 					'padding': 0
 					}];
 			//bind table
-				verticalBuild += 10;
+				verticalBuild = newLine * 31;
 				pdf.table(margin, verticalBuild, rows, headers);
 			//set footer
 				this.setFooter(pdf, '1');
@@ -883,7 +893,7 @@ Dallas, TX 75243`;
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
 text = `Applicable taxes not included terms net 30 days.
 
-There are many components to properly incorporate arc flash safety into your electrical safety program. As a multi-step process, it is important to execute the project in such a manner as to be efficient upon completion, as well as achieving the overall goal of implementing an effective and useful study. This study includes the following:
+There are many components to properly incorporate arc flash safety into your electrical safety program. As a multi-step process, it is important to execute the contact in such a manner as to be efficient upon completion, as well as achieving the overall goal of implementing an effective and useful study. This study includes the following:
 
    1. Gathering of Site Data.
    2. Perform a Short Circuit Study.
@@ -904,7 +914,7 @@ K&A Engineering is pleased to provide the following items in reference to the li
 				verticalBuild += newLine + 130;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 
-				text = `1. Gathering of available one-line diagrams and other pertinent electrical prints and information.`;
+				text = `1. Gathering of available One-Line diagrams and other pertinent electrical prints and information.`;
 				this.setFont(pdf, 'default');
 				verticalBuild += newLine;
 				pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
@@ -914,13 +924,13 @@ K&A Engineering is pleased to provide the following items in reference to the li
 				verticalBuild += newLine;
 				pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
 
-				text = `3. Input of collected data into the SKM Power Tools for Windows software to create a database and the system one-line diagram.`;
+				text = `3. Input of collected data into the SKM Power Tools for Windows software to create a database and the system One-Line diagram.`;
 				this.setFont(pdf, 'default');
 				wrap = pdf.splitTextToSize(text, wrapWidth);
 				verticalBuild += newLine;
 				pdf.text(wrap, margin + indent, verticalBuild, {align: 'left'});
 			//2nd item
-				text = `Short-Circuit Study:`;
+				text = `Short Circuit Study:`;
 				this.setFont(pdf, 'sub');
 				verticalBuild += newLine + 15;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
@@ -931,7 +941,7 @@ K&A Engineering is pleased to provide the following items in reference to the li
 				verticalBuild += newLine;
 				pdf.text(wrap, margin + indent, verticalBuild, {align: 'left'});
 			//3rd item
-				text = `Device Coordination Study:`;
+				text = `Coordination Study:`;
 				this.setFont(pdf, 'sub');
 				verticalBuild += newLine + 15;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
@@ -947,7 +957,7 @@ K&A Engineering is pleased to provide the following items in reference to the li
 				verticalBuild += newLine + 35;
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 
-				text = `1. K&A Engineering will provide an arc flash study detailing the Flash Hazard Boundaries, Limited Approach Boundaries, Restricted Approach Boundaries, and Incident Energies (in cal/cm2) encountered at specific distances, Specified Hazard Class and subsequent PPE required, and impending shock risk. Our study will commence from the utility service entrance point and will include the items as shown on the supplied electrical one-line diagram.`;
+				text = `1. K&A Engineering will provide an arc flash study detailing the Flash Hazard Boundaries, Limited Approach Boundaries, Restricted Approach Boundaries, and Incident Energies (in cal/cm2) encountered at specific distances, Specified Hazard Class and subsequent PPE required, and impending shock risk. Our study will commence from the utility service entrance point and will include the items as shown on the supplied electrical One-Line diagram.`;
 				this.setFont(pdf, 'default');
 				wrap = pdf.splitTextToSize(text, wrapWidth);
 				verticalBuild += newLine;
@@ -973,12 +983,12 @@ K&A Engineering is pleased to provide the following items in reference to the li
 				//list
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
 text = `1. Executive Summary including Introduction, Scope of work and results/ recommendations.
-2. Short-Circuit methodology analysis results and recommendations.
+2. Short Circuit methodology analysis results and recommendations.
 3. Electrical equipment evaluation output report.
 4. Protective device coordination methodology analysis results and recommendations.
 5. Time-current coordination curves and recommendations(TCC drawings in 11x17 page format).
 6. Arc Flash hazard methodology analysis results and recommendations, including the details of the incident energy and flash protection boundary calculations, along with Arc Flash boundary distances, working distances, Incident energy levels and personal protection equipment levels.
-7. One-line system diagram shall be computer generated and will clearly identify individual equipment buses, bus numbers used in the short-circuit analysis, cable and bus connections between the equipment, calculated maximum short-circuit current at each bus location, device numbers used in the time-current coordination analysis and other information pertinent to the computer analysis.`;
+7. One-Line system diagram shall be computer generated and will clearly identify individual equipment buses, bus numbers used in the Short Circuit analysis, cable and bus connections between the equipment, calculated maximum Short Circuit current at each bus location, device numbers used in the time-current coordination analysis and other information pertinent to the computer analysis.`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					this.setFont(pdf, 'default');
 					wrap = pdf.splitTextToSize(text, wrapWidth);
@@ -998,13 +1008,13 @@ text = `1. Executive Summary including Introduction, Scope of work and results/ 
 				//list
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
 text = `1. This quotation is effective for 30 days from quotation date, unless otherwise authorized by K&A Engineering.
-2. Cancellations, which may include weather-related issues, will be assessed with a mobilization and or project management/completion charge based on expenses incurred.
+2. Cancellations, which may include weather-related issues, will be assessed with a mobilization and or contact management/completion charge based on expenses incurred.
 3. The price is based on normal working hours (M-F 7am-4pm).
 4. The equipment / Manufacturer shall be specified prior to the study.
 5. Unless requested, the study will be based on the recommended settings of the Short Circuit, Coordination and Arc Flash study.
-6. All data required included but not limited to cable lengths, cable size, protective devices type and settings, utility fault current information shall be provided to K&A Engineering, prior to the beginning of the project.
+6. All data required included but not limited to cable lengths, cable size, protective devices type and settings, utility fault current information shall be provided to K&A Engineering, prior to the beginning of the contact.
 7. Customer drawings and other records may be used in lieu of physical inspection where appropriate.
-8. The customer is responsible for providing all facility one-line drawings / diagrams, control schematics, and equipment drawings to K&A Engineering.  K&A Engineering will require as much site information on the distribution system (one line diagrams, known changes to the system, etc.) prior to the beginning of the project.`;
+8. The customer is responsible for providing all facility One-Line drawings / diagrams, control schematics, and equipment drawings to K&A Engineering.  K&A Engineering will require as much site information on the distribution system (one line diagrams, known changes to the system, etc.) prior to the beginning of the contact.`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					this.setFont(pdf, 'default');
 					wrap = pdf.splitTextToSize(text, wrapWidth);
@@ -1022,37 +1032,37 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 				pdf.text(text, margin, verticalBuild, {align: 'left'});	
 			//report content
 				//1st item
-					text = `Input data Information:`;
+					text = `Input Data Information:`;
 					this.setFont(pdf, 'sub');
 					verticalBuild += newLine;
 					pdf.text(text, margin, verticalBuild, {align: 'left'});	
 
-					text = `1. Software Input data report.`;
+					text = `1. Software input data report.`;
 					this.setFont(pdf, 'default');
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
 				//2nd item
-					text = `Short-Circuit current analysis Information:`;
+					text = `Short Circuit Current Analysis Information:`;
 					this.setFont(pdf, 'sub');
 					verticalBuild += newLine;
 					pdf.text(text, margin, verticalBuild, {align: 'left'});	
 
-					text = `1. Short-Circuit current output report.`;
+					text = `1. Short Circuit current output report.`;
 					this.setFont(pdf, 'default');
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
 
-					text = `2. One-line drawing with Short-Circuit current values.`;
+					text = `2. One-Line drawing with Short Circuit current values.`;
 					this.setFont(pdf, 'default');
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
 				//3rd item
-					text = `Protective Device Coordination Study:`;
+					text = `Protective Coordination Study:`;
 					this.setFont(pdf, 'sub');
 					verticalBuild += newLine;
 					pdf.text(text, margin, verticalBuild, {align: 'left'});	
 
-					text = `1. Time-Current Characteristics (TCC) curves.`;
+					text = `1. Time-Current Characteristics(TCC) curves.`;
 					this.setFont(pdf, 'default');
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
@@ -1072,7 +1082,7 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
 
-					text = `2. One-line with arc flash values.`;
+					text = `2. One-Line with arc flash values.`;
 					this.setFont(pdf, 'default');
 					verticalBuild += newLine;
 					pdf.text(text, margin + indent, verticalBuild, {align: 'left'});
@@ -1137,8 +1147,8 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 		return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 	},
 //getFriendlyQuote
-	getFriendlyQuote(){
-		let friendly = this.quote.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	getFriendlyQuote(value){
+		let friendly = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		return `$${friendly}`;
 	}
 }, 
@@ -1151,15 +1161,18 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 //global vars
 	data: global => ({
 		friendlyConverter:{
+			switchBoards: 'Switch Boards',
 			panelBoards: 'Panel Board',
 			transformers: 'Transformer',
 			disconnectSwitches: 'Disconnect Switch',
+			enclosedCircuitBreakers: 'Enclosed Circuit Breakers',
+			motorsOver30Hp: 'Motors(>30hp)',
 			generators: 'Generator',
 			automaticTransferSwitches: 'Automatic Transfer Switch(ats)',
 			motorControlCenters: 'Motor Control Center(mcc)',
 			universalPowerSupplies: 'Universal Power Supply(ups)',
 			isShortCircuitStudy: 'Short Circuit Study',
-			isDeviceStudy: 'Device Study',
+			isCoordinationStudy: 'Coordination Study',
 			isHarmonicStudy: 'Harmonic Study',
 			isMotorStartStudy: 'Motor Start Study',
 			isLoadFlowStudy: 'Load Flow Study',
@@ -1167,6 +1180,7 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 			isArcFlashLabels: 'Arc Flash Label',
 			firstName: 'First Name',
 			lastName: 'Last Name',
+			project: 'Project Name',
 			company: 'Company',
 			streetAddress: 'Street Address',
 			city: 'City',
@@ -1176,26 +1190,30 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 			email: 'E-mail'
 		},
 		components: {
+			switchBoards: 0,
 			panelBoards: 0,
 			transformers: 0,
 			disconnectSwitches: 0,
+			enclosedCircuitBreakers: 0,
+			motorsOver30Hp: 0,
 			generators: 0,
 			automaticTransferSwitches: 0,
 			motorControlCenters: 0,
 			universalPowerSupplies: 0
 		},
 		options:{
+			isArcFlashStudy: false,
 			isShortCircuitStudy: false,
-			isDeviceStudy: false,
+			isCoodinationStudy: false,
+			isArcFlashLabels: false,
 			isHarmonicStudy: false,
 			isMotorStartStudy: false,
 			isLoadFlowStudy: false,
-			isArcFlashStudy: false,
-			isArcFlashLabels: false
 		},
 		contact: {
 			firstName: null,
 			lastName: null,
+			project: null,
 			company: null,
 			streetAddress: null,
 			city: null,
@@ -1206,21 +1224,30 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 		},
 		costs: {
 			minimum: 1200.00,
-			unitStandard: 110.00,
-			unitOptions: 130.00,
-			training: 2000.00,
-			expedite: 250.00
+			training: 3200.00,
+			expedite: 100.00,
+			components: {
+				standard: 110.00,
+				premium: 130.00
+			},
+			options: {
+				harmonic: 0.30,
+				motor: 0.25,
+				loadFlow: 0.20
+			}
 		},
 		pageWidth: 0,
 		pageHeight: 0,
 		isTraining: false,
 		specialInstructions: '',
+		limitedSpecialInstructions: '',
 		deadline: global.getDefaultDate(),
 		dateFormatted: global.formatDate(global.getDefaultDate()),
 		showInfoModal: false,
 		menu: false,
 		quote: '0.00',
 		userId: '',
+		charLimit: 435, //without this, textarea can grow outside of container
 		validate: {
 			required: a => !!a || 'Entry required!',
 			number: a => !isNaN(a) || 'Digits required!',
@@ -1231,7 +1258,7 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 			phone: a => {        
 				let regex = new RegExp(/\d{3}.+?\d{3}.+?\d{4}/);
 				return regex.test(a) || 'Phone must contain 9 digits!';
-			},
+			}
 		}
 	})
 }

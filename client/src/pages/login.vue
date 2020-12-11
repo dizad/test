@@ -41,7 +41,7 @@
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
 		contact kelgamal@kaiengineers.com for login issues<br>
-		izasoft version: 1.03 last update: 12/04/20</span>
+		izasoft version: 1.04 last update: 12/11/20</span>
 </v-card-text>
 </v-form>
 </v-card>
