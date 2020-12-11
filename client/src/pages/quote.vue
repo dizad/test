@@ -712,7 +712,7 @@ methods: {
 			html += `</ul>`;
 		//build email object
 			let email = {
-				subject: `${quoteId} = ${this.userId} quoted $${this.quote}`,
+				subject: `${quoteId} = ${this.userId} quoted ${this.getFriendlyQuote(this.quote)}`,
 				html: html
 			};
 		//send email
