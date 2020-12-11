@@ -243,7 +243,7 @@
 		<v-checkbox
 			style='margin: 20px'
 			v-model = 'isTraining'
-			label="Arc Flash Training Required"
+			label="Request Arc Flash Training"
 			color="primary"
 			hide-details
 		></v-checkbox>
@@ -506,7 +506,8 @@ methods: {
 	//calculate
 		//get counts
 			let counts = 
-			this.components.panelBoards + this.components.transformers + this.components.disconnectSwitches + this.components.generators + 
+			this.components.switchBoards + this.components.panelBoards + this.components.transformers + this.components.disconnectSwitches + 
+			this.components.enclosedCircuitBreakers + this.components.motorsOver30Hp + this.components.generators + 
 			this.components.automaticTransferSwitches + this.components.motorControlCenters + this.components.universalPowerSupplies;
 		//components 
 			//generator and ATS components raise price per component
@@ -1161,12 +1162,12 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 //global vars
 	data: global => ({
 		friendlyConverter:{
-			switchBoards: 'Switch Boards',
+			switchBoards: 'Switch Board',
 			panelBoards: 'Panel Board',
 			transformers: 'Transformer',
 			disconnectSwitches: 'Disconnect Switch',
-			enclosedCircuitBreakers: 'Enclosed Circuit Breakers',
-			motorsOver30Hp: 'Motors(>30hp)',
+			enclosedCircuitBreakers: 'Enclosed Circuit Breaker',
+			motorsOver30Hp: 'Motor(>30hp)',
 			generators: 'Generator',
 			automaticTransferSwitches: 'Automatic Transfer Switch(ats)',
 			motorControlCenters: 'Motor Control Center(mcc)',
