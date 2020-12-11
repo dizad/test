@@ -1205,7 +1205,7 @@ text = `1. This quotation is effective for 30 days from quotation date, unless o
 		options:{
 			isArcFlashStudy: false,
 			isShortCircuitStudy: false,
-			isCoodinationStudy: false,
+			isCoordinationStudy: false,
 			isArcFlashLabels: false,
 			isHarmonicStudy: false,
 			isMotorStartStudy: false,
