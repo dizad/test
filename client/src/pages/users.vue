@@ -8,28 +8,28 @@
 		<v-card>
 		<!--title-->
 			<v-card-title
-				class='headline primary' primary-title style='color: white;'>
+				class='headline deep-orange' primary-title style='color: white;'>
 				<v-icon dark left>person_remove</v-icon>
                 Delete User
 			</v-card-title>
 		<!--add user-->
             <v-form ref='form' lazy-validation> 
-			<v-card-text style='padding-bottom: 0px;' >
-                <span style='text-align: center; margin: auto;'>Are you sure you want to delete user <strong>{{userToDelete._id}}</strong>?</span>
+			<v-card-text style='padding-bottom: 0px; font-weight: bold;' >
+                <span style='text-align: center; margin: auto; color: orangeRed;'>Are you sure you want to delete user <strong>{{userToDelete._id}}</strong>?</span>
             </v-card-text>              
             <v-card-actions>
             <!--delete button-->
                 <v-btn 
-                    style='width: 49%;'
-                    dense dark color='primary' 
+                    style='width: 49%; font-weight: bold;'
+                    dense dark color='success' 
                     @click='doDeleteUser()'>
                     <v-icon dark left>check_circle</v-icon>
                     Delete
                 </v-btn>
             <!--cancel button-->
                 <v-btn 
-                    style='width: 49%;'
-                    dense dark color='error' 
+                    style='width: 49%; font-weight: bold;'
+                    dense dark color='warning' 
                     @click='closeDeleteModal()'                     
                     >
                     <v-icon dark left>block</v-icon>
@@ -48,7 +48,7 @@
 		<v-card>
 		<!--title-->
 			<v-card-title
-				class='headline primary' primary-title style='color: white;'>
+				class='headline deep-orange' primary-title style='color: white;'>
 				<v-icon dark left>person_add</v-icon>{{isNew ? 'Add' : 'Update'}}&nbsp;User
 			</v-card-title>
 		<!--add user-->
@@ -66,8 +66,11 @@
                     outlined
                     v-model='username'
                     autocomplete="off"
+                    type="text"
+                    color='rgba(77, 187, 64, 1.0)'
+                    background-color= 'yellow lighten-4'
                 ></v-text-field>
-            <!--description textbox-->
+            <!--password textbox-->
                 <v-text-field 
                     ref='focusPassword'
                     dense
@@ -78,21 +81,24 @@
                     outlined
                     v-model='password'
                     autocomplete="off"
+                    type="text"
+                    color='rgba(77, 187, 64, 1.0)'
+                    background-color= 'yellow lighten-4'
                 ></v-text-field>
 			</v-card-text>
             <v-card-actions>
             <!--add button-->
                 <v-btn 
-                    style='width: 49%;'
-                    dense dark color='primary' 
+                    style='width: 49%; font-weight: bold;'
+                    dense dark color='success' 
                     @click='addUser()'>
                     <v-icon dark left>check_circle</v-icon>
                     &nbsp;{{isNew ? 'Add' : 'Update'}}
                 </v-btn>
             <!--cancel button-->
                 <v-btn 
-                    style='width: 49%;'
-                    dense dark color='error' 
+                    style='width: 49%; font-weight: bold;'
+                    dense dark color='warning' 
                     @click='closeUserModal'                     
                     >
                     <v-icon dark left>block</v-icon>
@@ -108,22 +114,22 @@
     <v-card style='margin: 30px;'> 
     <!--banner-->
     <v-card-title
-        class='headline primary'
+        class='headline deep-orange'
         primary-title style='color: white;'>
     <!--title-->
-        <v-icon dark left>account_circle</v-icon>Users
+        <v-icon dark left>account_circle</v-icon><span class='title'>USERS</span>
     <!--add button-->
         <v-btn 
-            style='position: absolute; right: 150px; width: 110px;'
-            dense dark color='info'
+            style='position: absolute; right: 150px; width: 110px; font-weight: bold;'
+            dense dark color='success'
             @click='createUser()'>
             <v-icon dark left>add_circle</v-icon>
             Add
         </v-btn>
     <!--logout button-->
         <v-btn 
-            style='position: absolute; right: 30px; width: 110px;'
-            dense dark color='info' 
+            style='position: absolute; right: 30px; width: 110px; font-weight: bold;'
+            dense dark color='success' 
             @click='logout()'>
             <v-icon dark left>logout</v-icon>
             Logout
@@ -159,7 +165,7 @@
                 >
                 <td class='text-left' style='width: 5%;'>
                     <v-avatar
-                        color="green"
+                        color="red"
                         size="24"
                     >
                     <span class="white--text headline" style='font-size: small;'><small>{{ index + 1}}</small></span>
@@ -173,8 +179,8 @@
                     <v-btn  
                         dense 
                         dark 
-                        color='primary' 
-                        style='width: 110px; margin: 5px;'
+                        color='success' 
+                        style='width: 110px; margin: 5px; font-weight: bold;'
                         @click='updateUser(user)'>
                         <v-icon dark left>build_circle</v-icon>
                         Update
@@ -183,8 +189,8 @@
                     <v-btn v-if='user.privilege == "user"'
                         dense 
                         dark 
-                        color='error' 
-                        style='width: 110px;'
+                        color='warning' 
+                        style='width: 110px; font-weight: bold;'
                         @click='deleteUser(index)' 
                         >
                         <v-icon dark left>cancel</v-icon>
@@ -193,7 +199,7 @@
                 <!--blind admin-->
                     <v-btn v-if='user.privilege == "admin"'
                         dense 
-                        style='width: 110px;'
+                        style='width: 110px; font-weight: bold;'
                         disabled>
                         <v-icon dark left>face</v-icon>
                         Admin
@@ -210,14 +216,12 @@
 <script>
 //import
     import bridge from '../bridge.js';
-    import session from "../utils/session.js";
 //master
     export default {
     //name
         name: 'users',
     //components
         components: {
-            session
         },
     //on load
         async created(){
@@ -274,7 +278,7 @@
         //update
             await bridge.updateUser(user);
 		//notify
-			toastr.success(`User ${notification}!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			toastr.success(`User ${notification} successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         }, 
     //delete user from item
         deleteUser(index){
@@ -288,7 +292,7 @@
             await bridge.deleteUser(this.userToDelete._id);
             this.showDeleteModal = false;
         //notify
-            toastr.success('User deleted!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+            toastr.success('User deleted successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         },  
     //re-use the modal to update an existing user
         updateUser(user){
@@ -309,7 +313,7 @@
         //re-direct to login page
             this.$router.push({ path: '/login' });
         //notify
-            toastr.info('Logged out!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+            toastr.success('Logged out successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         },
     //display the modal
         createUser(){

@@ -1,7 +1,7 @@
 //imports
     import login from './pages/login.vue';
     import users from './pages/users.vue';
-    import quote from './pages/quote.vue';
+    import invoice from './pages/invoice.vue';
 
 //define routes
     export default [{
@@ -13,9 +13,9 @@
             name: 'users',
             component: users
         },{
-            path: '/quote/:id',
-            name: 'quote',
-            component: quote,
+            path: '/invoice/:id',
+            name: 'invoice',
+            component: invoice,
             props: true
         },{
             path: "*",

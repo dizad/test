@@ -1,47 +1,54 @@
 <template>
 <v-app>
 <div class='splashBackground'>
-<v-card elevation="2" style='width: 400px; padding: 20px; text-align: center; margin: 150px auto auto auto;'>
+<v-card elevation="2" style='width: 450px; padding: 20px; text-align: center; margin: 100px auto auto auto;'>
 <v-form ref='form' lazy-validation>
-	<v-card-text v-on:keyup.enter='login()'>
+	<!--audio-->
+		<audio autoplay preload="auto">
+			<source src="../../public/song.mp3" type="audio/mp3">
+		</audio>
+	<!--login card-->
+		<v-card-text v-on:keyup.enter='login()'>
 	<!--logo-->
-		<img id="imageLogin" src="./logo.jpg" style='width: 200px; margin: 25px;'/>
+		<img id="imageLogin" src="../../public/logo.gif" style='width: 100%; margin-bottom: 10px;'/>
 	<!--username textbox-->
 		<v-text-field
 			ref='focusUsername'
 			append-icon='mdi-account-circle'
-			dense
+			dense outlined
 			label='Username'
 			:rules='[validate.required]'
 			placeholder='Type username...'
-			outlined
 			v-model='username'
 			autocomplete="off"
+			color='rgba(77, 187, 64, 1.0)'
+			background-color= 'yellow lighten-4'
 		></v-text-field>
 	<!--password textbox-->
 		<v-text-field
-			dense
+			dense outlined
 			append-icon='mdi-lock'
 			label='Password'
 			:rules='[validate.required]'
 			placeholder='Type password...'
-			outlined
 			v-model='password'
 			type = 'password'
 			autocomplete="off"
+			color='rgba(77, 187, 64, 1.0)'
+			background-color= 'yellow lighten-4'
 		></v-text-field>
 	<!--update button-->
 		<v-btn
-			dense 
-			dark color='primary' 
-			style='width: 100%; margin: 0px 0px 10px 0px;'
+			dense dark 
+			color='success' 
+			style='width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
 			@click='login()'>
 			<v-icon dark left>login</v-icon>
 			Login
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
-		contact kelgamal@kaiengineers.com for login issues<br>
-		izasoft version: 1.04 last update: 12/11/20</span>
+		contact dizad87@yahoo.com for login issues<br>
+		izasoft version: 1.00 last update: 01/12/21</span>
 </v-card-text>
 </v-form>
 </v-card>
@@ -51,19 +58,34 @@
 <script>
 //import
 	import bridge from '../bridge.js';
-	import session from "../utils/session.js";
 //master
     export default {
     //name
         name: 'users',
     //components
         components: {
-			session
         },
 	//on load
 		async created(){
+
+		//play song
+		//	let audio = new Audio('../../public/song.mp3');
+		//	audio.play();
+
+			  //var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3');
+
+ document.getElementById("abc").play(); 
+
+
+
 		//focus the textbox
 			setTimeout(() => {
+
+//let a = $('#my_audio');
+//a.play();
+			  //document.getElementById("my_audio").play(); 
+
+
 				this.$refs.focusUsername.$refs.input.focus();
 			}, 0);
 		},
@@ -90,11 +112,11 @@
 			}
 		//valid entries
 			else if(token.privilege == 'admin'){
-				document.cookie = 'admin' + '+' + session.getExpiration();
+				document.cookie = 'admin';
 				this.$router.push({ path: `/users`});
 			}else if(token.privilege == 'user'){
-				document.cookie = 'user' + '+' + session.getExpiration();
-				this.$router.push({ path: `/quote/${this.username}`});
+				document.cookie = 'user';
+				this.$router.push({ path: `/invoice/${this.username}`});
 			}else{
 				toastr.error(`This account has an error!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			}

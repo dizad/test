@@ -46,17 +46,6 @@ class bridge {
         return axios.delete(`${url}${id}`);
     }
 
-//send email
-    static sendEmail(email){
-        try{
-            let command = 'sendEmail';
-            return axios.post(url + command, email
-            );
-        } catch(err){
-            reject(err);
-        }
-    }
-
 //save user data
     static saveData(params){
         try{
@@ -81,11 +70,11 @@ class bridge {
         });
     }
 
-//get quoteId
-    static getQuoteCount(){
+//get invoice count
+    static getInvoiceCount(){
         return new Promise(async (resolve, reject) => {
             try{
-                let command = 'getQuoteCount';
+                let command = 'getInvoiceCount';
                 let res = await axios.post(url + command);
                 resolve(res.data);
             } catch(err){
