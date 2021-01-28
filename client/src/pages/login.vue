@@ -1,14 +1,32 @@
 <template>
 <v-app>
 <div class='splashBackground'>
-<v-card elevation="2" style='width: 450px; padding: 20px; text-align: center; margin: 100px auto auto auto;'>
+<v-card elevation="2" style='width: 450px; padding: 40px 20px 20px 20px; text-align: center; margin: 75px auto auto auto;'>
 <v-form ref='form' lazy-validation>
-	<!--audio-->
-		<audio autoplay preload="auto">
-			<source src="../../public/song.mp3" type="audio/mp3">
-		</audio>
 	<!--login card-->
 		<v-card-text v-on:keyup.enter='login()'>
+		<!--mute button-turn on-->
+		<button 
+			v-if='!isMute'
+			dense dark 
+			color='success' 
+			class='muteButton'
+			title='Do shut up...'
+			style='background-color: rgba(76, 175, 80, 1);'
+			@click='setMute(true)'>
+			<v-icon dark>volume_up</v-icon>
+		</button>
+		<!--mute button-turn off-->
+		<button 
+			v-if='isMute'
+			dense dark 
+			color='danger' 
+			class='muteButton'
+			title="Don't shut up..."
+			style='background-color: rgba(251, 140, 0, 1);'
+			@click='setMute(false)'>
+			<v-icon dark>volume_off</v-icon>
+		</button>
 	<!--logo-->
 		<img id="imageLogin" src="../../public/logo.gif" style='width: 100%; margin-bottom: 10px;'/>
 	<!--username textbox-->
@@ -44,7 +62,7 @@
 			style='width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
 			@click='login()'>
 			<v-icon dark left>login</v-icon>
-			Login
+			LOGIN
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
 		contact dizad87@yahoo.com for login issues<br>
@@ -67,27 +85,20 @@
         },
 	//on load
 		async created(){
-
-		//play song
-		//	let audio = new Audio('../../public/song.mp3');
-		//	audio.play();
-
-			  //var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3');
-
- document.getElementById("abc").play(); 
-
-
-
+		//get mute option
+			this.isMute = await bridge.getMute();
+			this.music = new Audio(`music.mp3`);
+			if(!this.isMute){
+				this.music.play();
+			}
 		//focus the textbox
 			setTimeout(() => {
-
-//let a = $('#my_audio');
-//a.play();
-			  //document.getElementById("my_audio").play(); 
-
-
 				this.$refs.focusUsername.$refs.input.focus();
 			}, 0);
+		},
+	//exit page
+		destroyed(){
+			this.music.pause();
 		},
       methods: {
 	//login
@@ -115,10 +126,35 @@
 				document.cookie = 'admin';
 				this.$router.push({ path: `/users`});
 			}else if(token.privilege == 'user'){
+			//update cookie
 				document.cookie = 'user';
+			//play sound effect
+				let result = await bridge.getTauntCount();
+				let tauntId = (result.tauntCount + 1).toString();
+				if(tauntId.length == 1){
+					tauntId = `0` + tauntId;
+				}
+				new Audio(`taunts/${tauntId}.mp3`).play();
+			//redirect
 				this.$router.push({ path: `/invoice/${this.username}`});
 			}else{
 				toastr.error(`This account has an error!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			}
+		},
+	//mute button
+		async setMute(mute){
+		//update isMute in temp
+			this.isMute = mute;
+		//update isMute in perm
+			let params = {
+				isMute: mute
+			};
+			await bridge.setMute(params);
+		//update play
+			if(mute){
+				this.music.pause();
+			}else{
+				this.music.play();
 			}
 		}
       },
@@ -126,6 +162,8 @@
           data: () => ({
 			username: '',
 			password: '',
+			isMute: false,
+			music: {},
 			validate: {
                 required: a => !!a || 'Entry required!'
             }

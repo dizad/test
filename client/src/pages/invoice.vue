@@ -10,9 +10,7 @@
 	style='color: white;'>
 <!--title-->
 	<v-icon dark left>euro</v-icon>
-	<span class='title'>INVOICE</span>
-
-
+	<span class='title'>INVOICE - <span style='color: yellow; font-weight: bold;'>{{userId.toUpperCase()}}</span></span>
 <!--save button-->
 	<v-btn 
 		style='position: absolute; right: 210px; width: 170px; font-weight: bold;'
@@ -35,11 +33,6 @@
 	<v-row no-gutters>	
 	<!--card column-->
 	<v-col class="pt-4 pr-4 pb-4 pl-4 col-md-8" style='overflow-y: scroll; height: calc(100vh - 200px)'><!--col-md-9 is the MASTER WIDTH of col-->
-
-
-
-
-
 <v-card class='deep-orange darken-4' style='padding: 0px 20px 0px 20px;'>
       <v-toolbar flat class='deep-orange darken-4'>
 		<!--toolbar-->
@@ -72,11 +65,6 @@
 				Delete Card(s)
 			</v-btn>
       </v-toolbar>
-
-
-
-
-
 <!--expansion cards-->
     <v-expansion-panels :style= "cards.length > 0 ? 'padding-bottom: 20px;' : 'margin-bottom: 0px;'" >
       <v-expansion-panel
@@ -134,24 +122,8 @@
 			</v-btn>
 		</span>
 	</v-expansion-panel-header>
-
-
-
-
-
-
 <!--panel content-->
 	<v-expansion-panel-content>
-
-
-
-
-			
-
-
-
-
-
 <!--simple table-->
  		<v-simple-table dense style='margin: 20px;'>
             <template v-slot:default>
@@ -301,19 +273,12 @@
         		</tbody>
         </template>
 	</v-simple-table>
-
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-
-
-
+	</v-expansion-panel-content>
+	</v-expansion-panel>
+</v-expansion-panels>
 </v-card>
 </v-col>
 <!--contact card-->
-
-
 <v-col class="pt-4 pr-4 pb-4 pl-4 col-md-4" >
 <v-card class='deep-orange darken-4' style='padding: 0px 20px 20px 20px;'>
 <v-toolbar flat class='deep-orange darken-4'>
@@ -321,7 +286,6 @@
 			<v-icon dark left>account_circle</v-icon>
 			<span class='header02'>CONTACT</span>
 		</v-toolbar-title>
-
 <!--reset button-->
 	<v-btn 
 		style='width: 170px; position: absolute; right: 0px; font-weight: bold;'
@@ -330,12 +294,7 @@
 		<v-icon dark left>power_settings_new</v-icon>
 		CLEAR CONTACT
 	</v-btn>
-
 </v-toolbar>
-
-
-
-
  <v-expansion-panels>
 <!--client-->
 	<v-expansion-panel flat = true>
@@ -631,31 +590,7 @@
 		</v-expansion-panel-content>
 	</v-expansion-panel>
 </v-expansion-panels>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </v-card>
-
-
-
-
-
-
-
-
-
-
 </v-col>
 </v-row>
 </v-form>			
@@ -663,8 +598,6 @@
 <v-footer class="deep-orange" style='border-top-left-radius: 0px; border-top-right-radius: 0px; '>
 <v-row  justify="center" style='padding: 10px 10px 10px 10px;'>
 <!--price-->
-
-
 	<span class='title' style='color: white; font-weight: bold;'>GRAND TOTAL =</span>
 	<v-btn
 		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white; font-weight: bold;'
@@ -683,7 +616,6 @@
 		<v-icon dark left>arrow_circle_down</v-icon>
 		Download PDF
 	</v-btn>
-
 	</v-row>
 </v-footer>
 </v-card>
@@ -734,8 +666,14 @@
 			keys = Object.keys(this.contact.client);
 			keys.forEach(field => {
 				if(this.validate.required(this.contact.client[field]) != true){
-					toastr.error(`Client field [${field}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+					toastr.error(`Client field [${field}] is required!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					isValid = false; 
+				}
+				if(field == 'email'){
+					if(this.validate.email(this.contact.client[field]) != true){
+						toastr.error(`Client field [${field}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+						isValid = false; 
+					}
 				}
 			});
 		//check doctor
@@ -744,6 +682,12 @@
 				if(this.validate.required(this.contact.doctor[field]) != true){
 					toastr.error(`Doctor field [${field}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					isValid = false; 
+				}
+				if(field == 'email'){
+					if(this.validate.email(this.contact.doctor[field]) != true){
+						toastr.error(`Doctor field [${field}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+						isValid = false; 
+					}
 				}
 			});
 		//check bank
@@ -810,6 +754,8 @@
 			card.dateFormatted = this.formatDate(this.getNow());
 		//push to global
 			this.cards.push(card);
+		//notify
+			toastr.success('Card added successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 		},
 	//sort cards
 		sortCards(){
@@ -883,10 +829,16 @@
 		async downloadPdf(){
 		//zero empties
 			this.zeroEmpties();
-		//validate page
+		//validate contact
 			if(!this.validateContact()){
 				return false;
 			};
+		//validate cards
+			if(this.cards.length == 0){
+			//notify
+				toastr.error('No cards were added!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});	
+				return false;
+			}
 		//get invoice id
 			let result = await bridge.getInvoiceCount();
 			let invoiceId = result.invoiceCount.toString();
@@ -917,6 +869,7 @@
 					let newLine = 15;
 					let text = ``;
 					let verticalBuild = margin;
+					let footerBuild = 0;
 					let retainLine = 0;
 				//dates
 					let now = moment().format('DD/MM/YYYY');
@@ -966,6 +919,13 @@
 								remainingCards -= thirdBreak;
 							}
 						}
+					//add another page if cards filled page
+						let lastCardCount = pages[pages.length - 1].end - pages[pages.length - 1].start;
+						if(lastCardCount == thirdBreak){
+							pages.push({
+								isBlank: true
+							});
+						}
 					}
 			//build pages
 				for(let i = 0; i < pages.length; i++){
@@ -982,7 +942,7 @@
 							text = `Waarnemend Huisarts K.M.M.Kievit`;
 							verticalBuild += 25;
 							pdf.text(text, pageWidth / 2, verticalBuild, {align: 'center'});
-					//header
+//header block+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 						//client name
 							this.setFont(pdf, 'fontHeader');
 							text = `Huisarts:`;
@@ -1028,17 +988,15 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 						verticalBuild += newLine;
 						pdf.text(text, margin, verticalBuild, {align: 'left'});
 					}//end first page
-				//table content
+//table block+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					if(!pages[i].isBlank){
 					//init
 						pdf.setLineDash(0); //change back to solid line
 						this.setFont(pdf, 'fontDefault');
 						let rows = [];
 					//build cards
 						//start loop
-						console.log(JSON.stringify(this.cards));
-						console.log(JSON.stringify(pages));
 						for(let j = pages[i].start; j < pages[i].end; j++){
-							console.log(j);
 						//consulting time
 							rows.push({
 								Datum: `${this.formatDate(this.cards[j].date)}`,
@@ -1118,21 +1076,21 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 						}
 					//bind table
 						pdf.table(margin, verticalBuild, rows, headers, {fontSize: 10});
-				//last page
+					}
+//total block+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					if(i == pages.length - 1){
-					//add an extra page if the cards filled the page
-						verticalBuild += cardLines + overhead;
-			//			if((pages[i].end - pages[i].start) == thirdBreak){
-			//				pdf.addPage();
-			//				verticalBuild = margin;
-			//			}
+						if(pages[i].isBlank){
+							pdf.addPage();
+							verticalBuild = margin;
+						}else{
+							let pageCardCount = pages[i].end - pages[i].start;
+							let cardLines = (5 * pageCardCount * newLine) - (newLine * (pageCardCount - 1)); //have no idea y this works but does so don't touch it
+							let overhead = 0;
+							verticalBuild += cardLines + overhead;
+						}
 					//total title
 						this.setFont(pdf, 'fontBlue');
-						text = `Totaal bedrag ${this.eurofy(this.total)} EUR verschuldigd op ${due} (#LatePieter)`;
-						let pageCardCount = pages[i].end - pages[i].start;
-						let cardLines = (5 * pageCardCount * newLine) - (newLine * (pageCardCount - 1)); //have no idea y this works but does so don't touch it
-						let overhead = 0;
-						
+						text = `Totaal bedrag ${this.eurofy(this.total)} EUR verschuldigd op ${due} (#LatePieter)`;					
 						pdf.text(text, margin, verticalBuild, {align: 'left'});	
 					//conclusion	
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
@@ -1145,19 +1103,20 @@ Betaling van deze nota dient binnen 14 dagen na ontvangst te geschieden op bankn
 					//bind
 						pdf.text(text, margin, verticalBuild + 5, {align: 'left'});
 					}
+//footer block+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++(must be before table because it .addPage() messes things up)
 				//break line
 					this.setFont(pdf, 'fontHeader');
 					pdf.setLineDash([4, 4], 0);
-					verticalBuild = pageHeight - 110;
-					pdf.line(margin, verticalBuild, pageWidth - margin, verticalBuild); //x1, y1, x2, y2
+					footerBuild = pageHeight - 110;
+					pdf.line(margin, footerBuild, pageWidth - margin, footerBuild); //x1, y1, x2, y2
 				//add footer
 					//doctor address
 						//title
 							this.setFont(pdf, 'fontHeader');
 							text = `Postadres:`;
-							verticalBuild += newLine + 5;
-							retainLine = verticalBuild;
-							pdf.text(text, margin, verticalBuild, {align: 'left'});	
+							footerBuild += newLine + 5;
+							retainLine = footerBuild;
+							pdf.text(text, margin, footerBuild, {align: 'left'});	
 						//information
 							this.setFont(pdf, 'fontDefault');
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
@@ -1168,8 +1127,8 @@ ${this.contact.doctor.email}
 `;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					//bind
-						verticalBuild += newLine;
-						pdf.text(text, margin, verticalBuild, {align: 'left'});	
+						footerBuild += newLine;
+						pdf.text(text, margin, footerBuild, {align: 'left'});	
 					//bank info
 						//title
 							this.setFont(pdf, 'fontHeader');
@@ -1192,9 +1151,9 @@ KVK#: ${this.contact.bank.kvk}`;
 						pdf.text(text, margin, pageHeight - 25, {align: 'left'});
 					//page number
 						this.setFont(pdf, 'fontFooter');
-						text = `pagina ${i} of ${pages.length}`;
+						text = `pagina ${i + 1} of ${pages.length}`;
 						pdf.text(text, pageWidth - margin - 45, pageHeight - 25, {align: 'left'});
-				}//end page build
+				}//end page build loop
 			//download pdf
 				pdf.save(`KK#${invoiceId}.pdf`);
 		},

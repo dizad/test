@@ -82,6 +82,43 @@ class bridge {
             }
         });
     }
+
+//get taunt count
+    static getTauntCount(){
+        return new Promise(async (resolve, reject) => {
+            try{
+                let command = 'getTauntCount';
+                let res = await axios.post(url + command);
+                resolve(res.data);
+            } catch(err){
+                reject(err);
+            }
+        });
+    }
+
+ //get mute option
+    static getMute(){
+        return new Promise(async (resolve, reject) => {
+            try{
+                let command = 'getMute';
+                let res = await axios.post(url + command);
+                resolve(res.data);
+            } catch(err){
+                reject(err);
+            }
+        });
+    }
+
+//set mute option
+    static setMute(params){
+        try{
+            let command = 'setMute';
+            return axios.post(url + command, params
+            );
+        } catch(err){
+            reject(err);
+        }
+    }
 }
 
 //export
