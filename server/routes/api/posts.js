@@ -5,7 +5,6 @@
 //database
     let database = 'factuur';
     //let connectionString = 'mongodb://localhost:27017/database'; //local
-    //let connectionString = 'mongodb+srv://kaquoting:imawolf!@cluster.nq0hm.mongodb.net/cluster?retryWrites=true&w=majority'; //global
     let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
 
 //get token

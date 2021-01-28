@@ -1,7 +1,12 @@
 ﻿/*generics*/
+	html{
+		overflow: hidden !important; /*hide the master overflow*/
+	}
+
 	body{
 		font-family: Roboto;
 		min-height: 100vh;
+		color: orange !important;
 	}
 
 	.fade-enter, .fade-leave-to {
@@ -11,16 +16,9 @@
 	.splashBackground{
 		background: #63b7dd;
 		height: 100%;
-		background-image: linear-gradient(90deg, #0099ff, #8ff8ff);
-		/*      background: #EDEDED;
-      height: 100vh;
-      background-image:
-        linear-gradient(45deg, gray, white), 
-        linear-gradient(lightBlue, #6E6E6E);
-      background-size: 1em 1em, 100% 100%;
-      background-blend-mode: hard-light;*/
+		background-image: linear-gradient(90deg, #ff9900, #fbff00);
 	}
-
+	
 /*modals*/
 	.modal-mask {
 		position: fixed;
@@ -42,4 +40,48 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
 		transition: all .3s ease;
 		font-family: Helvetica, Arial, sans-serif;
+	}
+
+/*fonts*/
+	.header01{
+		color: orangered;
+		font-weight: bolder;
+	}
+
+	.header02{
+		color: white;
+		font-weight: bold;
+	}
+	
+/*scrollbar*/
+	/*width*/
+	::-webkit-scrollbar {
+		width: 20px;
+	}
+  
+	/*track*/
+	::-webkit-scrollbar-track {
+		background: rgba(216, 67,21,1.0);
+	}
+	
+	/*handle default*/
+	::-webkit-scrollbar-thumb {
+		background: #ff9900;
+	}
+	
+	/*hover handle*/
+	::-webkit-scrollbar-thumb:hover {
+		background: #fbff00;
+		cursor: pointer !important;
+	}
+
+/*buttons*/
+	.muteButton{
+		box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+		position: absolute; 
+		right: 30px; 
+		top: 50px; 
+		width: 50px; 
+		height: 50px; 
+		border-radius: 50%;
 	}

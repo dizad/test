@@ -66,7 +66,7 @@
 		</v-btn>
 		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
 		contact dizad87@yahoo.com for login issues<br>
-		izasoft version: 1.00 last update: 01/12/21</span>
+		izasoft version: 1.00 last update: 01/27/21</span>
 </v-card-text>
 </v-form>
 </v-card>
