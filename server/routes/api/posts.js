@@ -4,8 +4,8 @@
     let router = express.Router();
 //database
     let database = 'factuur';
-    //let connectionString = 'mongodb://localhost:27017/database'; //local
-    let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
+    let connectionString = 'mongodb://localhost:27017/database'; //local
+    //let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
 
 //get token
     router.post('/getToken', async (req, res) => {
