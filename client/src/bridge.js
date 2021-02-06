@@ -1,4 +1,4 @@
-//import
+//imports
     import axios from 'axios';
     let url = 'api/posts/';
 
@@ -122,4 +122,4 @@ class bridge {
 }
 
 //export
-export default bridge;
+    export default bridge;

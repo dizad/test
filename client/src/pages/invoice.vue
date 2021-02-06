@@ -13,7 +13,7 @@
 	<span class='title'>INVOICE - <span style='color: yellow; font-weight: bold;'>{{userId.toUpperCase()}}</span></span>
 <!--save button-->
 	<v-btn 
-		style='position: absolute; right: 210px; width: 170px; font-weight: bold;'
+		style='position: absolute; right: 215px; width: 175px; font-weight: bold;'
 		dense dark color='success' 
 		@click='saveAll()'>
 		<v-icon dark left>save</v-icon>
@@ -21,7 +21,7 @@
 	</v-btn>
 <!--logout button-->
 	<v-btn 
-		style='position: absolute; right: 20px; width: 170px; font-weight: bold;'
+		style='position: absolute; right: 20px; width: 175px; font-weight: bold;'
 		dense dark color='success' 
 		@click='logout()'>
 		<v-icon dark left>logout</v-icon>
@@ -42,7 +42,7 @@
 			</v-toolbar-title>
 		<!--sort button-->
 			<v-btn 
-				style='width: 170px; position: absolute; right: 380px; font-weight: bold;'
+				style='width: 175px; position: absolute; right: 390px; font-weight: bold;'
 				dense color='success' 
 				@click='sortCards()'>
 				<v-icon dark left>sort</v-icon>
@@ -50,7 +50,7 @@
 			</v-btn>
 		<!--add button-->
 			<v-btn 
-				style='width: 170px; position: absolute; right: 190px; font-weight: bold;'
+				style='width: 175px; position: absolute; right: 195px; font-weight: bold;'
 				dense color='success' 
 				@click='addCard()'>
 				<v-icon dark left>add_circle</v-icon>
@@ -58,7 +58,7 @@
 			</v-btn>
 		<!--reset button-->
 			<v-btn 
-				style='width: 170px; position: absolute; right: 0px; font-weight: bold;'
+				style='width: 175px; position: absolute; right: 0px; font-weight: bold;'
 				dense dark color='warning' 
 				@click='deleteCards()'>
 				<v-icon dark left>cancel</v-icon>
@@ -82,20 +82,19 @@
 				</v-avatar>
 		</span>
 	<!--date picker-->
-		<span style='width: 290px; position: absolute; top: 10px; left: 70px;' > 
-			<v-layout>
-				<v-menu
-					ref='menu'
-					v-model='card.menu'
+	<span style='width: 290px; position: absolute; top: 10px; left: 70px;' > 
+		<v-dialog
+			ref="menu"
+			v-model='card.showDatePicker'
 					:close-on-content-click='false'
 					:nudge-right='0'
 					transition='scale-transition'
 					offset-y
 					max-width='290px'
 					min-width='290px'
-				>
-				<template v-slot:activator='{ on }'>
-				<v-text-field style='font-weight: bold; '
+			>
+			<template v-slot:activator="{on}">
+			<v-text-field style='font-weight: bold; '
 					label='Date'
 					append-icon='event'
 					outlined readonly
@@ -106,13 +105,17 @@
 					v-on='on'
 					dense
 				></v-text-field>
-				</template>
-				<v-date-picker v-model='card.date' no-title @input='card.menu = false'></v-date-picker>
-				</v-menu>
-			</v-layout>
-		</span>
+			</template>
+			<v-date-picker
+				color='orange darken-4'
+				v-model='card.date' 
+				dense
+				@input='card.showDatePicker = false'
+			></v-date-picker>
+			</v-dialog>
+	</span>
 	<!--delete-->
-		<span style='width: 170px; position: absolute; right: 0px;'>
+		<span style='width: 175px; position: absolute; right: 0px;'>
 			<v-btn 
 				style="font-weight: bold;"
 				dense dark color='warning' 
@@ -129,16 +132,16 @@
             <template v-slot:default>
                 <thead>
 					<tr>
-						<th class='text-left'>
+						<th class='text-left' style='width: 200px;'>
 						Description
 						</th>
-						<th class='text-center'>
+						<th class='text-center' style='width: 400px;'>
 						Quantity
 						</th>
 						<th class='text-center' style='width:50px;'>
 						Unit</th>
 						<th class='text-center' style='width:50px;'></th>
-						<th class='text-center'>
+						<th class='text-center' style='width: 150px;'>
 						Rate
 						</th>
 						<th class='text-center'></th>
@@ -155,122 +158,176 @@
 							Consulting Time
 						</td>
 						<td class='text-center'>
-							<v-text-field
-								v-model='card.consultations.hours'
-								outlined dense
-								placeholder='Type hours...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td class='text-center'>Hrs</td>
-						<td>
-						<span class='header01'>X</span> 
-	  				</td>
-						<td class='text-center'>
-							<v-text-field
-								v-model='card.consultations.rate'
-								outlined dense
-								placeholder='Type rate...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td>
-       						<span class='header01'>=</span>
-						</td>
-						<td class='text-right price'>
-							<span class='header01'>{{getFriendlyPrice(card.consultations.hours * card.consultations.rate)}}</span>
-						</td>
-					</tr>
-				<!--commuting distance-->
-					<tr>
-						<td class='text-left'>
-							<v-icon left>directions_car</v-icon>
-							Commuting Distance
-						</td>
-						<td class='text-center'>
-							<v-text-field
-								v-model='card.commutes.km'
-								outlined dense
-								placeholder='Type km...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td class='text-center'>Km</td>
-						<td>
-						<span class='header01'>X</span> 
-	  				</td>
-						<td class='text-center'>
-							<v-text-field
-								v-model='card.commutes.rate'
-								outlined dense
-								placeholder='Type rate...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td>
-       						<span class='header01'>=</span>
-						</td>
-						<td class='text-right price'>
-							<span class='header01'>{{getFriendlyPrice(card.commutes.km * card.commutes.rate)}}</span>
-						</td>
-					</tr>
-				<!--house call distance-->
-					<tr>
-						<td class='text-left'>
-							<v-icon left>home</v-icon>
-							House Call Distance</td>
-						<td class='text-center'>
-							<v-text-field
-								v-model='card.houseCalls.km'
-								outlined dense
-								placeholder='Type km...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td class='text-center'>Km</td>
-						<td>
-						<span class='header01'>X</span> 
-	  				</td>
-						<td class='text-center'>
-							<v-text-field
-								v-model='card.houseCalls.rate'
-								outlined dense
-								placeholder='Type value...'
-								autocomplete="off"
-								type="number"
-								color='rgba(77, 187, 64, 1.0)'
-								background-color= 'yellow lighten-4'
-								style='margin: 10px 10px -10px 10px; width: 100%; font-weight: bold;'
-							></v-text-field>
-						</td>
-						<td>
-       						<span class='header01'>=</span>
-						</td>
-						<td class='text-right price'>
-							<span class='header01'>{{getFriendlyPrice(card.houseCalls.km * card.houseCalls.rate)}}</span>
-						</td>
-					</tr>
-        		</tbody>
+						<v-row>
+				<!--start time picker-->
+				<v-dialog
+					ref="dialog"
+					v-model="card.consultations.showStartPicker"
+					:return-value.sync="card.consultations.start"
+					persistent
+					full-width
+					width="290px"
+					>
+					<template v-slot:activator="{on}">
+					<v-text-field
+						v-model="card.consultations.start"
+						label="Start Time"
+						append-icon="mdi-clock-outline"
+						background-color= 'yellow lighten-4'
+						style='width: 50px; margin: 10px 10px -15px 10px; font-weight: bold;'
+						autocomplete="off"
+						color='rgba(77, 187, 64, 1.0)'
+						readonly
+						v-on="on"
+						outlined dense
+					></v-text-field>
+					</template>
+					<v-time-picker
+						v-if="card.consultations.showStartPicker"
+						v-model="card.consultations.start"
+						full-width
+						format="24hr"
+						color='orange darken-4'
+						@click:minute="closeTimePicker(card.consultations.start, index, 'start', 'showStartPicker')"
+					>
+					</v-time-picker>
+				</v-dialog>
+				<span class='header01' style='margin-top: 20px;'>&#10143;</span><!--arrow to icon-->
+			<!--end time picker-->
+				<v-dialog
+					ref="dialog"
+					v-model="card.consultations.showEndPicker"
+					:return-value.sync="card.consultations.end"
+					persistent        
+					full-width
+					width="290px"
+				>
+				<template v-slot:activator="{on}">
+				<v-text-field
+					v-model="card.consultations.end"
+					label="End Time"
+					append-icon="mdi-clock-outline"
+					background-color= 'yellow lighten-4'
+					style='width: 50px; margin: 10px 10px -15px 10px; font-weight: bold;'
+					autocomplete="off"
+					color='rgba(77, 187, 64, 1.0)'
+					readonly
+					v-on="on"
+					outlined dense
+				></v-text-field>
+				</template>
+				<v-time-picker
+					v-if="card.consultations.showEndPicker"
+					v-model="card.consultations.end"
+					full-width
+					format="24hr"
+					color='orange darken-4'
+					@click:minute="closeTimePicker(card.consultations.end, index, 'end', 'showEndPicker')"
+				>
+				</v-time-picker>
+				</v-dialog>
+			<span class='header01' style='margin-top: 20px; margin-right: 10px;'>= {{displayTwoDecimals(getHours(card.consultations.start, card.consultations.end))}}</span>
+		</v-row>
+		</td>
+			<td class='text-center'>Hrs</td>
+			<td><span class='header01'>X</span></td>
+			<td class='text-center'>
+				<v-text-field
+					v-model='card.consultations.rate'
+					outlined dense
+					placeholder='Type rate...'
+					autocomplete="off"
+					type="number"
+					color='rgba(77, 187, 64, 1.0)'
+					background-color= 'yellow lighten-4'
+					style='margin: 10px 10px -15px 10px; width: 100%; font-weight: bold;'
+				></v-text-field>
+			</td>
+			<td>
+				<span class='header01'>=</span>
+			</td>
+			<td class='text-right'>
+				<span class='header01'>{{displayTwoDecimals(getHours(card.consultations.start, card.consultations.end) * card.consultations.rate)}} &euro;</span>
+			</td>
+			</tr>
+		<!--commuting distance-->
+			<tr>
+				<td class='text-left'>
+					<v-icon left>directions_car</v-icon>
+					Commuting Distance
+				</td>
+				<td class='text-center'>
+					<v-text-field
+						v-model='card.commutes.km'
+						outlined dense
+						placeholder='Type km...'
+						autocomplete="off"
+						type="number"
+						color='rgba(77, 187, 64, 1.0)'
+						background-color= 'yellow lighten-4'
+						style='margin: 10px 0px -15px 0px; width: 100%; font-weight: bold;'
+					></v-text-field>
+				</td>
+				<td class='text-center'>Km</td>
+				<td><span class='header01'>X</span></td>
+				<td class='text-center'>
+					<v-text-field
+						v-model='card.commutes.rate'
+						outlined dense
+						placeholder='Type rate...'
+						autocomplete="off"
+						type="number"
+						color='rgba(77, 187, 64, 1.0)'
+						background-color= 'yellow lighten-4'
+						style='margin: 10px 10px -15px 10px; width: 100%; font-weight: bold;'
+					></v-text-field>
+				</td>
+				<td>
+					<span class='header01'>=</span>
+				</td>
+				<td class='text-right'>
+					<span class='header01'>{{displayTwoDecimals(card.commutes.km * card.commutes.rate)}} &euro;</span>
+				</td>
+			</tr>
+		<!--house call distance-->
+			<tr>
+				<td class='text-left'>
+					<v-icon left>home</v-icon>
+					House Call Distance</td>
+				<td class='text-center'>
+					<v-text-field
+						v-model='card.houseCalls.km'
+						outlined dense
+						placeholder='Type km...'
+						autocomplete="off"
+						type="number"
+						color='rgba(77, 187, 64, 1.0)'
+						background-color= 'yellow lighten-4'
+						style='margin: 10px 0px -15px 0px; width: 100%; font-weight: bold;'
+					></v-text-field>
+				</td>
+				<td class='text-center'>Km</td>
+				<td><span class='header01'>X</span></td>
+				<td class='text-center'>
+					<v-text-field
+						v-model='card.houseCalls.rate'
+						outlined dense
+						placeholder='Type value...'
+						autocomplete="off"
+						type="number"
+						color='rgba(77, 187, 64, 1.0)'
+						background-color= 'yellow lighten-4'
+						style='margin: 10px 10px -15px 10px; width: 100%; font-weight: bold;'
+					></v-text-field>
+				</td>
+				<td>
+					<span class='header01'>=</span>
+				</td>
+				<td class='text-right'>
+					<span class='header01'>{{displayTwoDecimals(card.houseCalls.km * card.houseCalls.rate)}} &euro;</span>
+				</td>
+			</tr>
+		</tbody>
         </template>
 	</v-simple-table>
 	</v-expansion-panel-content>
@@ -282,13 +339,13 @@
 <v-col class="pt-4 pr-4 pb-4 pl-4 col-md-4" >
 <v-card class='deep-orange darken-4' style='padding: 0px 20px 20px 20px;'>
 <v-toolbar flat class='deep-orange darken-4'>
-        <v-toolbar-title>
-			<v-icon dark left>account_circle</v-icon>
-			<span class='header02'>CONTACT</span>
-		</v-toolbar-title>
+	<v-toolbar-title>
+		<v-icon dark left>account_circle</v-icon>
+		<span class='header02'>CONTACT</span>
+	</v-toolbar-title>
 <!--reset button-->
 	<v-btn 
-		style='width: 170px; position: absolute; right: 0px; font-weight: bold;'
+		style='width: 175px; position: absolute; right: 0px; font-weight: bold;'
 		dense dark color='success' 
 		@click='clearContact()'>
 		<v-icon dark left>power_settings_new</v-icon>
@@ -597,16 +654,15 @@
 <!--footer-->
 <v-footer class="deep-orange" style='border-top-left-radius: 0px; border-top-right-radius: 0px; '>
 <v-row  justify="center" style='padding: 10px 10px 10px 10px;'>
-<!--price-->
+<!--grand total-->
 	<span class='title' style='color: white; font-weight: bold;'>GRAND TOTAL =</span>
 	<v-btn
-		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white; font-weight: bold;'
+		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white; color: orangered; font-weight: bold;'
 		dense
 		outlined
 		dark
-		color="red darken-3"
 		readonly
-	>{{getFriendlyTotal(this.cards)}}
+	>{{getFriendlyTotal(this.cards)}} &euro;
 	</v-btn>
 <!--udpate quote button-->
 	<v-btn 
@@ -706,7 +762,6 @@
 		//reset empties to zeroes
 			this.cards.forEach((a, ai) => {
 			//consultations
-				this.cards[ai].consultations.hours = this.zeroEmpty(a.consultations.hours);
 				this.cards[ai].consultations.rate = this.zeroEmpty(a.consultations.rate);
 			//commutes
 				this.cards[ai].commutes.km = this.zeroEmpty(a.commutes.km);
@@ -733,12 +788,24 @@
 		//notify
 			toastr.success('Logged out successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 		},
+		closeTimePicker(value, index, type, picker){
+		//hide modal(must be before timeout)
+			this.cards[index].consultations[picker] = false;
+		//set value(must be inside time-out)
+			setTimeout(() => {	
+				this.cards[index].consultations[type] = value;
+			}, 0);			
+		},
 	//add jumps
 		addCard(){
 		//main fields
 			let card = {
 				date: this.getNow(),
 				consultations : {
+					showStartPicker: false,
+					showEndPicker: false,
+					start: "00:00",
+					end: "00:00",
 					hours: 0.00,
 					rate: 0.00
 				}, commutes : {
@@ -748,9 +815,9 @@
 					km: 0.00,
 					rate: 0.00
 				}
-			}
+			};
 		//temp fields
-			card.menu = false;
+			card.showDatePicker = false;
 			card.dateFormatted = this.formatDate(this.getNow());
 		//push to global
 			this.cards.push(card);
@@ -794,12 +861,36 @@
 				object[field] = value;	
 			});
 		},
+	//validate and condition data as necessary
+		conditionData(){
+		//validate contact information
+			if(!this.validateContact()){
+				return false;
+			}
+		//validate cards by assigning zero to empties
+			this.zeroEmpties();
+		//make sure end time is after start time
+			let hasTimeError = false;
+			this.cards.forEach((a, ai) => {
+				let startArray = a.consultations.start.split(':');
+				let endArray = a.consultations.end.split(':');
+				let startHour = parseInt(startArray[0]) + parseInt(startArray[1]) / 60;
+				let endHour = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
+				if(endHour < startHour){
+					toastr.error(`Card#<span style='color: yellow; font-weight: bolder;'>${ai + 1}</span> has an end time that is before its start time!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+					hasTimeError = true;
+				}
+			});
+			if(hasTimeError){
+				return false;
+			}
+		//return pass
+			return true;
+		},
 	//save all
 		async saveAll(){
-		//zero empties
-			this.zeroEmpties();
-		//validate page
-			if(!this.validateContact()){
+		//condition data
+			if(!this.conditionData()){
 				return false;
 			}
 		//get params
@@ -810,8 +901,10 @@
 			}
 		//delete temp vars
 			this.cards.forEach(a => {
-				delete a.menu;
+				delete a.showDatePicker;
 				delete a.dateFormatted;
+				delete a.consultations.showStartPicker;
+				delete a.consultations.showEndPicker;
 			});
 		//save data
 			await bridge.saveData(params);
@@ -827,10 +920,8 @@
 		},
 	//download pdf and send email
 		async downloadPdf(){
-		//zero empties
-			this.zeroEmpties();
 		//validate contact
-			if(!this.validateContact()){
+			if(!this.conditionData()){
 				return false;
 			};
 		//validate cards
@@ -842,15 +933,22 @@
 		//get invoice id
 			let result = await bridge.getInvoiceCount();
 			let invoiceId = result.invoiceCount.toString();
-			let digitCount = 4;
-			while(invoiceId.length < digitCount){
+			while(invoiceId.length < this.charCap){
 				invoiceId = `0` + invoiceId;
 			}
 			let prefix = new Date().getFullYear();
 			invoiceId = `${prefix}${invoiceId}`;
 		//get secondary id
-			let truncateZip = this.contact.client.postCode.substring(0, 4);
-			let secondaryId = `${truncateZip}${this.contact.client.streetCode}`;
+			//truncate zip
+				let truncateZip = this.contact.client.postCode.substring(0, 4);
+			//truncate street code
+				let truncateStreetCode = this.contact.client.streetCode;
+				if(truncateStreetCode.length < this.charCap){
+					while(truncateStreetCode.length < this.charCap){
+						truncateStreetCode = `0` + truncateStreetCode;
+					}
+				}
+			let secondaryId = `${truncateZip}${truncateStreetCode}`;
 		//save pdf
 			//init
 				//setup
@@ -969,9 +1067,9 @@ ${this.contact.client.email}
 								this.setFont(pdf, 'fontDefault');
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
 text = `
-Debiteur Nummer: ${secondaryId}
-Factuur Nummer: ${invoiceId}
-Factuur Datum: ${now}`;
+Debiteurnummer: ${secondaryId}
+Factuurnummer: ${invoiceId}
+Factuurdatum: ${now}`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					//bind
 						pdf.text(text, margin + pageWidth - 205, retainLine + 5, {align: 'left'});						
@@ -982,6 +1080,7 @@ Factuur Datum: ${now}`;
 					//intro to content
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
 text = `Geachte mevrouw/mijnheer,
+
 Hierbij brengen wij u het onderstaande in rekening:`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					//bind
@@ -1000,10 +1099,10 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 						//consulting time
 							rows.push({
 								Datum: `${this.formatDate(this.cards[j].date)}`,
-								Aantal: `${this.eurofy(this.cards[j].consultations.hours)} hr(8.00-17.30)`,
+								Aantal: `${this.eurofy(this.getHours(this.cards[j].consultations.start, this.cards[j].consultations.end))} hr(${this.cards[j].consultations.start}-${this.cards[j].consultations.end})`,
 								Omschrijving: `Basisuren`,
 								Tarief: `${this.eurofy(this.cards[j].consultations.rate)} EUR/hr`,
-								Totaal: `${this.eurofy(this.cards[j].consultations.hours * this.cards[j].consultations.rate)} EUR`
+								Totaal: `${this.eurofy(this.getHours(this.cards[j].consultations.start, this.cards[j].consultations.end) * this.cards[j].consultations.rate)} EUR`
 							});
 						//commuting distance
 							rows.push({
@@ -1064,7 +1163,7 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 							'padding': 0
 							}];
 					//update vertical build
-						verticalBuild += newLine;
+						verticalBuild += newLine * 2;
 					//if it has more cards to print on another page, add space to make it more centered
 						if(pages.length > 1){
 							verticalBuild += 27;
@@ -1084,13 +1183,13 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 							verticalBuild = margin;
 						}else{
 							let pageCardCount = pages[i].end - pages[i].start;
-							let cardLines = (5 * pageCardCount * newLine) - (newLine * (pageCardCount - 1)); //have no idea y this works but does so don't touch it
-							let overhead = 0;
-							verticalBuild += cardLines + overhead;
+							let factor = 4.9
+							let cardLines = (factor * pageCardCount * newLine) - (newLine * (pageCardCount - 1)); //have no idea y this works but does so don't touch it
+							verticalBuild += cardLines;
 						}
 					//total title
-						this.setFont(pdf, 'fontBlue');
-						text = `Totaal bedrag ${this.eurofy(this.total)} EUR verschuldigd op ${due} (#LatePieter)`;					
+						this.setFont(pdf, 'fontHeader');
+						text = `Totaal bedrag = ${this.eurofy(this.total)} EUR`;					
 						pdf.text(text, margin, verticalBuild, {align: 'left'});	
 					//conclusion	
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
@@ -1203,24 +1302,33 @@ KVK#: ${this.contact.bank.kvk}`;
 	//replace commas with periods and vice-versa
 		eurofy(value){
 			value = Math.round(value * 100) / 100; //round to 2(required for totals)
-			return value.toLocaleString('de-DE').toString();
+			return value.toLocaleString('de-DE', { maximumFractionDigits : 2, minimumFractionDigits : 2 }).toString();
 		},
 	//getFriendlyTotal
 		getFriendlyTotal(cards){
 			if(cards){
 				let friendly = 0.00;
 				cards.forEach(card => {
-					friendly += card.consultations.hours * card.consultations.rate;
+					friendly += this.getHours(card.consultations.start, card.consultations.end) * card.consultations.rate;
 					friendly += card.commutes.km * card.commutes.rate;
 					friendly += card.houseCalls.km * card.houseCalls.rate;
 				});
 				this.total = friendly;
-				return this.getFriendlyPrice(friendly);
+				return this.displayTwoDecimals(friendly);
 			}
 		},
 //add commas on sets of 3 digits
-	getFriendlyPrice(value){
-		return value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+	displayTwoDecimals(value){
+		//return value.toLocaleString('en-US', { style: 'currency', currency: 'EUR' , maximumFractionDigits : 2, minimumFractionDigits : 2 });
+		return value.toLocaleString('en-US', {maximumFractionDigits : 2, minimumFractionDigits : 2 });
+	},
+//get hours between 2 values
+	getHours(start, end){
+		let startArray = start.split(':');
+		let endArray = end.split(':');
+		let startHour = parseInt(startArray[0]) + parseInt(startArray[1]) / 60;
+		let endHour = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
+		return endHour - startHour;
 	}
 }, 
 //used for picker to update dynamically
@@ -1239,6 +1347,7 @@ KVK#: ${this.contact.bank.kvk}`;
 		userId: '',
 		cards: [],
 		total: 0.00,
+		charCap: 4,
 		contact: {
 			client: {
 				name: '',
@@ -1261,6 +1370,8 @@ KVK#: ${this.contact.bank.kvk}`;
 				kvk: ''
 			}
 		},
+      showTimePicker: false,
+      modal2: false,
 		validate: {
 			required: a => !!a || 'Entry is missing!',
 			number: a => !isNaN(a) || 'Entry is not a number!',

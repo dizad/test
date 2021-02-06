@@ -4,8 +4,8 @@
     let router = express.Router();
 //database
     let database = 'factuur';
-    let connectionString = 'mongodb://localhost:27017/database'; //local
-    //let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
+    //let connectionString = 'mongodb://localhost:27017/database'; //local
+    let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
 
 //get token
     router.post('/getToken', async (req, res) => {
@@ -137,7 +137,7 @@
         if(config && config.tauntCount != null){
         //increment
             config.tauntCount++;
-            let max = 27; //number of total taunts
+            let max = 34; //total number of taunts
             if(config.tauntCount == max){
                 config.tauntCount = 0;
             }

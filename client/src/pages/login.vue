@@ -13,6 +13,8 @@
 			class='muteButton'
 			title='Do shut up...'
 			style='background-color: rgba(76, 175, 80, 1);'
+			tabindex="-1"
+			type="button"
 			@click='setMute(true)'>
 			<v-icon dark>volume_up</v-icon>
 		</button>
@@ -24,6 +26,8 @@
 			class='muteButton'
 			title="Don't shut up..."
 			style='background-color: rgba(251, 140, 0, 1);'
+			tabindex="-1"
+			type="button"
 			@click='setMute(false)'>
 			<v-icon dark>volume_off</v-icon>
 		</button>
