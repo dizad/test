@@ -1188,7 +1188,7 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 							verticalBuild += cardLines;
 						}
 					//total title
-						this.setFont(pdf, 'fontHeader');
+						this.setFont(pdf, 'fontBlue');
 						text = `Totaal bedrag = ${this.eurofy(this.total)} EUR`;					
 						pdf.text(text, margin, verticalBuild, {align: 'left'});	
 					//conclusion	

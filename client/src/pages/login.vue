@@ -133,12 +133,14 @@
 			//update cookie
 				document.cookie = 'user';
 			//play sound effect
-				let result = await bridge.getTauntCount();
-				let tauntId = (result.tauntCount + 1).toString();
-				if(tauntId.length == 1){
-					tauntId = `0` + tauntId;
+				if(this.username != 'test'){
+					let result = await bridge.getTauntCount();
+					let tauntId = (result.tauntCount + 1).toString();
+					if(tauntId.length == 1){
+						tauntId = `0` + tauntId;
+					}
+					new Audio(`taunts/${tauntId}.mp3`).play();
 				}
-				new Audio(`taunts/${tauntId}.mp3`).play();
 			//redirect
 				this.$router.push({ path: `/invoice/${this.username}`});
 			}else{
