@@ -768,7 +768,10 @@
 				this.cards = data.cards;
 			}
 			if(Object.keys(data.contact).length > 0){
+			//bind data
 				this.contact = data.contact;
+			//sort clients
+				this.contact.clients.sort((a, b) => a.id.localeCompare(b.id));
 			}
 		}
 	},
@@ -949,8 +952,6 @@
 			if(!this.validateContact()){
 				return false;
 			}
-		//sort clients
-			this.contact.clients.sort((a, b) => a.id.localeCompare(b.id));
 		//validate cards by assigning zero to empties
 			this.zeroEmpties();
 		//make sure end time is after start time
