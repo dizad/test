@@ -32,8 +32,9 @@
 <v-form ref='form' lazy-validation style='height: 100%; background-color: rgba(156, 43, 10, 1.0)'>
 	<v-row no-gutters>	
 	<!--card column-->
-	<v-col class="pt-4 pr-4 pb-4 pl-4 col-md-8" style='overflow-y: scroll; height: calc(100vh - 200px)'><!--col-md-9 is the MASTER WIDTH of col-->
-<v-card class='deep-orange darken-4' style='padding: 0px 20px 0px 20px;'>
+<!--MASTER LEFT COL------------------------------------------------------------------------------------------------------------------------------------------->	
+	<v-col :class="colSize.left" style='overflow-y: scroll; height: calc(100vh - 200px)'><!--MASTER LEFT COL->col-md-9 is the MASTER WIDTH-->
+	<v-card class='deep-orange darken-4' style='resize: horizontal; padding: 0px 20px 0px 20px;'>
       <v-toolbar flat class='deep-orange darken-4'>
 		<!--toolbar-->
 			<v-toolbar-title>
@@ -336,11 +337,23 @@
 </v-card>
 </v-col>
 <!--contact card-->
-<v-col class="pt-4 pr-4 pb-4 pl-4 col-md-4" >
+<!--MASTER RIGHT COL------------------------------------------------------------------------------------------------------------------------------------------->
+<v-col :class="colSize.right">
 <v-card class='deep-orange darken-4' style='padding: 0px 20px 20px 20px;'>
 <v-toolbar flat class='deep-orange darken-4'>
+	<!--toggle button-->
+		<v-btn 
+			style='width: 50px; font-weight: bold; padding: 0px; margin-left: -15px; margin-right: 10px;'
+			title='Toggle the width of the column...'
+			dense dark color='success'
+			@click='toggleColSize()'>
+			<v-icon style='font-weight: bold' v-if='isLeftLong'>arrow_back</v-icon>
+			<v-icon style='font-weight: bold' v-if='!isLeftLong'>arrow_forward</v-icon>
+		</v-btn>
 	<v-toolbar-title>
+	<!--icon-->
 		<v-icon dark left>account_circle</v-icon>
+	<!--label-->
 		<span class='header02'>CONTACT</span>
 	</v-toolbar-title>
 <!--reset button-->
@@ -361,13 +374,60 @@
 				Client
 			</span>
         </v-expansion-panel-header>
-	<v-expansion-panel-content>
-	<!--label-->
+	<v-expansion-panel-content style='background-color: #FFF176;'>
+	<!--list-->
+		<v-row>
+		<!--new client textbox-->
+			<v-text-field 
+				v-model='newClient'
+				outlined dense
+				label='New Client Id'
+				placeholder='Type client id...'
+				autocomplete="off"
+				type="text"
+				color='rgba(77, 187, 64, 1.0)'
+				background-color= 'yellow lighten-4'
+				style='margin: 20px 20px 0px 10px;'
+			></v-text-field>
+		<!--add client button-->
+			<v-btn
+				style='width: 175px; margin: 20px 10px 0px 0px; font-weight: bold;'
+				dense dark color='success' 
+				@click='addClient()'
+				><v-icon dark left>add_circle</v-icon>
+				ADD CLIENT
+			</v-btn>
+		</v-row>
+		<v-row style='margin-bottom: -20px;'>
+		<!--client dropdown-->
+			<v-autocomplete
+				style='margin: 0px 10px 0px 10px;'
+				background-color= 'yellow lighten-4'
+				v-model='contact.clientId'
+				:items="contact.clients"
+				dense
+				outlined
+				item-text="id"
+                item-value="id"
+				label="Client Book"
+				color='rgba(77, 187, 64, 1.0)'
+				@change="selectedClientChanged()"
+			></v-autocomplete>
+		<!--delete client button-->
+			<v-btn
+				style='width: 175px; margin: 0px 10px 0px 10px; font-weight: bold;'
+				dense dark color='warning' 
+				@click='deleteClient()'
+				><v-icon dark left>cancel</v-icon>
+				DELETE CLIENT
+			</v-btn>
+		</v-row>
+		<v-card style='margin-top: 20px; margin-bottom: 10px;' v-if="contact.clients.length"><!--client contact card-->
 		<v-row>
 	<!--name--> 
 		<v-col>
 			<v-text-field 
-				v-model='contact.client.name'
+				v-model='contact.clients[contact.clientIndex].name'
 				:rules='[validate.required]'
 				outlined dense
 				label='Name'
@@ -376,13 +436,13 @@
 				type="text"
 				color='rgba(77, 187, 64, 1.0)'
 				background-color= 'yellow lighten-4'
-				style='margin: 20px 0px 0px 20px;'
+				style='margin: 10px 0px 0px 20px;'
 			></v-text-field>
 		</v-col>
 	<!--e-mail-->
 		<v-col>
 			<v-text-field
-				v-model='contact.client.email'
+				v-model='contact.clients[contact.clientIndex].email'
 				:rules='[validate.required, validate.email]'
 				outlined dense
 				label='E-mail'
@@ -391,7 +451,7 @@
 				type="text"
 				color='rgba(77, 187, 64, 1.0)'
 				background-color= 'yellow lighten-4'
-				style='margin: 20px 20px 0px 0px;'
+				style='margin: 10px 20px 0px 0px;'
 			></v-text-field>
 		</v-col>
 		</v-row>
@@ -399,7 +459,7 @@
 	<!--street name--> 
 		<v-col>
 			<v-text-field 
-				v-model='contact.client.streetName'
+				v-model='contact.clients[contact.clientIndex].streetName'
 				:rules='[validate.required]'
 				outlined dense
 				label='Street Name'
@@ -414,7 +474,7 @@
 	<!--street number-->
 		<v-col>
 			<v-text-field
-				v-model='contact.client.streetCode'
+				v-model='contact.clients[contact.clientIndex].streetCode'
 				:rules='[validate.required]'
 				outlined dense
 				label='Street Number'
@@ -431,7 +491,7 @@
 	<!--post code--> 
 		<v-col>
 			<v-text-field 
-				v-model='contact.client.postCode'
+				v-model='contact.clients[contact.clientIndex].postCode'
 				:rules='[validate.required]'
 				outlined dense
 				label='Post Code'
@@ -446,7 +506,7 @@
 	<!--city-->
 		<v-col>
 			<v-text-field
-				v-model='contact.client.city'
+				v-model='contact.clients[contact.clientIndex].city'
 				:rules='[validate.required]'
 				outlined dense
 				label='City'
@@ -459,6 +519,7 @@
 			></v-text-field>
 		</v-col>
 	</v-row>
+	</v-card>
 	</v-expansion-panel-content>
 </v-expansion-panel>
 <!--doctor-->
@@ -718,16 +779,21 @@
 		//init
 			let isValid = true;
 			let keys = [];
+		//check that clients exist
+			if(this.contact.clients.length <= 0){
+				toastr.error(`At least one client is required in the book!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				return false;
+			}
 		//check client
-			keys = Object.keys(this.contact.client);
+			keys = Object.keys(this.contact.clients[this.contact.clientIndex]);
 			keys.forEach(field => {
-				if(this.validate.required(this.contact.client[field]) != true){
-					toastr.error(`Client field [${field}] is required!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				if(this.validate.required(this.contact.clients[this.contact.clientIndex][field]) != true){
+					toastr.error(`Client field [${this.friendlies[field]}] is required!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					isValid = false; 
 				}
 				if(field == 'email'){
-					if(this.validate.email(this.contact.client[field]) != true){
-						toastr.error(`Client field [${field}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+					if(this.validate.email(this.contact.clients[this.contact.clientIndex][field]) != true){
+						toastr.error(`Client field [${this.friendlies[field]}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 						isValid = false; 
 					}
 				}
@@ -736,12 +802,12 @@
 			keys = Object.keys(this.contact.doctor);
 			keys.forEach(field => {
 				if(this.validate.required(this.contact.doctor[field]) != true){
-					toastr.error(`Doctor field [${field}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+					toastr.error(`Doctor field [${this.friendlies[field]}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					isValid = false; 
 				}
 				if(field == 'email'){
 					if(this.validate.email(this.contact.doctor[field]) != true){
-						toastr.error(`Doctor field [${field}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+						toastr.error(`Doctor field [${this.friendlies[field]}] is not in x@x.com format!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 						isValid = false; 
 					}
 				}
@@ -750,7 +816,7 @@
 			keys = Object.keys(this.contact.bank);
 			keys.forEach(field => {
 				if(this.validate.required(this.contact.bank[field]) != true){
-					toastr.error(`Bank field [${field}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+					toastr.error(`Bank field [${this.friendlies[field]}] is invalid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					isValid = false; 
 				}
 			});
@@ -795,6 +861,9 @@
 			setTimeout(() => {	
 				this.cards[index].consultations[type] = value;
 			}, 0);			
+		},
+		selectedClientChanged(){
+		//	this.contact.clientId = ;
 		},
 	//add jumps
 		addCard(){
@@ -841,7 +910,7 @@
 	//reset all fields
 		clearContact(){
 		//reset keys
-			this.resetKeys(this.contact.client, '');
+			this.resetKeys(this.contact.clients[this.contact.clientIndex], '');
 			this.resetKeys(this.contact.doctor, '');
 			this.resetKeys(this.contact.bank, '');
 		//notify
@@ -854,6 +923,19 @@
 		//notify
 			toastr.success('Card(s) deleted successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			},
+	//toggle the width of the col
+		toggleColSize(){
+			this.isLeftLong = !this.isLeftLong;
+			if(this.isLeftLong){
+				let temp = this.colSize.right;
+				this.colSize.right = this.colSize.left;
+				this.colSize.left = temp;
+			} else{
+				let temp = this.colSize.left;
+				this.colSize.left = this.colSize.right;
+				this.colSize.right = temp;
+			}
+		},
 	//reset all keys
 		resetKeys(object, value){
 			let keys = Object.keys(object);
@@ -867,6 +949,8 @@
 			if(!this.validateContact()){
 				return false;
 			}
+		//sort clients
+			this.contact.clients.sort((a, b) => a.id.localeCompare(b.id));
 		//validate cards by assigning zero to empties
 			this.zeroEmpties();
 		//make sure end time is after start time
@@ -940,9 +1024,9 @@
 			invoiceId = `${prefix}${invoiceId}`;
 		//get secondary id
 			//truncate zip
-				let truncateZip = this.contact.client.postCode.substring(0, 4);
+				let truncateZip = this.contact.clients[this.contact.clientIndex].postCode.substring(0, 4);
 			//truncate street code
-				let truncateStreetCode = this.contact.client.streetCode;
+				let truncateStreetCode = this.contact.clients[this.contact.clientIndex].streetCode;
 				if(truncateStreetCode.length < this.charCap){
 					while(truncateStreetCode.length < this.charCap){
 						truncateStreetCode = `0` + truncateStreetCode;
@@ -1050,10 +1134,10 @@
 						//client address
 							this.setFont(pdf, 'fontDefault');
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************		
-text = `${this.contact.client.name}
-${this.contact.client.streetName} ${this.contact.client.streetCode}
-${this.contact.client.postCode} ${this.contact.client.city}
-${this.contact.client.email}
+text = `${this.contact.clients[this.contact.clientIndex].name}
+${this.contact.clients[this.contact.clientIndex].streetName} ${this.contact.clients[this.contact.clientIndex].streetCode}
+${this.contact.clients[this.contact.clientIndex].postCode} ${this.contact.clients[this.contact.clientIndex].city}
+${this.contact.clients[this.contact.clientIndex].email}
 `;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 							verticalBuild += newLine;
@@ -1188,7 +1272,7 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 							verticalBuild += cardLines;
 						}
 					//total title
-						this.setFont(pdf, 'fontBlue');
+						this.setFont(pdf, 'fontHeader');
 						text = `Totaal bedrag = ${this.eurofy(this.total)} EUR`;					
 						pdf.text(text, margin, verticalBuild, {align: 'left'});	
 					//conclusion	
@@ -1329,6 +1413,45 @@ KVK#: ${this.contact.bank.kvk}`;
 		let startHour = parseInt(startArray[0]) + parseInt(startArray[1]) / 60;
 		let endHour = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
 		return endHour - startHour;
+	},
+//add client
+	addClient(){
+	//check for empty
+		if(!this.newClient){
+			toastr.error('New client id is missing!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			return false;
+		}
+	//check for existing
+		else if(this.contact.clients.some(a => a.id == this.newClient)){
+			toastr.error('New client id already exists!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			return false;
+		}
+	//add client
+		this.contact.clients.unshift({
+			id: this.newClient,
+			name: '',
+			email: '',
+			streetName: '',
+			streetCode: '',
+			postCode: '',
+			city: ''
+		});
+	//contact
+		this.contact.clientId = this.newClient;
+		this.newClient = '';		
+	//notify
+		toastr.success(`Client added successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+	},
+//delete client
+	deleteClient(){
+		if(this.contact.clients.length < 1){
+			toastr.error(`There are no clients to delete!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+			return false;
+		}else{
+			this.contact.clients.splice(this.contact.clientIndex, 1);
+			this.contact.clientId = this.contact.clients[0].id;
+			toastr.success(`Client deleted successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+		}
 	}
 }, 
 //used for picker to update dynamically
@@ -1340,6 +1463,10 @@ KVK#: ${this.contact.bank.kvk}`;
 					this.cards[ai].dateFormatted = this.formatDate(this.cards[ai].date);
 				});
 			}
+		}, 'contact.clientId':  {
+			handler: function(){
+				this.contact.clientIndex = this.contact.clients.findIndex(a => a.id == this.contact.clientId);
+			}
 		}
 	},
 //global variables
@@ -1348,38 +1475,59 @@ KVK#: ${this.contact.bank.kvk}`;
 		cards: [],
 		total: 0.00,
 		charCap: 4,
+		isLeftLong: true,
+		colSize: {
+			left: 'pt-4 pr-4 pb-4 pl-4 col-md-8',
+			right: 'pt-4 pr-4 pb-4 pl-4 col-md-4'
+		},
+		newClient: '',
 		contact: {
-			client: {
+			clientId: 'Default',
+			clientIndex: 0, 
+			doctor: {
 				name: '',
 				email: '',
 				streetName: '',
 				streetCode: '',
 				postCode: '',
 				city: ''
-			}, doctor: {
-				name: '',
-				email: '',
-				streetName: '',
-				streetCode: '',
-				postCode: '',
-				city: ''
-			}, bank:{
+			}, bank: {
 				rabobank: '',
 				iban: '',
 				bic: '',
 				kvk: ''
-			}
+			},  clients: [{
+				id: 'Default',
+				name: '',
+				email: '',
+				streetName: '',
+				streetCode: '',
+				postCode: '',
+				city: ''
+			}]
 		},
-      showTimePicker: false,
-      modal2: false,
-		validate: {
-			required: a => !!a || 'Entry is missing!',
-			number: a => !isNaN(a) || 'Entry is not a number!',
-			email: a => {        
-				let regex = new RegExp(/.+@.+\..+/);
-				return regex.test(a) || 'Email is not in x@x.x format!';
+	  	friendlies: {
+			name: 'Name',
+			email: 'E-mail',
+			streetName: 'Street Name',
+			streetCode: 'Street Code',
+			postCode: 'Post Code',
+			city: 'City',
+			rabobank: 'RABOBANK#',
+			iban: 'IBAN#',
+			bic: 'BIC#',
+			kvk: 'KVK#'
+	  	},
+		showTimePicker: false,
+		modal2: false,
+			validate: {
+				required: a => !!a || 'Entry is missing!',
+				number: a => !isNaN(a) || 'Entry is not a number!',
+				email: a => {        
+					let regex = new RegExp(/.+@.+\..+/);
+					return regex.test(a) || 'Email is not in x@x.x format!';
+				}
 			}
-		}
 	})
 }
 </script>
