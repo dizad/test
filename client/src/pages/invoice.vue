@@ -1027,12 +1027,16 @@
 			//truncate zip
 				let truncateZip = this.contact.clients[this.contact.clientIndex].postCode.substring(0, 4);
 			//truncate street code
-				let truncateStreetCode = this.contact.clients[this.contact.clientIndex].streetCode;
-				if(truncateStreetCode.length < this.charCap){
-					while(truncateStreetCode.length < this.charCap){
-						truncateStreetCode = `0` + truncateStreetCode;
+				//remove numbers
+					let rawStreetCode = this.contact.clients[this.contact.clientIndex].streetCode;
+					let streetCodeNumbers = rawStreetCode.match(/\d/g);
+					let truncateStreetCode = streetCodeNumbers.join("");
+				//make 4 chars
+					if(truncateStreetCode.length < this.charCap){
+						while(truncateStreetCode.length < this.charCap){
+							truncateStreetCode = `0` + truncateStreetCode;
+						}
 					}
-				}
 			let secondaryId = `${truncateZip}${truncateStreetCode}`;
 		//save pdf
 			//init
