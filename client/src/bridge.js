@@ -83,6 +83,16 @@ class bridge {
         });
     }
 
+//save invoice count
+static saveInvoiceCount(params){
+    try{
+        let command = 'saveInvoiceCount';
+        return axios.post(url + command, params);
+    } catch(err){
+        reject(err);
+    }
+}
+
 //get taunt count
     static getTauntCount(){
         return new Promise(async (resolve, reject) => {

@@ -718,16 +718,41 @@
 <!--grand total-->
 	<span class='title' style='color: white; font-weight: bold;'>GRAND TOTAL =</span>
 	<v-btn
-		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white; color: orangered; font-weight: bold;'
-		dense
-		outlined
-		dark
+		style='width: 200px; margin: 0px 10px 0px 10px; background-color: white; font-weight: bold; color: orangered;'
+		elevated dense
+		elevation = '2'
 		readonly
 	>{{getFriendlyTotal(this.cards)}} &euro;
 	</v-btn>
+<!--invoice count-->
+	<span class='title' style='color: white; font-weight: bold;'>INVOICE COUNT# =</span>
+	<span style='width: 200px;'>
+		<v-text-field
+			v-model='invoiceCount'
+			solo dense hide-details
+			placeholder='Type count#...'
+			autocomplete="off"
+			type="number"
+			background-color= 'white'
+			style='font-weight: bold; margin: 0px 10px 0px 10px;'
+		></v-text-field>
+	</span>
+<!--invoice id#-->
+	<span class='title' style='color: white; font-weight: bold;'>INVOICE ID# =</span>
+	<span style='width: 200px;'>
+		<v-text-field
+			v-model='invoiceId'
+			solo dense hide-details
+			placeholder='Type id#...'
+			autocomplete="off"
+			type="text"
+			background-color= 'white'
+			style='font-weight: bold; margin: 0px 20px 0px 10px;'
+		></v-text-field>
+	</span>
 <!--udpate quote button-->
 	<v-btn 
-		style='width: 200px; margin: 0px 20px 0px 10px; color: orangered; font-weight: bold;'
+		style='width: 200px; margin: 0px 20px 0px 0px; color: orangered; font-weight: bold;'
 		dense color='yellow accent-2'
 		@click='downloadPdf()'>
 		<v-icon dark left>arrow_circle_down</v-icon>
@@ -774,9 +799,26 @@
 				this.contact.clients.sort((a, b) => a.id.localeCompare(b.id));
 			}
 		}
+	//update invoice numbers
+		this.updateInvoiceNumbers();
 	},
 //custom methods
 	methods: {
+	//update invoice numbers
+		async updateInvoiceNumbers(){
+		//get invoice id
+			let result = await bridge.getInvoiceCount();
+			this.invoiceCount = result.invoiceCount.toString();
+		},
+	//update invoice id
+		updateInvoiceId(){
+			this.invoiceId = this.invoiceCount;
+			while(this.invoiceId.length < this.charCap){
+				this.invoiceId = `0` + this.invoiceId;
+			}
+			let prefix = new Date().getFullYear();
+			this.invoiceId = `${prefix}${this.invoiceId}`;
+		},
 	//validate page
 		validateContact(){
 		//init
@@ -969,6 +1011,16 @@
 			if(hasTimeError){
 				return false;
 			}
+		//condition invoiceCount
+			if(!this.invoiceCount || this.validate.number(this.invoiceCount) != true){
+				toastr.error(`The provided invoice count# is not valid!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				return false;
+			}
+		//condition invoiceId
+			if(!this.invoiceId){
+				toastr.error(`The provided invoice id# is required!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				return false;
+			}
 		//return pass
 			return true;
 		},
@@ -994,7 +1046,7 @@
 		//save data
 			await bridge.saveData(params);
 		//notify
-			toastr.success('Card(s) saved successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});	
+			toastr.success('Card(s) saved successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 		},
 	//control phone#
 		controlPhone() {
@@ -1015,14 +1067,6 @@
 				toastr.error('No cards were added!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});	
 				return false;
 			}
-		//get invoice id
-			let result = await bridge.getInvoiceCount();
-			let invoiceId = result.invoiceCount.toString();
-			while(invoiceId.length < this.charCap){
-				invoiceId = `0` + invoiceId;
-			}
-			let prefix = new Date().getFullYear();
-			invoiceId = `${prefix}${invoiceId}`;
 		//get secondary id
 			//truncate zip
 				let truncateZip = this.contact.clients[this.contact.clientIndex].postCode.substring(0, 4);
@@ -1157,7 +1201,7 @@ ${this.contact.clients[this.contact.clientIndex].email}
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
 text = `
 Debiteurnummer: ${secondaryId}
-Factuurnummer: ${invoiceId}
+Factuurnummer: ${this.invoiceId}
 Factuurdatum: ${now}`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					//bind
@@ -1284,7 +1328,7 @@ Hierbij brengen wij u het onderstaande in rekening:`;
 //RESERVED TEXT-DON'T CHANGE BELOW***********************************************************************************************************************************************	
 text = `
 Betaling van deze nota dient binnen 14 dagen na ontvangst te geschieden op banknummer
-(IBAN) ${this.contact.bank.iban} t.n.v. K.M.M. Kievit o.v.v. factuurnummer ${invoiceId}`;
+(IBAN) ${this.contact.bank.iban} t.n.v. K.M.M. Kievit o.v.v. factuurnummer ${this.invoiceId}`;
 //RESERVED TEXT-DON'T CHANGE ABOVE***********************************************************************************************************************************************
 					//update font
 						this.setFont(pdf, 'fontDefault');
@@ -1335,7 +1379,7 @@ KVK#: ${this.contact.bank.kvk}`;
 							pdf.text(text, margin + pageWidth - 205, retainLine + 5, {align: 'left'});	
 					//invoice id
 						this.setFont(pdf, 'fontFooter');
-						text = `${invoiceId} / ${secondaryId}`;
+						text = `${this.invoiceId} / ${secondaryId}`;
 						pdf.text(text, margin, pageHeight - 25, {align: 'left'});
 					//page number
 						this.setFont(pdf, 'fontFooter');
@@ -1343,7 +1387,15 @@ KVK#: ${this.contact.bank.kvk}`;
 						pdf.text(text, pageWidth - margin - 45, pageHeight - 25, {align: 'left'});
 				}//end page build loop
 			//download pdf
-				pdf.save(`KK#${invoiceId}.pdf`);
+				pdf.save(`KK#${this.invoiceId}.pdf`);
+			//save new invoice count
+				this.invoiceCount++;
+				let params = {
+					invoiceCount: this.invoiceCount
+				}
+				await bridge.saveInvoiceCount(params);
+			//update invoice numbers
+				this.updateInvoiceNumbers();
 		},
 	//pdf helpers
 		setFont(pdf, type){
@@ -1472,11 +1524,17 @@ KVK#: ${this.contact.bank.kvk}`;
 			handler: function(){
 				this.contact.clientIndex = this.contact.clients.findIndex(a => a.id == this.contact.clientId);
 			}
+		}, 'invoiceCount':  {
+			handler: function(){
+				this.updateInvoiceId();
+			}
 		}
 	},
 //global variables
 	data: global => ({
 		userId: '',
+		invoiceId: '',
+		invoiceCount: '',
 		cards: [],
 		total: 0.00,
 		charCap: 4,
@@ -1525,14 +1583,14 @@ KVK#: ${this.contact.bank.kvk}`;
 	  	},
 		showTimePicker: false,
 		modal2: false,
-			validate: {
-				required: a => !!a || 'Entry is missing!',
-				number: a => !isNaN(a) || 'Entry is not a number!',
-				email: a => {        
-					let regex = new RegExp(/.+@.+\..+/);
-					return regex.test(a) || 'Email is not in x@x.x format!';
-				}
+		validate: {
+			required: a => !!a || 'Entry is missing!',
+			number: a => !isNaN(a) || 'Entry is not a number!',
+			email: a => {        
+				let regex = new RegExp(/.+@.+\..+/);
+				return regex.test(a) || 'Email is not in x@x.x format!';
 			}
+		}
 	})
 }
 </script>

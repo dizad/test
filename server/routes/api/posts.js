@@ -112,19 +112,27 @@
         let result = {};
         let config = await collection.findOne({_id: 'master'});
         if(config && config.invoiceCount != null){
-        //increment
-            config.invoiceCount++;
-        //update
-            let filter = {_id: 'master'};
-            let update = {
-                $set: {invoiceCount: config.invoiceCount}
-            };
-            await collection.updateOne(filter, update);
-        //bind
             result.invoiceCount = config.invoiceCount;           
         }
     //return
         res.send(result);
+    });
+
+//save invoice count
+    router.post('/saveInvoiceCount', async (req, res) => {
+    //get collection
+        let collection = await loadCollection('configs');
+    //get params
+        let invoiceCount = req.body.invoiceCount;
+        let update = {
+            $set: { invoiceCount: invoiceCount }
+        };
+    //get filter
+        let filter = { _id: 'master' };
+    //query
+        await collection.updateOne(filter, update);
+    //return
+        res.status(201).send();
     });
 
 //get taunt count
