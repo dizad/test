@@ -227,6 +227,7 @@
 				>
 				</v-time-picker>
 				</v-dialog>
+			<!--time difference-->
 			<span class='header01' style='margin-top: 20px; margin-right: 10px;'>= {{displayTwoDecimals(getHours(card.consultations.start, card.consultations.end))}}</span>
 		</v-row>
 		</td>
@@ -999,11 +1000,8 @@
 		//make sure end time is after start time
 			let hasTimeError = false;
 			this.cards.forEach((a, ai) => {
-				let startArray = a.consultations.start.split(':');
-				let endArray = a.consultations.end.split(':');
-				let startHour = parseInt(startArray[0]) + parseInt(startArray[1]) / 60;
-				let endHour = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
-				if(endHour < startHour){
+				let diff = this.getHours(a.consultations.start, a.consultations.end);
+				if(diff < 0){
 					toastr.error(`Card#<span style='color: yellow; font-weight: bolder;'>${ai + 1}</span> has an end time that is before its start time!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 					hasTimeError = true;
 				}
@@ -1469,7 +1467,11 @@ KVK#: ${this.contact.bank.kvk}`;
 		let endArray = end.split(':');
 		let startHour = parseInt(startArray[0]) + parseInt(startArray[1]) / 60;
 		let endHour = parseInt(endArray[0]) + parseInt(endArray[1]) / 60;
-		return endHour - startHour;
+		let diff = endHour - startHour;
+		if(endHour == 0 && diff < 0){
+			diff = 24 - startHour;
+		}
+		return diff;
 	},
 //add client
 	addClient(){
