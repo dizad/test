@@ -955,10 +955,16 @@
 		},
 	//reset all fields
 		clearContact(){
-		//reset keys
-			this.resetKeys(this.contact.clients[this.contact.clientIndex], '');
+		//reset clients
+			let tempClients = JSON.parse(JSON.stringify(this.contact.clients));
+			let tempClient = JSON.parse(JSON.stringify(this.contact.clients[this.contact.clientIndex]));
+			this.resetKeys(tempClient, '');
+			this.contact.clients = tempClients;
+			this.contact.clients[this.contact.clientIndex] = tempClient;
+		//reset doctor
 			this.resetKeys(this.contact.doctor, '');
-			this.resetKeys(this.contact.bank, '');
+		//reset bank
+			this.resetKeys(this.contact.bank, '');		
 		//notify
 			toastr.success('Contact cleared successfully!', ``, {'closeButton': true, positionClass: 'toast-bottom-right'});	
 		},
