@@ -956,11 +956,7 @@
 	//reset all fields
 		clearContact(){
 		//reset clients
-			let tempClients = JSON.parse(JSON.stringify(this.contact.clients));
-			let tempClient = JSON.parse(JSON.stringify(this.contact.clients[this.contact.clientIndex]));
-			this.resetKeys(tempClient, '');
-			this.contact.clients = tempClients;
-			this.contact.clients[this.contact.clientIndex] = tempClient;
+			this.resetKeys(this.contact.clients[this.contact.clientIndex], '');
 		//reset doctor
 			this.resetKeys(this.contact.doctor, '');
 		//reset bank
@@ -991,8 +987,10 @@
 	//reset all keys
 		resetKeys(object, value){
 			let keys = Object.keys(object);
-			keys.forEach(field => {
-				object[field] = value;	
+			keys.forEach(field =>{
+				if(field != 'id'){
+					object[field] = value;	
+				}
 			});
 		},
 	//validate and condition data as necessary
@@ -1509,12 +1507,16 @@ KVK#: ${this.contact.bank.kvk}`;
 	},
 //delete client
 	deleteClient(){
-		if(this.contact.clients.length < 1){
+		if(this.contact.clients.length == 0){
 			toastr.error(`There are no clients to delete!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			return false;
 		}else{
 			this.contact.clients.splice(this.contact.clientIndex, 1);
-			this.contact.clientId = this.contact.clients[0].id;
+			if(this.contact.clients.length == 0){
+				this.contact.clientId = 'Default';
+			}else{
+				this.contact.clientId = this.contact.clients[0].id;
+			}
 			toastr.success(`Client deleted successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 		}
 	}
