@@ -12,5 +12,5 @@
   new vue({
     router: new router({routes: paths}),
     vuetify: new vuetify({}),
-    render: h => h(app)
+    render: a => a(app)
   }).$mount('#app')

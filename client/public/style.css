@@ -5,24 +5,42 @@
 
 	body{
 		font-family: Roboto;
-		min-height: 100vh;
-		color: orange !important;
 	}
 
-	.fade-enter, .fade-leave-to {
-		opacity: 0;
-	}
-
-	.splashBackground{
+	.back-plate{
 		background: #63b7dd;
 		height: 100%;
-		background-image: linear-gradient(90deg, #ff9900, #fbff00);
+		background-image: linear-gradient(90deg, #3b4bda, #0099ff);
 	}
-	
+
+/*calendar*/
+	.my-event {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		border-radius: 2px;
+		background-color: #1867c0;
+		color: #ffffff;
+		border: 1px solid #1867c0;
+		font-size: 12px;
+		padding: 3px;
+		cursor: pointer;
+		margin-bottom: 1px;
+		left: 4px;
+		margin-right: 8px;
+		position: relative;
+	}
+		
+		.my-event.with-time {
+		position: absolute;
+		right: 4px;
+		margin-right: 0px;
+	}
+
 /*modals*/
-	.modal-mask {
+	.modal-mask{
 		position: fixed;
-		z-index: 9998;
+		z-index: 100;
 		top: 0;
 		left: 0;
 		width: 100%;
@@ -31,7 +49,7 @@
 		transition: opacity .3s ease;
 	}
 
-	.modal-container {
+	.modal-container{
 		width: 400px;/*master width of modals*/
 		margin: 40px auto 0;
 		padding: 20px 30px;
@@ -42,46 +60,69 @@
 		font-family: Helvetica, Arial, sans-serif;
 	}
 
-/*fonts*/
-	.header01{
-		color: orangered;
-		font-weight: bolder;
+	.fade-enter, .fade-leave-to{
+		opacity: 0;
 	}
 
-	.header02{
-		color: white;
+/*panels*/
+	.dizagara-panel-header{
+		color: #427197;
 		font-weight: bold;
+		background-color: #e2f3ff;
+		border-bottom: 1px solid #8096a3;
+		padding: 5px;
 	}
-	
-/*scrollbar*/
-	/*width*/
-	::-webkit-scrollbar {
-		width: 20px;
+
+	.dizagara-panel-body{
+		border: 1px solid #8096a3 !important;
 	}
-  
-	/*track*/
-	::-webkit-scrollbar-track {
-		background: rgba(216, 67,21,1.0);
+
+	.dizagara-panel-height-01{
+		height: 250px;
 	}
-	
-	/*handle default*/
-	::-webkit-scrollbar-thumb {
-		background: #ff9900;
+
+/*cards*/
+/*auxiliaries*/
+
+
+
+/*icons*/
+	.dizagara-icon-gray{
+		color: #6b6b6b
 	}
-	
-	/*hover handle*/
-	::-webkit-scrollbar-thumb:hover {
-		background: #fbff00;
-		cursor: pointer !important;
+
+	.dizagara-icon-right{
+		margin-right: 3px;
 	}
+
+/*textboxes*/
 
 /*buttons*/
-	.muteButton{
-		box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-		position: absolute; 
-		right: 30px; 
-		top: 50px; 
-		width: 50px; 
-		height: 50px; 
-		border-radius: 50%;
+.dizagara-outline-blue{
+	border: 1px solid #194258 !important;
+}
+
+	.dizagara-banner-button {
+		background-color: #27579c !important;
+		color:#b5fffd !important;
+		width: 200px;
+		margin: 5px;
+		border-radius: 5px !important;
 	}
+
+	.dizagara-button-width-01 {
+		width: 200px;
+	}
+
+	.dizagara-button-blue{
+		border: 1px solid #123464 !important;
+		background-color: #1975d2 !important;
+		color:white !important;
+	}
+
+	.dizagara-button-red{
+		border: 1px solid #912020 !important;
+		background-color: #ff5252 !important;
+		color:white !important;	
+	}
+

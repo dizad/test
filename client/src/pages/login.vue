@@ -1,78 +1,73 @@
 <template>
 <v-app>
-<div class='splashBackground'>
-<v-card elevation="2" style='width: 450px; padding: 40px 20px 20px 20px; text-align: center; margin: 75px auto auto auto;'>
-<v-form ref='form' lazy-validation>
-	<!--login card-->
-		<v-card-text v-on:keyup.enter='login()'>
-		<!--mute button-turn on-->
-		<button 
-			v-if='!isMute'
-			dense dark 
-			color='success' 
-			class='muteButton'
-			title='Do shut up...'
-			style='background-color: rgba(76, 175, 80, 1);'
-			tabindex="-1"
-			type="button"
-			@click='setMute(true)'>
-			<v-icon dark>volume_up</v-icon>
-		</button>
-		<!--mute button-turn off-->
-		<button 
-			v-if='isMute'
-			dense dark 
-			color='danger' 
-			class='muteButton'
-			title="Don't shut up..."
-			style='background-color: rgba(251, 140, 0, 1);'
-			tabindex="-1"
-			type="button"
-			@click='setMute(false)'>
-			<v-icon dark>volume_off</v-icon>
-		</button>
+<!--dialogs-->
+<!--account-->
+	<transition name="fade">
+		<account v-bind:data='dialogs.account.data' v-if="dialogs.account.show" @closeAccountModal="closeAccountModal"></account>
+	</transition>
+<div class='back-plate' style='background-image: url("/background.jpg"); background-size: cover;'>
+<v-card elevation='2' style='width: 450px; text-align: center; margin: 100px auto auto auto;' class='dizagara-outline-blue'>
 	<!--logo-->
-		<img id="imageLogin" src="../../public/logo.gif" style='width: 100%; margin-bottom: 10px;'/>
+		<img id='imageLogin' src='../../public/logo.jpg' style = 'width: 80%; margin-top: 10px;'/>	
 	<!--username textbox-->
-		<v-text-field
+		<v-text-field dense outlined
 			ref='focusUsername'
 			append-icon='mdi-account-circle'
-			dense outlined
 			label='Username'
 			:rules='[validate.required]'
 			placeholder='Type username...'
 			v-model='username'
-			autocomplete="off"
-			color='rgba(77, 187, 64, 1.0)'
-			background-color= 'yellow lighten-4'
+			autocomplete='off'
+			background-color='light-blue lighten-5'
+			style='margin-left: 30px; margin-right: 30px;'
 		></v-text-field>
 	<!--password textbox-->
-		<v-text-field
-			dense outlined
+		<v-text-field dense outlined
 			append-icon='mdi-lock'
 			label='Password'
 			:rules='[validate.required]'
 			placeholder='Type password...'
-			v-model='password'
-			type = 'password'
+			v-model='fruit'
+			type='password'
 			autocomplete="off"
-			color='rgba(77, 187, 64, 1.0)'
-			background-color= 'yellow lighten-4'
+			background-color='light-blue lighten-5'
+			style='margin-left: 30px; margin-right: 30px;'
 		></v-text-field>
-	<!--update button-->
-		<v-btn
-			dense dark 
-			color='success' 
-			style='width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
-			@click='login()'>
-			<v-icon dark left>login</v-icon>
-			LOGIN
-		</v-btn>
-		<span style='font-size: small; font-style: italic; color: #8f8f8f;'>
-		contact dizad87@yahoo.com for login issues<br>
-		izasoft version: 1.06 last update: 04/10/21</span>
-</v-card-text>
-</v-form>
+	<!--action buttons-->
+	<v-card-actions style = 'background-color: #2655a9 !important;'>
+		<v-form ref = 'form' lazy-validation>
+			<v-card-text v-on:keyup.enter='login()'>
+		<!--login button-->
+			<v-btn dense class='dizagara-button-blue'
+				style = 'width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
+				@click = 'login()'>
+				<span class='mdi mdi-login'></span>
+				LOGIN
+			</v-btn>
+			<v-row class = "align-center">
+		<!--register button-->
+			<v-btn small class='dizagara-button-blue'
+				style = 'margin: 10px; width: 190px' 
+				@click = "register()" 
+				title='Create an account'>
+				<span class='mdi mdi-account-circle'></span>
+				REGISTER
+			</v-btn>
+		<!--recover password-->
+			<v-btn small class='dizagara-button-blue'
+				style = 'margin: 10px; width: 190px;' 
+				@click = 'forgotPassword()' 
+				title='Recover your password.'>
+				<span class='mdi mdi-help-circle'></span>
+				PASSWORD
+			</v-btn>
+			</v-row>
+		<!--disclaimer-->
+			<span style='font-size: small; font-style: italic; color: white; text-align: center; margin: auto;'>
+			contact dizagara@gamil.com for login issues</span>
+			</v-card-text>
+	</v-form>
+</v-card-actions>
 </v-card>
 </div>
 </v-app>
@@ -80,99 +75,80 @@
 <script>
 //import
 	import bridge from '../bridge.js';
+	import account from '../components/dialogs/account.vue';
 //master
     export default {
-    //name
-        name: 'users',
-    //components
-        components: {
-        },
+//name
+	name: 'login',
+//components
+	components: {
+		account
+	},
+//cycle methods
 	//on load
 		async created(){
-		//get mute option
-			this.isMute = await bridge.getMute();
-			this.music = new Audio(`music.mp3`);
-			if(!this.isMute){
-				this.music.play();
-			}
-		//focus the textbox
+		//focus the first textbox
 			setTimeout(() => {
 				this.$refs.focusUsername.$refs.input.focus();
 			}, 0);
+		//reset cookie
+			document.cookie = 'denied';
 		},
 	//exit page
 		destroyed(){
-			this.music.pause();
 		},
-      methods: {
+//custom methods
+	methods: {
 	//login
 		async login(){
-		//validate empties
+		//validate entries
 			if(!this.$refs.form.validate()){
 				return;
 			}
 		//check user
 			let user = {
 				username: this.username,
-				password: this.password
+				fruit: this.fruit
 			};
 			let token = await bridge.getToken(user);
 		//invalid entries
 			if(!token.validUsername){
-				toastr.error(`Username does not exist!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				toastr.error(`Username does not exist for that hub!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 				return;
-			}else if(!token.validPassword){
+			}else if(!token.validFruit){
 				toastr.error(`Password is incorrect!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 				return;
 			}
-		//valid entries
-			else if(token.privilege == 'admin'){
-				document.cookie = 'admin';
-				this.$router.push({ path: `/users`});
-			}else if(token.privilege == 'user'){
-			//update cookie
-				document.cookie = 'user';
-			//play sound effect
-				if(this.username != 'test'){
-					let result = await bridge.getTauntCount();
-					let tauntId = (result.tauntCount + 1).toString();
-					if(tauntId.length == 1){
-						tauntId = `0` + tauntId;
-					}
-					new Audio(`taunts/${tauntId}.mp3`).play();
-				}
-			//redirect
-				this.$router.push({ path: `/invoice/${this.username}`});
-			}else{
-				toastr.error(`This account has an error!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
-			}
+		//redirect if valid entries
+			document.cookie = 'granted';
+			this.$router.push({ path: `/dashboard/${this.username}`});
 		},
-	//mute button
-		async setMute(mute){
-		//update isMute in temp
-			this.isMute = mute;
-		//update isMute in perm
-			let params = {
-				isMute: mute
-			};
-			await bridge.setMute(params);
-		//update play
-			if(mute){
-				this.music.pause();
-			}else{
-				this.music.play();
+	//create account
+		register(){
+			this.dialogs.account.show = true;
+		},
+	//forgot password
+		recover(){
+			toastr.info(`Under construction!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+		},
+	//dialogs
+		closeAccountModal(){
+			this.dialogs.account.show = false;
+		}
+	},
+//global vars
+	data: () => ({
+		username: '',
+		fruit: '',
+		validate: {
+			required: a => !!a || 'Entry required!'
+		},
+		dialogs: {
+			account: {
+				show: false,
+				data: {isNew: true}
 			}
 		}
-      },
-	//global vars
-          data: () => ({
-			username: '',
-			password: '',
-			isMute: false,
-			music: {},
-			validate: {
-                required: a => !!a || 'Entry required!'
-            }
-        }),
-    }
+	}),
+}
 </script>

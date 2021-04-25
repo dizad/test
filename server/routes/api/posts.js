@@ -3,27 +3,28 @@
     let mongodb = require('mongodb');
     let router = express.Router();
 //database
-    let database = 'factuur';
-    //let connectionString = 'mongodb://localhost:27017/database'; //local
-    let connectionString = 'mongodb+srv://factuur:missComplain!@cluster.svt03.mongodb.net/factuur?retryWrites=true&w=majority'; //internet
+    let database = 'dizagara';
+    let connectionString = 'mongodb://localhost:27017/dizagara'; //local
+    //let connectionString = 'mongodb+srv://dizagara:watermelonSaturdays1!@cluster.jmgxm.mongodb.net/dizagara?retryWrites=true&w=majority'; //internet
 
 //get token
     router.post('/getToken', async (req, res) => {
     //build JSON
         let result = {
             validUsername : false,
-            validPassword: false,
+            validFruit: false,
             privilege: false
         };
     //get collection
         let collection = await loadCollection('users');
     //query
         let user = await collection.findOne({
-            _id: req.body.username});
+            _id: req.body.username
+        });
         if(user){
             result.validUsername = true;
-            if(user.password == req.body.password){
-                result.validPassword = true;
+            if(user.fruit == req.body.fruit){
+                result.validFruit = true;
                 result.privilege = user.privilege;
             }
         }
@@ -31,160 +32,92 @@
         res.send(result);
     });
 
-//get users
-    router.get('/getUsers', async (req, res) => {
+//get user
+    router.post('/getUser', async (req, res) => {
     //get collection
         let collection = await loadCollection('users');
     //query
-        res.send(await collection.find({}).toArray());
-    });
-
-//save user
-    router.post('/updateUser', async (req, res) => {
-    //build JSON
-        let collection = await loadCollection('users');
-        let query = { _id: req.body._id };
-        let options = { //insert if doesn't exist
-        upsert: true,
-        };
-    //build document
-        let replace = {
-            _id: req.body._id,
-            password: req.body.password,
-            added: req.body.added,
-            privilege: req.body.privilege
-        };
-        await collection.replaceOne(query, replace, options);
+        let user = await collection.findOne({
+            _id: req.body.id
+        });
+        if(user){
+            delete user.fruit;
+        }
     //return
-        res.status(201).send();
+        res.send(user);
     });
 
-//delete user
-    router.delete('/:id', async(req, res) => {
-    //get collection
-        let posts = await loadCollection('users');
-    //query
-        posts.deleteOne({_id: req.params.id});
-    //return
-        res.status(200).send();
-    });
-
-//get data
-    router.post('/getData', async (req, res) => {
+//licenses
+    //get license count
+        router.post('/getLicenseCount', async (req, res) => {
         //get collection
-            let collection = await loadCollection('users');
-        //query
-            let userId = req.body.userId;
-            let user = await collection.findOne({_id: userId});
-        //get result
+            let collection = await loadCollection('configs');
+        //get params
             let result = {};
-            if(user){
-                result.contact = user.contact || {}; 
-                result.cards = user.cards || [];
+            let config = await collection.findOne({_id: 'master'});
+            if(config && config.licenseCount != null){
+                result.licenseCount = config.licenseCount;  
             }
         //return
             res.send(result);
         });
 
-//save data
-    router.post('/saveData', async (req, res) => {
-    //get collection
-        let collection = await loadCollection('users');
-    //get params
-        let cards = req.body.cards;
-        let contact = req.body.contact;
-        let update = {
-            $set: { cards: cards, contact: contact }
-        };
-    //get filter
-        let filter = { _id: req.body.userId };
-    //query
-        await collection.updateOne(filter, update);
-    //return
-        res.status(201).send();
-    });
-
-//get invoice count
-    router.post('/getInvoiceCount', async (req, res) => {
-    //get collection
-        let collection = await loadCollection('configs');
-    //get params
-        let result = {};
-        let config = await collection.findOne({_id: 'master'});
-        if(config && config.invoiceCount != null){
-            result.invoiceCount = config.invoiceCount;           
-        }
-    //return
-        res.send(result);
-    });
-
-//save invoice count
-    router.post('/saveInvoiceCount', async (req, res) => {
-    //get collection
-        let collection = await loadCollection('configs');
-    //get params
-        let invoiceCount = req.body.invoiceCount;
-        let update = {
-            $set: { invoiceCount: invoiceCount }
-        };
-    //get filter
-        let filter = { _id: 'master' };
-    //query
-        await collection.updateOne(filter, update);
-    //return
-        res.status(201).send();
-    });
-
-//get taunt count
-    router.post('/getTauntCount', async (req, res) => {
-    //get collection
-        let collection = await loadCollection('configs');
-    //get result
-        let result = {};
-        let config = await collection.findOne({_id: 'master'});
-        if(config && config.tauntCount != null){
-        //increment
-            config.tauntCount++;
-            let max = 34; //total number of taunts
-            if(config.tauntCount == max){
-                config.tauntCount = 0;
-            }
-        //update
-            let filter = {_id: 'master'};
-            let update = {
-                $set: {tauntCount: config.tauntCount}
-            };
-            await collection.updateOne(filter, update);
-        //bind
-            result.tauntCount = config.tauntCount;           
-        }
-    //return
-        res.send(result);
-    });
-
-//get mute option
-    router.post('/getMute', async (req, res) => {
-        //get collection
-            let collection = await loadCollection('configs');
-        //query
-            let config = await collection.findOne({_id: 'master'});
-        //return
-            res.send(config.isMute);
-    });
-
-//set mute option
-    router.post('/setMute', async (req, res) => {
+    //save license count
+        router.post('/saveLicenseCount', async (req, res) => {
         //get collection
             let collection = await loadCollection('configs');
         //get params
-            let filter = {_id: 'master'};
+            let licenseCount = req.body.licenseCount;
             let update = {
-                $set: {isMute: req.body.isMute}
+                $set: { licenseCount: licenseCount }
             };
+        //get filter
+            let filter = {_id: 'master'};
         //query
             await collection.updateOne(filter, update);
-        //return status
+        //return
             res.status(201).send();
+        });
+
+    //set license
+        router.post('/saveLicense', async (req, res) => {
+        //get params
+            let collection = await loadCollection('licenses');
+            let query = { _id: req.body._id };
+            let options = { //insert if doesn't exist
+                upsert: true,
+            };
+        //build document
+            let replace = req.body;
+            await collection.replaceOne(query, replace, options);
+        //return
+            res.status(201).send();
+        });
+
+//get all licenses
+    router.get('/getAllLicenses', async (req, res) => {
+      //  let collection = await loadCollection('licenses');
+
+
+        //get collection
+        let collection = await loadCollection('configs');
+        //get params
+            let result = {};
+            let config = await collection.findOne({_id: 'master'});
+            if(config && config.licenseCount != null){
+                result.licenseCount = config.licenseCount;  
+            }
+        //return
+            res.send(result);
+
+
+       // res.send(await collection.find({}).toArray());
+    });
+
+//get all licenses
+    router.post('/getAllLicenses', async (req, res) => {
+        let collection = await loadCollection('licenses');
+        res.send(await collection.find({}).toArray());
     });
 
 //database

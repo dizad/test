@@ -1,6 +1,6 @@
 //imports
-    import axios from 'axios';
-    let url = 'api/posts/';
+import axios from 'axios';
+let url = 'api/posts/';
 
 //class
 class bridge {
@@ -17,12 +17,12 @@ class bridge {
         });
     }
 
-//get users
-    static getUsers(){
+//get user
+    static getUser(id){
         return new Promise(async (resolve, reject) => {
             try{
-                let command = 'getUsers';
-                let res = await axios.get(url + command);
+                let command = 'getUser';
+                let res = await axios.post(url + command, id);
                 resolve(res.data);
             } catch(err){
                 reject(err);
@@ -30,105 +30,52 @@ class bridge {
         });
     }
 
-//update or insert user
-    static updateUser(user){
-        try{
-            let command = 'updateUser';
-            return axios.post(url + command, user
-            );
-        } catch(err){
-            reject(err);
+//licenses
+    //get license count
+        static getLicenseCount(){
+            return new Promise(async (resolve, reject) => {
+                try{
+                    let command = 'getLicenseCount';
+                    let res = await axios.post(url + command);
+                    resolve(res.data);
+                } catch(err){
+                    reject(err);
+                }
+            });
         }
-    }
 
-//delete user
-    static deleteUser(id){
-        return axios.delete(`${url}${id}`);
-    }
-
-//save user data
-    static saveData(params){
-        try{
-            let command = 'saveData';
-            return axios.post(url + command, params
-            );
-        } catch(err){
-            reject(err);
+    //save license count
+        static saveLicenseCount(params){
+            try{
+                let command = 'saveLicenseCount';
+                return axios.post(url + command, params);
+            } catch(err){
+                reject(err);
+            }
         }
-    }
 
-//get user data
-    static getData(params){
-        return new Promise(async (resolve, reject) => {
+    //save license
+        static saveLicense(params){
             try{
-                let command = 'getData';
-                let res = await axios.post(url + command, params);
-                resolve(res.data);
+                let command = 'saveLicense';
+                return axios.post(url + command, params);
             } catch(err){
                 reject(err);
             }
-        });
-    }
-
-//get invoice count
-    static getInvoiceCount(){
-        return new Promise(async (resolve, reject) => {
-            try{
-                let command = 'getInvoiceCount';
-                let res = await axios.post(url + command);
-                resolve(res.data);
-            } catch(err){
-                reject(err);
-            }
-        });
-    }
-
-//save invoice count
-static saveInvoiceCount(params){
-    try{
-        let command = 'saveInvoiceCount';
-        return axios.post(url + command, params);
-    } catch(err){
-        reject(err);
-    }
-}
-
-//get taunt count
-    static getTauntCount(){
-        return new Promise(async (resolve, reject) => {
-            try{
-                let command = 'getTauntCount';
-                let res = await axios.post(url + command);
-                resolve(res.data);
-            } catch(err){
-                reject(err);
-            }
-        });
-    }
-
- //get mute option
-    static getMute(){
-        return new Promise(async (resolve, reject) => {
-            try{
-                let command = 'getMute';
-                let res = await axios.post(url + command);
-                resolve(res.data);
-            } catch(err){
-                reject(err);
-            }
-        });
-    }
-
-//set mute option
-    static setMute(params){
-        try{
-            let command = 'setMute';
-            return axios.post(url + command, params
-            );
-        } catch(err){
-            reject(err);
         }
-    }
+
+    //get all licenses
+        static getAllLicenses(){
+            return new Promise(async (resolve, reject) => {
+                try{
+                    let command = 'getAllLicenses';
+                    let res = await axios.post(url + command);
+                    resolve(res.data);
+                } catch(err){
+                    reject(err);
+                }
+            });
+        }
 }
 
 //export

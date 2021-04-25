@@ -1,25 +1,29 @@
 //imports
     import login from './pages/login.vue';
-    import users from './pages/users.vue';
-    import invoice from './pages/invoice.vue';
+    import properties from './pages/properties.vue';
+    import dashboard from './pages/dashboard.vue';
+    import scheduling from './pages/scheduling.vue';
 
 //define routes
-    export default [{
-            path: '/login',
+    export default [,{
             name: 'login',
+            path: '/login',
             component: login
         },{
-            path: '/users',
-            name: 'users',
-            component: users
+            name: 'properties',
+            path: '/properties/:id/:prop',
+            component: properties
         },{
-            path: '/invoice/:id',
-            name: 'invoice',
-            component: invoice,
-            props: true
+            name: 'dashboard',
+            path: '/dashboard/:id',
+            component: dashboard
         },{
-            path: "*",
+            name: 'scheduling',
+            path: "/scheduling/:id",
+            component: scheduling
+        },{
             name: 'default',
+            path: "*",
             redirect: "/login"
         }
     ];
