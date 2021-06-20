@@ -17,7 +17,8 @@
 				@closeDialog='closeDialog($event, "eula")'>
 			</eula>
 		</transition>
-<div class='back-plate' style='background-image: url("../../background.jpg"); background-size: cover;'>
+<img src='../../public/background.jpg' style='display: none;'/><!--this is so npm build stores image to hosted version-->
+<div class='back-plate' style='background-image: url("background.jpg"); background-size: cover;'>
 <v-card elevation='2' style='width: 450px; text-align: center; margin: 100px auto auto auto;' class='dizagara-outline-blue'>
 	<!--logo-->
 		<img id='imageLogin' src='../../public/logo.jpg' style = 'width: 80%; margin-top: 10px;'/>	
