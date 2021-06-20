@@ -1,0 +1,68 @@
+Date : 2021-06-09 23:05:52
+Directory : c:\Users\dizad\Desktop\projects\oma\app\client
+Total : 32 files,  17727 codes, 530 comments, 161 blanks, all 18418 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |     12,076 |          0 |          2 |     12,078 |
+| Vue        |         19 |      5,148 |        480 |        102 |      5,730 |
+| JavaScript |          9 |        303 |         35 |         19 |        357 |
+| CSS        |          1 |        172 |         12 |         38 |        222 |
+| HTML       |          1 |         28 |          3 |          0 |         31 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                               | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                  |         32 |     17,727 |        530 |        161 |     18,418 |
+| public                                                                             |          2 |        200 |         15 |         38 |        253 |
+| src                                                                                |         26 |      5,434 |        513 |        119 |      6,066 |
+| src\components                                                                     |         13 |      2,880 |        239 |         72 |      3,191 |
+| src\components\charts                                                              |          1 |          0 |          0 |          1 |          1 |
+| src\components\dialogs                                                             |         10 |      2,529 |        206 |         69 |      2,804 |
+| src\components\generics                                                            |          2 |        351 |         33 |          2 |        386 |
+| src\pages                                                                          |          6 |      2,273 |        241 |         31 |      2,545 |
+| src\utils                                                                          |          3 |        101 |         12 |          0 |        113 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                           | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\dizad\Desktop\projects\oma\app\client\babel.config.js                     | JavaScript |          5 |          0 |          1 |          6 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\package-lock.json                   | JSON       |     12,021 |          0 |          1 |     12,022 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\package.json                        | JSON       |         55 |          0 |          1 |         56 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\public\index.html                   | HTML       |         28 |          3 |          0 |         31 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\public\style.css                    | CSS        |        172 |         12 |         38 |        222 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\app.vue                         | Vue        |          3 |          0 |          0 |          3 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\bridge.js                       | JavaScript |        128 |         17 |         13 |        158 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\charts\pie.vue       | Vue        |          0 |          0 |          1 |          1 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\about.vue    | Vue        |         74 |         10 |          0 |         84 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\confirm.vue  | Vue        |         68 |          9 |          0 |         77 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\eula.vue     | Vue        |         72 |         10 |          0 |         82 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\event.vue    | Vue        |        101 |         11 |          0 |        112 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\generic.vue  | Vue        |        137 |         16 |          1 |        154 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\license.vue  | Vue        |        224 |         23 |          0 |        247 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\save.vue     | Vue        |         75 |          9 |          0 |         84 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\schedule.vue | Vue        |        994 |         61 |         68 |      1,123 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\user.vue     | Vue        |        365 |         29 |          0 |        394 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\dialogs\zone.vue     | Vue        |        419 |         28 |          0 |        447 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\generics\banner.vue  | Vue        |        343 |         33 |          1 |        377 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\components\generics\pie.js      | JavaScript |          8 |          0 |          1 |          9 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\main.js                         | JavaScript |         13 |          2 |          2 |         17 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\dashboard.vue             | Vue        |        187 |         17 |          1 |        205 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\login.vue                 | Vue        |        177 |         23 |          0 |        200 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\properties.vue            | Vue        |        712 |         75 |          4 |        791 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\scheduling.vue            | Vue        |        602 |         49 |         21 |        672 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\settings.vue              | Vue        |        162 |         20 |          0 |        182 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\pages\tracking.vue              | Vue        |        433 |         57 |          5 |        495 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\routing.config.js               | JavaScript |         36 |          2 |          1 |         39 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\utils\converters.js             | JavaScript |         23 |          7 |          0 |         30 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\utils\references.js             | JavaScript |         55 |          1 |          0 |         56 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\src\utils\utils.js                  | JavaScript |         23 |          4 |          0 |         27 |
+| c:\Users\dizad\Desktop\projects\oma\app\client\vue.config.js                       | JavaScript |         12 |          2 |          1 |         15 |
+| Total                                                                              |            |     17,727 |        530 |        161 |     18,418 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

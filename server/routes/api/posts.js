@@ -3,130 +3,186 @@
     let mongodb = require('mongodb');
     let router = express.Router();
 //database
-    let database = 'dizagara';
-    let connectionString = 'mongodb://localhost:27017/dizagara'; //local
+    let database = 'test01'; //dizagara
+    let connectionString = 'mongodb://localhost:27017/' + database; //local
     //let connectionString = 'mongodb+srv://dizagara:watermelonSaturdays1!@cluster.jmgxm.mongodb.net/dizagara?retryWrites=true&w=majority'; //internet
 
-//get token
-    router.post('/getToken', async (req, res) => {
-    //build JSON
-        let result = {
-            validUsername : false,
-            validFruit: false,
-            privilege: false
-        };
-    //get collection
-        let collection = await loadCollection('users');
-    //query
-        let user = await collection.findOne({
-            _id: req.body.username
-        });
-        if(user){
-            result.validUsername = true;
-            if(user.fruit == req.body.fruit){
-                result.validFruit = true;
-                result.privilege = user.privilege;
-            }
-        }
-    //return
-        res.send(result);
-    });
+//generics
+    //collection
+        //get
+            router.post('/getCollection', async (req, res) => {
+                let collection = await loadCollection(req.body.collection);
+                res.send(await collection.find({}).toArray());
+            });
+        //set
+            router.post('/setCollection', async (req, res) => {
+            //get collection
+                let collection = await loadCollection(req.body.collection);
+            //delete all
+                await collection.deleteMany({});
+            //insert all
+                if(req.body.data.length){
+                    await collection.insertMany(req.body.data);
+                }
+            //return
+                res.status(201).send();
+            });
 
-//get user
-    router.post('/getUser', async (req, res) => {
-    //get collection
-        let collection = await loadCollection('users');
-    //query
-        let user = await collection.findOne({
-            _id: req.body.id
-        });
-        if(user){
-            delete user.fruit;
-        }
-    //return
-        res.send(user);
-    });
+    //document
+        //get
+            router.post('/getDocument', async (req, res) => {
+            //get params
+                let collection = await loadCollection(req.body.collection);
+                let query = { _id: req.body._id };
+            //build document
+                let document = await collection.findOne(query);
+            //return
+                res.send(document);
+            }); 
+        //set
+            router.post('/setDocument', async (req, res) => {
+            //get params
+                let collection = await loadCollection(req.body.collection);
+                let query = { _id: req.body.item._id };
+                let options = { //insert if doesn't exist
+                    upsert: true,
+                };
+            //build document
+                let replace = req.body.item;
+                await collection.replaceOne(query, replace, options);
+            //return
+                res.status(201).send();
+            }); 
 
-//licenses
-    //get license count
-        router.post('/getLicenseCount', async (req, res) => {
+    //field
+        //get
+            router.post('/getField', async (req, res) => {
+            //get params
+                let collection = await loadCollection(req.body.collection);
+                let query = {};
+                query[req.body.matchField] = req.body.matchValue;
+            //build document
+                let document = await collection.findOne(query);
+            //return
+                res.send(document[req.body.getField]);
+            }); 
+        //set
+            router.post('/setField', async (req, res) => {
+            //get params
+                let collection = await loadCollection(req.body.collection);
+                let query = {};
+                query[req.body.matchField] = req.body.matchValue;
+                let field = {};
+                field[req.body.setField] = req.body.setValue;
+                let update = { $set: field };
+                let options = {};
+            //build document
+                await collection.updateOne(query, update, options);
+            //return
+                res.status(201).send();
+            }); 
+
+//customs
+    //get ids
+        router.post('/getIds', async (req, res) => {
         //get collection
-            let collection = await loadCollection('configs');
-        //get params
-            let result = {};
-            let config = await collection.findOne({_id: 'master'});
-            if(config && config.licenseCount != null){
-                result.licenseCount = config.licenseCount;  
-            }
-        //return
-            res.send(result);
-        });
-
-    //save license count
-        router.post('/saveLicenseCount', async (req, res) => {
-        //get collection
-            let collection = await loadCollection('configs');
-        //get params
-            let licenseCount = req.body.licenseCount;
-            let update = {
-                $set: { licenseCount: licenseCount }
-            };
-        //get filter
-            let filter = {_id: 'master'};
+            let collection = await loadCollection(req.body.collection);
         //query
-            await collection.updateOne(filter, update);
+            let documents = await collection.find({}).toArray();
         //return
-            res.status(201).send();
+            res.send(documents.map(a => a._id));
         });
 
-    //set license
-        router.post('/saveLicense', async (req, res) => {
-        //get params
-            let collection = await loadCollection('licenses');
-            let query = { _id: req.body._id };
-            let options = { //insert if doesn't exist
-                upsert: true,
+    //get token
+        router.post('/getToken', async (req, res) => {
+        //build JSON
+            let result = {
+                validUsername : false,
+                validFruit: false,
+                privilege: false
             };
-        //build document
-            let replace = req.body;
-            await collection.replaceOne(query, replace, options);
-        //return
-            res.status(201).send();
-        });
-
-//get all licenses
-    router.get('/getAllLicenses', async (req, res) => {
-      //  let collection = await loadCollection('licenses');
-
-
         //get collection
-        let collection = await loadCollection('configs');
-        //get params
-            let result = {};
-            let config = await collection.findOne({_id: 'master'});
-            if(config && config.licenseCount != null){
-                result.licenseCount = config.licenseCount;  
+            let collection = await loadCollection('users');
+        //query
+            let user = await collection.findOne({
+                username: req.body.username
+            });
+            if(user){
+                result.validUsername = true;
+                if(user.fruit == req.body.fruit){
+                    result.validFruit = true;
+                    result.privilege = user.privilege;
+                    result.isEula = user.isEula;
+                }
             }
         //return
             res.send(result);
-
-
-       // res.send(await collection.find({}).toArray());
-    });
-
-//get all licenses
-    router.post('/getAllLicenses', async (req, res) => {
-        let collection = await loadCollection('licenses');
-        res.send(await collection.find({}).toArray());
-    });
-
-//database
-    async function loadCollection(collection){
-        let client = await mongodb.MongoClient.connect(connectionString, {
-            useNewUrlParser: true
         });
-        return client.db(database).collection(collection);
-    }
+
+    //get user
+        router.post('/getUser', async (req, res) => {
+            //get collection
+                let collection = await loadCollection('users');
+            //query
+                let user = await collection.findOne({
+                    username: req.body.id
+                });
+                if(user){
+                    delete user.fruit;
+                }
+            //return
+                res.send(user);
+            });
+
+    //get license by user
+        router.post('/getLicenseByUser', async (req, res) => {
+            //get params
+                let collection = await loadCollection('users');
+                let user = await collection.findOne({
+                    username: req.body.username
+                });
+            //build document
+                collection = await loadCollection('licenses');
+                let license = await collection.findOne({
+                    license: user.license
+                });
+            //return
+                res.send(license);
+            }); 
+
+    //is license used
+        router.post('/isLicenseUsed', async (req, res) => {
+        //get params
+            let collection = await loadCollection('users');
+            let user = await collection.findOne({
+                license: req.body.license
+            });
+        //build document
+            let result = {
+                isLicenseUsed: Boolean(user)
+            };
+        //return
+            res.send(result);
+        }); 
+
+    //get config
+        router.post('/getConfig', async (req, res) => {
+        //get params
+            let collection = await loadCollection('configs');
+            let config = await collection.findOne({
+                _id: req.body.config
+            });
+        //return
+            res.send(config);
+        }); 
+    
+    //database
+        async function loadCollection(collection){
+            let client = await mongodb.MongoClient.connect(connectionString, {
+                useNewUrlParser: true
+            });
+            return client.db(database).collection(collection);
+        }
 
 //export
     module.exports = router;

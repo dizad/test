@@ -1,82 +1,159 @@
 //imports
-import axios from 'axios';
-let url = 'api/posts/';
+    import axios from 'axios';
+    let url = 'api/posts/';
 
 //class
-class bridge {
-//get token
-    static getToken(user){
-        return new Promise(async (resolve, reject) => {
-            try{
-                let command = 'getToken';
-                let res = await axios.post(url + command, user);
-                resolve(res.data);
-            } catch(err){
-                reject(err);
+    class bridge {
+    //generics
+        //collection
+            //get
+                static getCollection(params){
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            let command = 'getCollection';
+                            let res = await axios.post(url + command, params);
+                            resolve(res.data);
+                        } catch(err){
+                            reject(err);
+                        }
+                    });
+                }
+
+            //set
+                static setCollection(params){
+                    try {
+                        let command = 'setCollection';
+                        return axios.post(url + command, params);
+                    } catch(err){
+                        reject(err);
+                    }
+                }
+        //document
+            //get
+                static getDocument(params){
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            let command = 'getDocument';
+                            let res = await axios.post(url + command, params);
+                            resolve(res.data);
+                        } catch(err){
+                            reject(err);
+                        }
+                    });
+                }
+
+            //set
+                static setDocument(params){
+                    try {
+                        let command = 'setDocument';
+                        return axios.post(url + command, params);
+                    } catch(err){
+                        reject(err);
+                    }
+                }
+        //field
+            //get
+                static getField(params){
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            let command = 'getField';
+                            let res = await axios.post(url + command, params);
+                            resolve(res.data);
+                        } catch(err){
+                            reject(err);
+                        }
+                    });
+                }
+
+            //set
+                static setField(params){
+                    try {
+                        let command = 'setField';
+                        return axios.post(url + command, params);
+                    } catch(err){
+                        reject(err);
+                    }
+                }
+
+    //customs
+        //get token
+            static getToken(user){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'getToken';
+                        let res = await axios.post(url + command, user);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
             }
-        });
+
+        //get user
+            static getUser(params){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'getUser';
+                        let res = await axios.post(url + command, params);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
+            }
+
+        //get license by user
+            static getLicenseByUser(params){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'getLicenseByUser';
+                        let res = await axios.post(url + command, params);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
+            }
+
+        //get all licenses
+            static getIds(params){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'getIds';
+                        let res = await axios.post(url + command, params);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
+            }
+    
+        //is license used
+            static isLicenseUsed(params){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'isLicenseUsed';
+                        let res = await axios.post(url + command, params);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
+            }
+
+        //get config
+            static getConfig(params){
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        let command = 'getConfig';
+                        let res = await axios.post(url + command, params);
+                        resolve(res.data);
+                    } catch(err){
+                        reject(err);
+                    }
+                });
+            }
     }
 
-//get user
-    static getUser(id){
-        return new Promise(async (resolve, reject) => {
-            try{
-                let command = 'getUser';
-                let res = await axios.post(url + command, id);
-                resolve(res.data);
-            } catch(err){
-                reject(err);
-            }
-        });
-    }
-
-//licenses
-    //get license count
-        static getLicenseCount(){
-            return new Promise(async (resolve, reject) => {
-                try{
-                    let command = 'getLicenseCount';
-                    let res = await axios.post(url + command);
-                    resolve(res.data);
-                } catch(err){
-                    reject(err);
-                }
-            });
-        }
-
-    //save license count
-        static saveLicenseCount(params){
-            try{
-                let command = 'saveLicenseCount';
-                return axios.post(url + command, params);
-            } catch(err){
-                reject(err);
-            }
-        }
-
-    //save license
-        static saveLicense(params){
-            try{
-                let command = 'saveLicense';
-                return axios.post(url + command, params);
-            } catch(err){
-                reject(err);
-            }
-        }
-
-    //get all licenses
-        static getAllLicenses(){
-            return new Promise(async (resolve, reject) => {
-                try{
-                    let command = 'getAllLicenses';
-                    let res = await axios.post(url + command);
-                    resolve(res.data);
-                } catch(err){
-                    reject(err);
-                }
-            });
-        }
-}
-
-//export
-    export default bridge;
+    //export
+        export default bridge;

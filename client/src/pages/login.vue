@@ -1,17 +1,29 @@
 <template>
 <v-app>
 <!--dialogs-->
-<!--account-->
-	<transition name="fade">
-		<account v-bind:data='dialogs.account.data' v-if="dialogs.account.show" @closeAccountModal="closeAccountModal"></account>
-	</transition>
+	<!--user-->
+		<transition name="fade">
+			<user 
+				:data='user' 
+				:params='params'
+				v-if='dialogs.user.show'
+				@closeDialog='closeDialog($event, "user")'>
+			</user>
+		</transition>
+	<!--eula-->
+		<transition name="fade">
+			<eula 
+				v-if='dialogs.eula.show'
+				@closeDialog='closeDialog($event, "eula")'>
+			</eula>
+		</transition>
 <div class='back-plate' style='background-image: url("/background.jpg"); background-size: cover;'>
 <v-card elevation='2' style='width: 450px; text-align: center; margin: 100px auto auto auto;' class='dizagara-outline-blue'>
 	<!--logo-->
 		<img id='imageLogin' src='../../public/logo.jpg' style = 'width: 80%; margin-top: 10px;'/>	
 	<!--username textbox-->
 		<v-text-field dense outlined
-			ref='focusUsername'
+			id='firstFocus'
 			append-icon='mdi-account-circle'
 			label='Username'
 			:rules='[validate.required]'
@@ -39,32 +51,33 @@
 			<v-card-text v-on:keyup.enter='login()'>
 		<!--login button-->
 			<v-btn dense class='dizagara-button-blue'
-				style = 'width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
-				@click = 'login()'>
-				<span class='mdi mdi-login'></span>
+				style='width: 100%; margin: 0px 0px 10px 0px; font-weight: bold;'
+				@click='login()'>
+				<span class='mdi' id='loginIcon'></span>
 				LOGIN
 			</v-btn>
 			<v-row class = "align-center">
 		<!--register button-->
 			<v-btn small class='dizagara-button-blue'
-				style = 'margin: 10px; width: 190px' 
-				@click = "register()" 
+				style='margin: 10px; width: 190px' 
+				@click="register()" 
 				title='Create an account'>
-				<span class='mdi mdi-account-circle'></span>
+				<span class='mdi' id='accountIcon'></span>
 				REGISTER
 			</v-btn>
 		<!--recover password-->
 			<v-btn small class='dizagara-button-blue'
-				style = 'margin: 10px; width: 190px;' 
-				@click = 'forgotPassword()' 
+				style='margin: 10px; width: 190px;' 
+				@click='recover()' 
 				title='Recover your password.'>
-				<span class='mdi mdi-help-circle'></span>
+				<span class='mdi' id='passwordIcon'></span>
 				PASSWORD
 			</v-btn>
 			</v-row>
 		<!--disclaimer-->
 			<span style='font-size: small; font-style: italic; color: white; text-align: center; margin: auto;'>
-			contact dizagara@gamil.com for login issues</span>
+			version = {{application.version}} / last update = {{application.update}}<br>
+			contact {{application.email}} for login issues</span>
 			</v-card-text>
 	</v-form>
 </v-card-actions>
@@ -75,27 +88,30 @@
 <script>
 //import
 	import bridge from '../bridge.js';
-	import account from '../components/dialogs/account.vue';
+	import user from '../components/dialogs/user.vue';
+	import eula from '../components/dialogs/eula.vue';
+	import references from '../utils/references.js';
 //master
     export default {
 //name
 	name: 'login',
 //components
 	components: {
-		account
+		user, eula
 	},
 //cycle methods
-	//on load
+	//created
 		async created(){
-		//focus the first textbox
+		//init timeout 
 			setTimeout(() => {
-				this.$refs.focusUsername.$refs.input.focus();
+				$('#focusFirst').focus();
+				$('#loginIcon').addClass(references.getIcon('login'));
+				$('#accountIcon').addClass(references.getIcon('user'));
+				$('#passwordIcon').addClass(references.getIcon('password'));
 			}, 0);
-		//reset cookie
-			document.cookie = 'denied';
-		},
-	//exit page
-		destroyed(){
+		//get data
+			this.application = await bridge.getConfig({config: `application`}) || {};
+			this.application.update = moment(this.application.update).format('MM/DD/YY');
 		},
 //custom methods
 	methods: {
@@ -106,47 +122,77 @@
 				return;
 			}
 		//check user
-			let user = {
+			let token = await bridge.getToken({
 				username: this.username,
 				fruit: this.fruit
-			};
-			let token = await bridge.getToken(user);
+			});
 		//invalid entries
 			if(!token.validUsername){
-				toastr.error(`Username does not exist for that hub!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
-				return;
+				toastr.error(`Username does not exist!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 			}else if(!token.validFruit){
 				toastr.error(`Password is incorrect!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
-				return;
+			}else if(!token.isEula){
+				this.dialogs.eula.show = true;
+			}else{
+			//redirect if valid entries
+				this.$router.push({ path: `/dashboard/${this.username}`});
 			}
-		//redirect if valid entries
-			document.cookie = 'granted';
-			this.$router.push({ path: `/dashboard/${this.username}`});
 		},
 	//create account
 		register(){
-			this.dialogs.account.show = true;
+			this.params.isNew = true;
+			this.dialogs.user.show = true;
 		},
 	//forgot password
 		recover(){
 			toastr.info(`Under construction!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 		},
 	//dialogs
-		closeAccountModal(){
-			this.dialogs.account.show = false;
+		async closeDialog(params, type){
+			this.dialogs[type].show = false;
+			if(params.action == `submit`){
+				if(type == 'user'){
+				//add standards
+					params.data.modBy = this.user.username;
+					params.data.modDate = moment();
+				//save to database
+					await bridge.setDocument({
+						collection: `users`,
+						item: params.data
+					}); 
+				//notify
+					toastr.success(`user added successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+				}else if(type == 'eula'){
+					//update isEula to true
+						await bridge.setField({
+							collection: 'users',
+							matchField: 'username',
+							matchValue: this.username,
+							setField: 'isEula',
+							setValue: true
+						});
+					//redirect if valid entries
+						this.$router.push({ path: `/dashboard/${this.username}`});
+				}
+			}
 		}
 	},
 //global vars
 	data: () => ({
 		username: '',
 		fruit: '',
+		application: {},
+		user: {},
 		validate: {
 			required: a => !!a || 'Entry required!'
 		},
+		params: {},
 		dialogs: {
-			account: {
-				show: false,
-				data: {isNew: true}
+			user: {
+				show: false
+			},
+			eula: {
+				show: false
 			}
 		}
 	}),
