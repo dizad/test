@@ -23,8 +23,8 @@
         :params='params'
         v-if=" dialogs.procedure.show || dialogs.track.show || dialogs.diagnose.show || 
           dialogs.patient.show || dialogs.code.show || dialogs.insurance.show ||
-          dialogs.room.show || dialogs.surgeon.show || dialogs.prep.show || dialogs.center.show || 
-          dialogs.hospital.show || dialogs.anesthesia.show"
+          dialogs.room.show || dialogs.physician.show || dialogs.prep.show || dialogs.center.show || 
+          dialogs.hospital.show || dialogs.anesthesia.show || dialogs.specialty.show"
         @closeDialog="closeDialog($event)">
       </generic>
     </transition>
@@ -147,12 +147,13 @@
             <tr v-for='item in data' :key='item._id' v-show='item.isShow'>
           <!--identity chip-->
               <td class='text-left' v-for='key in Object.keys(item)' :key='key'>
-                <!--identity-->
-                  <span v-if='key == "_id"'>
-                    <v-chip dark>
-                    {{item._id}}
-                    </v-chip>
-                  </span>
+                <!--generic converters-->
+                  <!--id-->
+                    <span v-if='key == "_id"'>
+                      <v-chip dark>
+                      {{item._id}}
+                      </v-chip>
+                    </span>
                 <!--mutli pill displays-->
                   <!--prep-->
                     <span v-else-if='key == "preps"'>
@@ -251,11 +252,19 @@
       }, 0);
     //get title
       this.title = `${converters.capitalizeFirst(this.prop)}s`;
+      if(this.prop == `specialty`){
+        this.title = `Specialties`;
+      }
     //get data
+      this.specialties = await bridge.getCollection({collection: `specialties`}) || [];
       this.rooms = await bridge.getCollection({collection: `rooms`}) || [];
       this.preps = await bridge.getCollection({collection: `preps`}) || [];
       this.anesthesias = await bridge.getCollection({collection: `anesthesias`}) || [];
-      this.data = await bridge.getCollection({collection: `${this.prop}s`}) || [];
+      let collectionName = `${this.prop}s`;
+      if(this.prop == `specialty`){
+        collectionName = `specialties`;
+      }
+      this.data = await bridge.getCollection({collection: collectionName}) || [];
       this.original = utils.deepClone(this.data);
       this.data.forEach(a => a.isShow = true); //add show to each
     //init table
@@ -303,6 +312,8 @@
               name = 'Key';
             } else if(a == 'totalAccounts'){
               name = 'Total Accounts';
+            } else if(a == 'name' && this.prop == 'code'){
+              name = 'Code';
             } else if(a == 'usedAccounts'){
               name = 'Used Accounts';
             } else if(a == 'modBy' && modCount == 0){
@@ -404,6 +415,14 @@
           }
         });
       }
+    //center
+      if(this.prop == `physician`){
+        this.dialogs[this.prop].dropdowns.forEach(a => {
+          if(a.field == `specialty`){
+            a.items = this.specialties.map(b => b.name);
+          }
+        });
+      }
     },
   //group item fields
     groupGenericFields(item){
@@ -416,11 +435,17 @@
         checkboxes: []
       };
       this.dialogs[this.prop].fields.forEach(a => {
+        let label = converters.capitalizeFirst(a);
+        let placeholder = `Type ${a}...`;
+        if(this.prop == `code` && a == `name`){
+          label = `Code`;
+          placeholder = `Type code...`;
+        }
         let value = {
           key: a,
           value: item && item[a] || '',
-          label: converters.capitalizeFirst(a),
-          placeholder: `Type ${a}...`
+          label: label,
+          placeholder: placeholder
         }
       //dropdowns
         if(this.dialogs[this.prop].dropdowns && this.dialogs[this.prop].dropdowns.some(b => b.field == a)){
@@ -606,8 +631,12 @@
           delete a['isShow'];
         });
       //save property
+          let collectionName = `${this.prop}s`;
+          if(this.prop == `specialty`){
+            collectionName = `specialties`;
+          }
           await bridge.setCollection({
-            collection: `${this.prop}s`,
+            collection: collectionName,
             data: toSave
           });
           this.original = utils.deepClone(toSave);
@@ -638,6 +667,8 @@
           //return sort
             if(header.type == 'number' || (compare.type && compare.type == `number`)){
               return compare.first - compare.second;
+            }else if(header.type == `boolean`){
+              return compare.first.toString().localeCompare(compare.second.toString());
             }else{
               return compare.first.localeCompare(compare.second);
             }
@@ -650,6 +681,8 @@
           //return sort
             if(header.type == 'number' || (compare.type && compare.type == `number`)){
               return compare.second - compare.first;
+            }else if(header.type == `boolean`){
+              return compare.second.toString().localeCompare(compare.first.toString());
             }else{
               return compare.second.localeCompare(compare.first);
             }
@@ -752,6 +785,7 @@
     searchTerm: '',
     deleteIndex: 0,
 		dialogs: {
+    //main
       hospital: {
         show: false,
         dialog: 'generic',
@@ -788,16 +822,23 @@
         show: false,
         dialog: 'generic',
         fields: ['id', 'first', 'last', 'bmi', 'anesthesia'],
-        dropdowns: [{field: 'anesthesia', isMulti: false, isRequired: true, items: []}],
+        dropdowns: [{field: 'anesthesia', isMulti: false, isRequired: false, items: []}],
         distincts: ['id']
       },
-      surgeon: {
+      physician: {
         show: false,
         dialog: 'generic',
-        fields: ['id', 'first', 'last'],
+        fields: ['id', 'first', 'last', 'specialty'],
+        dropdowns: [{field: 'specialty', isMulti: false, isRequired: false, items: []}],
         distincts: ['id']
       },
       room: {
+        show: false,
+        dialog: 'generic',
+        fields: ['name'],
+        distincts: ['name']
+      },
+      specialty: {
         show: false,
         dialog: 'generic',
         fields: ['name'],
@@ -814,7 +855,7 @@
         show: false,
         dialog: 'generic',
         fields: ['name', 'description', 'type'],
-        dropdowns: [{field: 'type', isMulti: false, isRequired: true, items: ['cpt', 'procedure', 'diagnose']}],
+        dropdowns: [{field: 'type', isMulti: false, isRequired: true, items: ['procedure', 'diagnose']}],
         distincts: ['name']
       },
       prep: {

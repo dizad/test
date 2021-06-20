@@ -404,7 +404,7 @@
                 occurrences.forEach(b => {
                   this.events.push({
                     name: `${a.label}`,
-                    color: `red`,
+                    color: `deep-orange`,
                     start: b.start,
                     end: b.end,
                     timed: true,
@@ -744,7 +744,7 @@
             }else if(b == `procedure`){
               schedule.procedure = converters.getKeyValueFriendly(a[b].procedure._id, `${a[b].procedure.name}`);
               schedule.code = converters.getKeyValueFriendly(a[b].code._id, `${a[b].code.name}`);
-              schedule.surgeon = converters.getKeyValueFriendly(a[b].surgeon._id, `${a[b].surgeon.first} ${a[b].surgeon.last}`);
+              schedule.physician = converters.getKeyValueFriendly(a[b].physician._id, `${a[b].physician.first} ${a[b].physician.last}`);
               schedule.procedurePreps = a[b] && a[b].preps && a[b].preps.length ? a[b].preps.map(a => converters.getKeyValueFriendly(a.key, a.name)).join(`+`) : `(none)`;
             }else if(b == `schedule`){
               this.flattenAsIs(schedule, a[b]);

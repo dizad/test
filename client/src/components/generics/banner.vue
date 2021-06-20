@@ -30,7 +30,7 @@
                 text-color="white"
                 title='User status.'
             style='margin-right: 10px;'>
-            {{user.username}}
+            {{user.first}}, {{user.last}} ({{user.username}})
             </v-chip>
         <!--privilege-->
             <v-chip v-if='ready.right'
@@ -377,14 +377,19 @@
                     icon: references.getIcon('prep'),
                     access: ['master', 'center', 'hospital']
                 },{
-                    id: 'surgeon',
-                    name: 'Surgeons',
-                    icon: references.getIcon('surgeon'),
+                    id: 'physician',
+                    name: 'Physicians',
+                    icon: references.getIcon('physician'),
                     access: ['master', 'center', 'hospital']
                 },{
                     id: 'anesthesia',
                     name: 'Anesthesias',
                     icon: references.getIcon('anesthesia'),
+                    access: ['master', 'center', 'hospital']
+                },{
+                    id: 'specialty',
+                    name: 'Specialties',
+                    icon: references.getIcon('specialty'),
                     access: ['master', 'center', 'hospital']
                 }]
         },

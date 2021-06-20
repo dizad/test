@@ -288,7 +288,7 @@
     async created(){
 	//init timeout
 		setTimeout(() => {
-            $('#focusFirst').focus();
+            $('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('zone'));
             $('#confirmIcon').addClass(references.getIcon('submit'));
             $('#deleteIcon').addClass(references.getIcon('delete'));
@@ -324,6 +324,7 @@
                         delete this.zone.schedule[a];
                     }
                 });
+                this.zone.label = this.zone.label.trim();
             //time validation
                 let rangeStart = `01/01/01 ${this.zone.schedule.start}`;
                 let rangeEnd = `01/01/01 ${this.zone.schedule.end}`;

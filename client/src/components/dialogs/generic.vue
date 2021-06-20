@@ -16,7 +16,7 @@
     <span v-if='generic.textboxes && generic.textboxes.length' >
         <span v-for='(textbox, index) in generic.textboxes' :key='textbox.key' >
             <v-text-field dense outlined autocomplete='off'
-                :id="index == 0 ? 'focusFirst' : ''"
+                :id="index == 0 ? 'firstFocus' : ''"
                 :style="index == 0 ? 'margin-top: 20px;': ''"
                 background-color='yellow lighten-4'
                 v-model='textbox.value'
@@ -41,9 +41,15 @@
                 :item-text='a => typeof a == `string` ? a : a.name'
                 :item-value='a => a'
                 :rules='dropdown.isRequired ? [validate.required] : []'>
-            <template #selection="{item}">
-            <v-chip color="light-blue"><span style='color: white'>{{typeof item == `string` ? item : item.name}}</span></v-chip>
-            </template>
+                <template #selection="{item, index}">
+                    <v-chip dark close 
+                        @click:close="remove(index, dropdown.value)" 
+                        color="light-blue">
+                        <span style='color: white'>
+                            {{typeof item == `string` ? item : item.name}}
+                        </span>
+                    </v-chip>
+                </template>
             </v-autocomplete>
         </span>
      </span>
@@ -101,14 +107,13 @@
 	props: ['data', 'params'],
 //life cycle
     async created(){
-  
 	//focus the first textbox
-		setTimeout(() => {
-            $('#focusFirst').focus();
+        setTimeout(() => {
+            $('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon(this.params.prop));
             $('#okIcon').addClass(references.getIcon('submit'));
             $('#cancelIcon').addClass(references.getIcon('cancel'));
-		}, 0);
+        }, 0);
     //update title
         this.title = converters.capitalizeFirst(this.params.prop);
     //get data
@@ -135,12 +140,22 @@
                     }
                 }
             }
+        //condition
+            this.generic.textboxes.forEach(a => {
+                if(a.value && typeof a.value == `string`){
+                    a.value = a.value.trim();
+                }
+            });
         }
         //send
             this.$emit('closeDialog', {
                 action: action,
                 data: this.generic
             });
+        },
+    //remove item
+        remove(index, data){
+            data.splice(index, 1);
         }
     },
 //global vars

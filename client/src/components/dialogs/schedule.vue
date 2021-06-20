@@ -63,7 +63,6 @@
                 autocomplete='off'
                 background-color = 'blue-grey lighten-5'
                 v-model='schedule.location.center.name'
-                placeholder="Type restriction label..."
                 label='Center'
                 type='text'
                 readonly
@@ -75,7 +74,6 @@
                 autocomplete='off'
                 background-color = 'blue-grey lighten-5'
                 v-model='schedule.location.room.name'
-                placeholder="Type restriction label..."
                 label='Room'
                 type='text'
                 readonly
@@ -133,6 +131,7 @@
             <v-row>
             <!--language-->
                 <v-autocomplete dense outlined
+                    id='firstFocus'
                     background-color='yellow lighten-4'
                     v-model='schedule.communication.language'
                     :items="lists.languages"
@@ -267,7 +266,7 @@
                 </v-col>
             </v-row>
             <v-row style='margin-top: -20px;'>
-        <!--cpt codes-->
+        <!--diagnose codes-->
             <v-col class='col-md-11'>
                 <v-autocomplete dense outlined
                     background-color='yellow lighten-4'
@@ -300,17 +299,17 @@
             Procedure
         </v-list-item-title>
         <v-card-text style='padding: 10px 20px 0px 20px;'>
-     <!--surgeon-->
+     <!--physician-->
             <v-row  style='margin-top: 0px;'>
-            <!--surgeon-->
+            <!--physician-->
                 <v-col class='col-md-11'>
                     <v-autocomplete dense outlined
                         background-color='yellow lighten-4'
-                        v-model='schedule.procedure.surgeon'
-                        :items="lists.surgeons"
+                        v-model='schedule.procedure.physician'
+                        :items="lists.physicians"
                         :item-text="a => a.first + ', ' + a.last"
                         :item-value="a => a"
-                        label="Surgeon"
+                        label="Physician"
                         :rules ="[validate.required]"
                     ></v-autocomplete>
                 </v-col>
@@ -320,7 +319,7 @@
                         dense icon
                         class='dizagara-button-blue' 
                         style='margin-left: -10px;'
-                        @click="redirect('surgeon')">
+                        @click="redirect('physician')">
                         <span class="mdi mdi-24px dizagara-redirect-icon"></span>
                     </v-btn>
                 </v-col>
@@ -724,7 +723,6 @@
         //codes
             let codes = await bridge.getCollection({collection: `codes`}) || [];
             this.lists.codes = {};
-            this.lists.codes.cpts = codes.filter(a => a.type == 'cpt');
             this.lists.codes.diagnoses = codes.filter(a => a.type == 'diagnose');
             this.lists.codes.procedures = codes.filter(a => a.type == 'procedure');
             this.loaded = {percent: 25, checkpoint: 'Codes loaded, loading insurances...'}; //progress point
@@ -732,9 +730,9 @@
             this.lists.insurances = await bridge.getCollection({collection: `insurances`}) || [];
             this.loaded = {percent: 30, checkpoint: 'Insurances loaded, loading diagnoses...'}; //progress point
             this.lists.diagnoses = await bridge.getCollection({collection: `diagnoses`}) || [];
-            this.loaded = {percent: 35, checkpoint: 'Diagnoses loaded, loading surgeons...'}; //progress point
-            this.lists.surgeons = await bridge.getCollection({collection: `surgeons`}) || [];
-            this.loaded = {percent: 40, checkpoint: 'Surgeons loaded, loading procedures...'}; //progress point
+            this.loaded = {percent: 35, checkpoint: 'Diagnoses loaded, loading physicians...'}; //progress point
+            this.lists.physicians = await bridge.getCollection({collection: `physicians`}) || [];
+            this.loaded = {percent: 40, checkpoint: 'Physicians loaded, loading procedures...'}; //progress point
             this.lists.procedures = await bridge.getCollection({collection: `procedures`}) || [];
             this.loaded = {percent: 50, checkpoint: 'Procedures loaded, loading rooms...'}; //progress point
             this.lists.rooms = await bridge.getCollection({collection: `rooms`}) || [];
@@ -765,6 +763,7 @@
             this.updateBusyTimes();//update busy times after fetching zones and schedules
         //load icons
             setTimeout(() => {
+                $('#firstFocus').focus();
                 $('#headerIcon').addClass(references.getIcon('schedule'));
                 $('#archiveIcon').addClass(references.getIcon('archive'));
                 $('#centerIcon').addClass(references.getIcon('center'));
@@ -848,6 +847,10 @@
             //update stamp
                 this.schedule.modBy = this.$route.params.id;
                 this.schedule.modDate = moment();
+            //condition
+                Object.keys(this.schedule.comments).forEach(a => {
+                    this.schedule.comments[a] = this.schedule.comments[a].trim();
+                });
             }
             //do not housekeep, will mess up exports
             //send data
@@ -1001,11 +1004,7 @@
             schedules: [],
             zones: [],
             patients: [],
-            codes: {
-                cpt: [],
-                procedure: [],
-                diagnose: []
-            },
+            codes: {},
             insurances: [],
             preps: {
                 procedures: [],

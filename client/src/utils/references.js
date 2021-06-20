@@ -14,7 +14,7 @@ module.exports = {
             save: 'mdi-content-save',
             procedure: 'mdi-jump-rope',
             room: 'mdi-domain',
-            surgeon: 'mdi-hail',
+            physician: 'mdi-hail',
             diagnose: 'mdi-account-search',
             insurance: 'mdi-credit-card',
             code: 'mdi-needle',
@@ -49,7 +49,8 @@ module.exports = {
             clear: 'mdi-eraser',
             show: 'mdi-eye',
             hide: 'mdi-eye-off',
-            anesthesia: 'mdi-pill'
+            anesthesia: 'mdi-pill',
+            specialty: 'mdi-school'
         }
         return icons[prop] || '';
     },

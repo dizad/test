@@ -29,6 +29,7 @@
             <v-col class="text-center">
             <!--submit button-->
                 <v-btn 
+                    id='firstFocus'
                     style='margin-right: 10px; width: 125px;'
                     class='dizagara-button-blue'
                     @click='closeDialog(`submit`)'>
@@ -53,7 +54,6 @@
 </template>
 <script>
 //imports
-	import converters from '../../utils/converters.js';
     import references from '../../utils/references.js';
 //master
 	export default {
@@ -67,6 +67,7 @@
     async created(){
         //get icons
         setTimeout(() => {
+            $('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('schedule'));
             $('#submitIcon').addClass(references.getIcon('submit'));
             $('#cancelIcon').addClass(references.getIcon('cancel'));

@@ -18,6 +18,7 @@
             <v-col class="text-center">
             <!--delete button-->
                 <v-btn 
+                    id='firstFocus'
                     style='margin-right: 10px; width: 125px;'
                     class='dizagara-button-blue'
                     @click='closeDialog(`submit`)'>
@@ -57,6 +58,7 @@
         this.term = converters.capitalizeFirst(this.data);
         //get icons
         setTimeout(() => {
+            $('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('caution'));
             $('#confirmIcon').addClass(references.getIcon('submit'));
             $('#cancelIcon').addClass(references.getIcon('cancel'));

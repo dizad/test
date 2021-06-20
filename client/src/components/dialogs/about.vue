@@ -33,9 +33,9 @@
 		<v-card-actions style='margin-top: -20px;'>
 			<v-row>
 				<v-col class="text-center">
-					<v-btn 
+					<v-btn dense dark
+						id='firstFocus'
 						class='dizagara-button-blue dizagara-button-width-medium' 
-						dense dark
 						@click='closeDialog(`submit`)'>
 						<span class="mdi mdi-24px iconRight" id='okIcon'></span>
 						CLOSE
@@ -62,6 +62,7 @@
     async created(){
 	//get icons
 		setTimeout(() => {
+			$('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('application'));
             $('#okIcon').addClass(references.getIcon('submit'));
 		}, 0);

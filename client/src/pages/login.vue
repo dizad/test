@@ -1,24 +1,23 @@
 <template>
 <v-app>
 <!--dialogs-->
-	<!--user-->
-		<transition name="fade">
-			<user 
-				:data='user' 
-				:params='params'
-				v-if='dialogs.user.show'
-				@closeDialog='closeDialog($event, "user")'>
-			</user>
-		</transition>
-	<!--eula-->
-		<transition name="fade">
-			<eula 
-				v-if='dialogs.eula.show'
-				@closeDialog='closeDialog($event, "eula")'>
-			</eula>
-		</transition>
-<img src='../../public/background.jpg' style='display: none;'/><!--this is so npm build stores image to hosted version-->
-<div class='back-plate' style='background-image: url("background.jpg"); background-size: cover;'>
+<!--user-->
+	<transition name="fade">
+		<user 
+			:data='user' 
+			:params='params'
+			v-if='dialogs.user.show'
+			@closeDialog='closeDialog($event, "user")'>
+		</user>
+	</transition>
+<!--eula-->
+	<transition name="fade">
+		<eula 
+			v-if='dialogs.eula.show'
+			@closeDialog='closeDialog($event, "eula")'>
+		</eula>
+	</transition>
+<img class='back-plate' src='../../public/background.jpg' style='background-size: cover; position: absolute;'/>
 <v-card elevation='2' style='width: 450px; text-align: center; margin: 100px auto auto auto;' class='dizagara-outline-blue'>
 	<!--logo-->
 		<img id='imageLogin' src='../../public/logo.jpg' style = 'width: 80%; margin-top: 10px;'/>	
@@ -83,7 +82,6 @@
 	</v-form>
 </v-card-actions>
 </v-card>
-</div>
 </v-app>
 </template>
 <script>
@@ -105,7 +103,7 @@
 		async created(){
 		//init timeout 
 			setTimeout(() => {
-				$('#focusFirst').focus();
+				$('#firstFocus').focus();
 				$('#loginIcon').addClass(references.getIcon('login'));
 				$('#accountIcon').addClass(references.getIcon('user'));
 				$('#passwordIcon').addClass(references.getIcon('password'));
@@ -154,7 +152,7 @@
 			if(params.action == `submit`){
 				if(type == 'user'){
 				//add standards
-					params.data.modBy = this.user.username;
+					params.data.modBy = params.data.username;
 					params.data.modDate = moment();
 				//save to database
 					await bridge.setDocument({

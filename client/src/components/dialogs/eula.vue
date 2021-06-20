@@ -17,6 +17,7 @@
 			<v-row>
 				<v-col class="text-center">
 					<v-btn 
+						id='firstFocus'
 						class='dizagara-button-blue dizagara-button-width-medium' 
 						dense dark
 						@click='closeDialog(`submit`)'>
@@ -53,6 +54,7 @@
     async created(){
 	//get icons
 		setTimeout(() => {
+			$('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('eula'));
 			$('#acceptIcon').addClass(references.getIcon('submit'));
             $('#denyIcon').addClass(references.getIcon('delete'));

@@ -18,6 +18,7 @@
         <v-col class="text-center">
         <!--save button-->
             <v-btn 
+                id='firstFocus'
                 class='dizagara-button-blue dizagara-button-width-short'
                 @click='closeDialog(`submit`)'>
                 <span class="mdi mdi-24px dizagara-margin-right" id='saveIcon'></span>
@@ -62,6 +63,7 @@
     async created(){
         //get icon
         setTimeout(() => {
+            $('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('caution'));
             $('#saveIcon').addClass(references.getIcon('submit'));
             $('#ignoreIcon').addClass(references.getIcon('delete'));

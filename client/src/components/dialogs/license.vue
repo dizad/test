@@ -14,7 +14,7 @@
 <v-form ref = 'form' lazy-validation>
 <!--type-->
     <v-autocomplete dense outlined 
-        id='focusFirst'
+        id='firstFocus'
         style='margin: 20px 0px 0px 0px;'
         background-color='yellow lighten-4'
         v-model='license.privilege'
@@ -53,14 +53,14 @@
             outlined readonly
             background-color= 'yellow lighten-4'
             v-model='datePicker.dateFormatted'
-            @blur='datePicker.date = parseDate(datePicker.dateFormatted)'
+            @blur='license.expiration = parseDate(datePicker.dateFormatted)'
             @change='updateExpirationDuration'
             :rules='[validate.required]'
             v-on='on'
         ></v-text-field>
         </template>
         <v-date-picker dense
-            v-model='datePicker.date'
+            v-model='license.expiration'
             @input='datePicker.show = false'
         ></v-date-picker>
     </v-dialog>
@@ -134,12 +134,13 @@
     async created(){
 	//focus the first textbox
 		setTimeout(() => {
-			$('#focusFirst').focus();
+			$('#firstFocus').focus();
             $('#headerIcon').addClass(references.getIcon('license'));
 		}, 0);
     //if existing
         if(!this.params.isNew){
             this.license = utils.deepClone(this.data);
+            this.datePicker.dateFormatted = this.formatDate(this.license.expiration); 
         }else{
     //if new, generate license#
         let licenses = utils.deepClone(this.params.data) || [];
@@ -149,22 +150,23 @@
             count = `0` + count;
         }
         this.license.license = `${count}-${this.getRandomFive()}-${this.getRandomFive()}-${this.getRandomFive()}`;
+        //generate date
+        this.license.expiration = this.getNow(0);
+        this.datePicker.dateFormatted = this.formatDate(this.license.expiration); 
         }
-    //generate date
-        this.datePicker.date = this.getNow(0);
-        this.datePicker.dateFormatted = this.formatDate(this.getNow(0));   
 	},
 //custom methods
     methods: {
     //update expiration duration on date change
         updateExpirationDuration(){
-            let duration = moment(this.datePicker.date).diff(moment(), 'months', true);
+            let duration = moment(this.license.expiration).diff(moment(), 'months', true);
             this.license.duration = Math.round(duration);
         },
     //update expiration date on duration change
         updateExpirationDate(){
             let delay = this.license.duration * 30;
-            this.datePicker.date = this.getNow(delay);
+            this.license.expiration = this.getNow(delay);
+            this.datePicker.dateFormatted = this.formatDate(this.license.expiration); 
         },
     //get random number
         getRandomFive(){
@@ -177,6 +179,11 @@
 	//close dialog
 		closeDialog(action){
             if(action == 'submit'){
+            //check duration
+                if(this.license.duration < 0){
+                    toastr.error(`Duration can not be negative.`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+                    return;
+                }
             //check validation
                 if(!this.$refs.form.validate()){
                     toastr.error(references.getToast(`genericFormError`), ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
@@ -184,7 +191,11 @@
                 }
             }
             //conditioning
-                this.license.expiration = moment(this.datePicker.date);
+                Object.keys(this.license).forEach(a => {
+                    if(this.license[a] && typeof this.license[a] == `string`){
+                        this.license[a] = this.license[a].trim();
+                    }
+                });
             //send
                 this.$emit('closeDialog', {
                     action: action,
@@ -215,7 +226,7 @@
         'datePicker':  {
         deep: true,
         handler: function(){
-            this.datePicker.dateFormatted = this.formatDate(this.datePicker.date);
+            this.datePicker.dateFormatted = this.formatDate(this.license.expiration);
             }
 		}
     },
@@ -234,7 +245,6 @@
         },
         datePicker: {
             show: false,
-            date: '',
             dateFormatted: ''
         },
         validate: {

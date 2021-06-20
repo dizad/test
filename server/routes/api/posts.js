@@ -127,9 +127,6 @@
                 let user = await collection.findOne({
                     username: req.body.id
                 });
-                if(user){
-                    delete user.fruit;
-                }
             //return
                 res.send(user);
             });

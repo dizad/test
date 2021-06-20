@@ -238,7 +238,7 @@
     async created(){
 	//focus the first textbox
 		setTimeout(() => {
-			$('#focusFirst').focus();
+			$('#firstFocus').focus();
 			$('#headerIcon').addClass(references.getIcon('user'));
 			$('#licenseIcon').addClass(references.getIcon('license'));
 			$('#identityIcon').addClass(references.getIcon('identity'));
@@ -297,10 +297,6 @@
 	//close dialog
         async closeDialog(action){
         if(action == 'submit'){
-		//condition
-			if(this.user.privilege == 'master'){
-				this.user.facility = 'master';
-			}
         //form
             if(!this.$refs.form.validate()){
                 toastr.error(references.getToast(`genericFormError`), ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
@@ -364,6 +360,17 @@
 						setValue: (parseInt(find.usedAccounts) + 1).toString()
 					});
 				}
+			//condition
+			//cap master
+				if(this.user.privilege == 'master'){
+					this.user.facility = 'master';
+				}
+			//trim white space
+				Object.keys(this.user).forEach(a => {
+					if(this.user[a] && typeof this.user[a] == `string`){
+						this.user[a] = this.user[a].trim();
+					}
+				});
 		}		
 		//send data
             this.$emit('closeDialog', {
