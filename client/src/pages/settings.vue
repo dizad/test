@@ -76,8 +76,8 @@
       this.configs = await bridge.getConfig({config: this.prop}) || [];
       this.original = utils.deepClone(this.configs);
   },
-//before exit
-  beforeRouteLeave (to, from, next){
+//do not use beforeRouteLeave(), will not run on generic pages
+  beforeRouteUpdate(to, from, next){
     if(!this.redirect.hasConfirmed){
       let originalJson = JSON.stringify(this.original);
       let modifiedJson = JSON.stringify(this.configs);

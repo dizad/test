@@ -4,8 +4,8 @@
     let router = express.Router();
 //database
     let database = 'test01'; //dizagara
-    let connectionString = 'mongodb://localhost:27017/' + database; //local
-    //let connectionString = 'mongodb+srv://dizagara:watermelonSaturdays1!@cluster.jmgxm.mongodb.net/dizagara?retryWrites=true&w=majority'; //internet
+    //let connectionString = 'mongodb://localhost:27017/' + database; //local
+    let connectionString = 'mongodb+srv://dizagara:watermelonSaturdays1!@cluster.jmgxm.mongodb.net/dizagara?retryWrites=true&w=majority'; //internet
 
 //generics
     //collection

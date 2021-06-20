@@ -20,7 +20,7 @@
 		</v-list-item-title>
 	<!--chart-->
 		<v-card-text>
-			<chart v-if="ready.charts && chartData.scheduling && chartData.scheduling.length" 
+			<chart v-if="ready.charts" 
 			:data="chartData.scheduling || {}" 
 			style='height: calc(40vh); width: calc(40vh); text-align: center; margin: calc(5vh) auto auto auto;'>
 			</chart>
@@ -38,7 +38,7 @@
 		</v-list-item-title>
 	<!--chart-->
 		<v-card-text>
-			<chart v-if="ready.charts && chartData.tracking && chartData.tracking.length" 
+			<chart v-if="ready.charts" 
 			:data="chartData.tracking || {}" 
 			style='height: calc(40vh); width: calc(40vh); text-align: center; margin: calc(5vh) auto auto auto;'>
 			</chart>
@@ -125,7 +125,7 @@
 		});
 	//get track data
 		let tracks = await bridge.getCollection({collection: 'tracks'}) || [];
-		tracks = tracks.map(a => a.name);
+		tracks = tracks.length ? tracks.map(a => a.name) : [`none`];
 		let increment = 100;
 		if(tracks.length > 0){
 			increment = 100 / (tracks.length - 1);

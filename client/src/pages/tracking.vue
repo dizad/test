@@ -100,7 +100,7 @@
                   :class='header.sort == 0 ? "dizagara-button-blue dizagara-round-small" : "dizagara-button-green dizagara-round-small"'
                   style='margin-right: 10px;'
                   @click='sortHeader(header)'
-                  title='Edit this item.'>
+                  title='Sort header.'>
                   <!--icon-->
                   <span v-if='header.sort == 1' class="mdi mdi-12px mdi-arrow-up"></span>
                   <span v-if='header.sort == 0' class="mdi mdi-12px mdi-minus"></span>
@@ -114,7 +114,7 @@
           </thead>
       <!--body-->
           <tbody>
-            <tr v-for='item in schedules' :key='item._id' v-show='item.isShow'>
+            <tr v-for='(item, index) in schedules' :key='item._id' v-show='item.isShow'>
           <!--identity chip-->
               <td class='text-left' v-for='key in keys' :key='key'>
                 <!--identity-->
@@ -168,6 +168,13 @@
                   @click='edit(item)'
                   title='Edit this item.'>
                   <span class="mdi mdi-18px mdi-pencil"></span>
+                </v-btn>
+              <!--remove-->
+                <v-btn dense dark small icon
+                    class='dizagara-button-red dizagara-round-medium'
+                    @click='remove(index)'
+                    title='Delete this item.'>
+                  <span class="mdi mdi-18px mdi-close"></span>
                 </v-btn>
               </td>
             </tr>
@@ -340,6 +347,10 @@
       this.schedule = item;
       this.params.index = this.schedules.findIndex(a => a._id == item._id);
       this.dialogs.schedule.show = true;
+    },
+  //remove item
+      remove(index){
+        this.schedules.splice(index, 1);
     },
   //save schedules
     async save(){

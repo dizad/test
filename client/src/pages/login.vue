@@ -163,16 +163,16 @@
 				//notify
 					toastr.success(`user added successfully!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
 				}else if(type == 'eula'){
-					//update isEula to true
-						await bridge.setField({
-							collection: 'users',
-							matchField: 'username',
-							matchValue: this.username,
-							setField: 'isEula',
-							setValue: true
-						});
-					//redirect if valid entries
-						this.$router.push({ path: `/dashboard/${this.username}`});
+				//update isEula to true
+					await bridge.setField({
+						collection: 'users',
+						matchField: 'username',
+						matchValue: this.username,
+						setField: 'isEula',
+						setValue: true
+					});
+				//redirect if valid entries
+					this.$router.push({ path: `/dashboard/${this.username}`});
 				}
 			}
 		}

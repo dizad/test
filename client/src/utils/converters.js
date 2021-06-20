@@ -15,9 +15,9 @@ module.exports = {
     getFriendlyTime: date => {
         return moment(date).format('hh:mm A');
     },
-//get friendly time
+//get picker time
     getPickerTime: date => {
-        return moment(date).format('hh:mm');
+        return moment(date).format('HH:mm');//hh:mm
     },
 //get picker date
     getPickerDate: date => {

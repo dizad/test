@@ -130,7 +130,7 @@
                     :class='header.sort == 0 ? "dizagara-button-blue dizagara-round-small" : "dizagara-button-green dizagara-round-small"'
                     style='margin-right: 10px;'
                     @click='sortHeader(header)'
-                    title='Edit this item.'>
+                    title='Sort header.'>
                     <!--icon-->
                     <span v-if='header.sort == 1' class="mdi mdi-12px mdi-arrow-up"></span>
                     <span v-if='header.sort == 0' class="mdi mdi-12px mdi-minus"></span>
@@ -201,7 +201,7 @@
                     title='Delete this item.'>
                   <span class="mdi mdi-18px mdi-close"></span>
                 </v-btn>
-                </td>
+              </td>
             </tr>
           </tbody>
       </template>
@@ -266,8 +266,8 @@
         toastr.warning(`Editing tracks will affect the tracking page!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
       }
   },
-//before exit
-  beforeRouteLeave (to, from, next){
+//do not use beforeRouteLeave(), will not run on generic pages
+  beforeRouteUpdate (to, from, next){
     if(!this.redirect.hasConfirmed){
       let cleanMods = utils.deepClone(this.data);
       cleanMods.forEach(a => delete a.isShow);
