@@ -392,7 +392,11 @@
               //get first and second
                 let compare = this.getCompareObject(a, b, header.key);
               //return sort
-                if(header.type == 'number'){
+                if(header.key == `_id`){
+                  let firstNumb = parseInt(compare.first.split('#')[1]);
+                  let secondNumb = parseInt(compare.second.split('#')[1]);
+                  return firstNumb - secondNumb;
+                }else if(header.type == 'number'){
                   return compare.first - compare.second;
                 }else{
                   return compare.first.localeCompare(compare.second);
@@ -405,7 +409,11 @@
             //get first and second
               let compare = this.getCompareObject(a, b, header.key);
             //return sort
-              if(header.type == 'number'){
+              if(header.key == `_id`){
+                let firstNumb = parseInt(compare.first.split('#')[1]);
+                let secondNumb = parseInt(compare.second.split('#')[1]);
+                return secondNumb - firstNumb;
+              }else if(header.type == 'number'){
                 return compare.second - compare.first;
               }else{
                 return compare.second.localeCompare(compare.first);

@@ -665,7 +665,11 @@
           //get first + second
             let compare = this.getCompareObject(a, b, header.key);
           //return sort
-            if(header.type == 'number' || (compare.type && compare.type == `number`)){
+            if(header.key == `_id`){
+              let firstNumb = parseInt(compare.first.split('#')[1]);
+              let secondNumb = parseInt(compare.second.split('#')[1]);
+              return firstNumb - secondNumb;
+            }else if(header.type == 'number' || (compare.type && compare.type == `number`)){
               return compare.first - compare.second;
             }else if(header.type == `boolean`){
               return compare.first.toString().localeCompare(compare.second.toString());
@@ -679,7 +683,11 @@
           //get first + second
             let compare = this.getCompareObject(a, b, header.key);
           //return sort
-            if(header.type == 'number' || (compare.type && compare.type == `number`)){
+            if(header.key == `_id`){
+              let firstNumb = parseInt(compare.first.split('#')[1]);
+              let secondNumb = parseInt(compare.second.split('#')[1]);
+              return secondNumb - firstNumb;
+            }else if(header.type == 'number' || (compare.type && compare.type == `number`)){
               return compare.second - compare.first;
             }else if(header.type == `boolean`){
               return compare.second.toString().localeCompare(compare.first.toString());
