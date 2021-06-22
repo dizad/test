@@ -372,6 +372,7 @@
           this.item = item;
         }
       //params
+        this.params.item = item;
         this.params.index = this.data.findIndex(a => a._id == item._id);
         this.params.isNew = false;
       //show
@@ -520,8 +521,12 @@
         //init
           let item = {};
         //add key
-          let dataIds = this.data.map(a => a._id);
-          item._id = `${this.prop.slice(0,3)}#${utils.getNextId(dataIds)}`;
+          if(this.params.isNew){
+            let dataIds = this.data.map(a => a._id);
+            item._id = `${this.prop.slice(0,3)}#${utils.getNextId(dataIds)}`;
+          }else{
+            item._id = this.params.item._id;
+          }
         //add fields
           if(this.prop == 'user' || this.prop == 'license'){
             let keys = Object.keys(params.data);
