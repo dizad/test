@@ -92,8 +92,42 @@
       next();
     }
   },
+//checks re-route to same page
+  beforeRouteUpdate (to, from, next){
+    if(!this.redirect.hasConfirmed){
+      if(this.dirtyCheck()){ 
+        this.redirect.path = to.fullPath;
+        this.dialogs.save.show = true;
+      }else{
+        next();
+      }
+    }else{
+      this.redirect.hasConfirmed = false;
+      next();
+    }
+  },
+//checks re-route to different page
+  beforeRouteLeave (to, from, next){
+    if(!this.redirect.hasConfirmed){
+      if(this.dirtyCheck()){ 
+        this.redirect.path = to.fullPath;
+        this.dialogs.save.show = true;
+      }else{
+        next();
+      }
+    }else{
+      this.redirect.hasConfirmed = false;
+      next();
+    }
+  },
 //methods
     methods: {
+    //prompt last save
+      dirtyCheck(){
+        let originalJson = JSON.stringify(this.original);
+        let modifiedJson = JSON.stringify(this.configs);
+        return Boolean(originalJson.localeCompare(modifiedJson))
+      },
     //close track dialog
       closeDialog(params){
         this.dialogs.save.show = false;

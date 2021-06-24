@@ -275,14 +275,25 @@
         toastr.warning(`Editing tracks will affect the tracking page!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
       }
   },
-//do not use beforeRouteLeave(), will not run on generic pages
+//checks re-route to same page
   beforeRouteUpdate (to, from, next){
     if(!this.redirect.hasConfirmed){
-      let cleanMods = utils.deepClone(this.data);
-      cleanMods.forEach(a => delete a.isShow);
-      let originalJson = JSON.stringify(this.original);
-      let modifiedJson = JSON.stringify(cleanMods);
-      if(originalJson.localeCompare(modifiedJson) != 0){ 
+      if(this.dirtyCheck()){ 
+        this.redirect.path = to.fullPath;
+        this.params.dialog = `save`;
+        this.dialogs.save.show = true;
+      }else{
+        next();
+      }
+    }else{
+      this.redirect.hasConfirmed = false;
+      next();
+    }
+  },
+//checks re-route to different page
+  beforeRouteLeave (to, from, next){
+    if(!this.redirect.hasConfirmed){
+      if(this.dirtyCheck()){ 
         this.redirect.path = to.fullPath;
         this.params.dialog = `save`;
         this.dialogs.save.show = true;
@@ -296,6 +307,14 @@
   },
 //custom methods
   methods: {
+  //prompt last save
+    dirtyCheck(){
+      let cleanMods = utils.deepClone(this.data);
+      cleanMods.forEach(a => delete a.isShow);
+      let originalJson = JSON.stringify(this.original);
+      let modifiedJson = JSON.stringify(cleanMods);
+      return Boolean(originalJson.localeCompare(modifiedJson) != 0);
+    },
   //init table
     initTable(){
     //get headers

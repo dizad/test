@@ -436,7 +436,7 @@
       if(this.filter.center.rooms.filter(a => this.filter.rooms.some(b => a.key == b.key)).length != 1){
         //this.params && this.params.event && this.params.event.isNew
         $('#filterRooms').effect( 'shake' ,{times:2, distance: 5}, 400 ); //shake the room filter
-        toastr.error(`Exactly ONE room must be filtered to add an event!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
+        toastr.error(`Exactly ONE room must be filtered to add/edit an event!`, ``, {'closeButton': true, positionClass: 'toast-bottom-right'});
         return;
       }
     //avoid adding events on zones
